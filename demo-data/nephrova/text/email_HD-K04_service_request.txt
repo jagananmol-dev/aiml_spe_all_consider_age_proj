@@ -1,0 +1,15 @@
+Nephrova Renal Care Pvt. Ltd.
+From: Amit Gokhale <amit.gokhale@nephrova.example>
+To: Nikhil Joshi <nikhil.joshi@nephrova.example>
+Date: 13 August 2026
+Subject: HD-K04 — repeated conductivity alarms
+
+Nikhil,
+
+HD-K04 has given 6 conductivity alarms between 11 and 13 August, including one today.
+The machine is tagged out of service. Kothrud is running on 11 machines, which is tight for the evening shift.
+Please send a technician as soon as possible.
+
+Regards,
+Amit Gokhale
+Centre Manager, Kothrud

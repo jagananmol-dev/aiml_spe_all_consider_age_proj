@@ -1,0 +1,66 @@
+# VEDA AI — Git Ignore
+
+# Dependencies
+node_modules/
+.pnpm-store/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes (local dev)
+postgres_data/
+kafka_data/
+minio_data/
+opensearch_data/
+
+# Testing
+coverage/
+.pytest_cache/
+htmlcov/
+
+# Logs
+*.log
+logs/
+
+# Models (too large for git)
+models/
+*.bin
+*.onnx
+*.pt
+*.pth
+*.safetensors
+
+# Temporary
+tmp/
+temp/
+
+# Build cache
+tsconfig.tsbuildinfo
+.mypy_cache/
+.ruff_cache/
+
+# Local mode uploads
+.data/

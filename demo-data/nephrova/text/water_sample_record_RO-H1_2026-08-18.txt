@@ -1,0 +1,6 @@
+WATER SAMPLE COLLECTION RECORD — Nephrova Hadapsar
+Date: 18 August 2026    Collected by: Ganesh More
+Plant: RO-H1    Sample point: end of distribution loop
+Tests requested: bacteria culture, endotoxin
+Sample sent to: City Diagnostic Laboratory, Pune (in a cold box)
+Expected result: 21 August 2026

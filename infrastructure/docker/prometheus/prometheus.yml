@@ -1,0 +1,36 @@
+# Prometheus configuration for VEDA AI
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "veda-web"
+    static_configs:
+      - targets: ["host.docker.internal:3000"]
+    metrics_path: /api/metrics
+
+  - job_name: "veda-ingestion"
+    static_configs:
+      - targets: ["host.docker.internal:8001"]
+
+  - job_name: "veda-intelligence"
+    static_configs:
+      - targets: ["host.docker.internal:8002"]
+
+  - job_name: "kafka"
+    static_configs:
+      - targets: ["kafka:9092"]
+
+  - job_name: "postgres"
+    static_configs:
+      - targets: ["host.docker.internal:9187"]
+
+  - job_name: "minio"
+    static_configs:
+      - targets: ["minio:9000"]
+    metrics_path: /minio/v2/metrics/cluster

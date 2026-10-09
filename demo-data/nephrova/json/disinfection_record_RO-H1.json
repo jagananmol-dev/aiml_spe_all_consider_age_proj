@@ -1,0 +1,30 @@
+{
+  "organisation": "Nephrova Renal Care Pvt. Ltd.",
+  "plant": "RO-H1",
+  "centre": "Nephrova Hadapsar",
+  "records": [
+    {
+      "date": "2026-07-02",
+      "type": "chemical disinfection",
+      "done_by": "Ganesh More"
+    },
+    {
+      "date": "2026-08-02",
+      "type": "chemical disinfection",
+      "done_by": null,
+      "status": "missed"
+    },
+    {
+      "date": "2026-08-22",
+      "type": "chemical and heat disinfection",
+      "done_by": "Rahul Pawar"
+    }
+  ],
+  "resample": {
+    "date": "2026-08-23",
+    "tests": [
+      "bacteria",
+      "endotoxin"
+    ]
+  }
+}

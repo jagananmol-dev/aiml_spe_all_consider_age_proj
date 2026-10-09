@@ -1,0 +1,362 @@
+[
+  {
+    "date": "2026-07-30",
+    "format": "pdf",
+    "file": "pdf/Nephrova_Operations_Manual_2026.pdf"
+  },
+  {
+    "date": "2026-07-31",
+    "format": "excel",
+    "file": "excel/Risk_and_Asset_Register_2026.xlsx"
+  },
+  {
+    "date": "2026-08-01",
+    "format": "markdown",
+    "file": "markdown/HR_Code_of_Conduct.md"
+  },
+  {
+    "date": "2026-08-02",
+    "format": "word",
+    "file": "word/HR_Recruitment_and_Onboarding_Policy.docx"
+  },
+  {
+    "date": "2026-08-03",
+    "format": "pdf",
+    "file": "pdf/HR_Compensation_and_Benefits_Policy.pdf"
+  },
+  {
+    "date": "2026-08-04",
+    "format": "word",
+    "file": "word/HR_Performance_Appraisal_Policy.docx"
+  },
+  {
+    "date": "2026-08-05",
+    "format": "markdown",
+    "file": "markdown/HR_POSH_Policy.md"
+  },
+  {
+    "date": "2026-08-06",
+    "format": "text",
+    "file": "text/HR_Circular_Notice_Period_and_Exit.txt"
+  },
+  {
+    "date": "2026-08-07",
+    "format": "pdf",
+    "file": "pdf/Finance_Delegation_of_Financial_Authority.pdf"
+  },
+  {
+    "date": "2026-08-08",
+    "format": "word",
+    "file": "word/Finance_Billing_and_Collections_Policy.docx"
+  },
+  {
+    "date": "2026-08-09",
+    "format": "markdown",
+    "file": "markdown/Finance_Patient_Refund_and_Assistance_Policy.md"
+  },
+  {
+    "date": "2026-08-10",
+    "format": "markdown",
+    "file": "markdown/Infection_Control_Policy.md"
+  },
+  {
+    "date": "2026-08-11",
+    "format": "text",
+    "file": "text/shift_log_KTH_2026-08-11.txt"
+  },
+  {
+    "date": "2026-08-12",
+    "format": "csv",
+    "file": "csv/machine_alarm_log_KTH_2026-08-12.csv"
+  },
+  {
+    "date": "2026-08-13",
+    "format": "text",
+    "file": "text/email_HD-K04_service_request.txt"
+  },
+  {
+    "date": "2026-08-14",
+    "format": "word",
+    "file": "word/BME_Job_Report_BME-2026-0311_HD-K04.docx"
+  },
+  {
+    "date": "2026-08-15",
+    "format": "excel",
+    "file": "excel/Weekly_Session_Census_Week33.xlsx"
+  },
+  {
+    "date": "2026-08-16",
+    "format": "json",
+    "file": "json/equipment_inventory.json"
+  },
+  {
+    "date": "2026-08-17",
+    "format": "pdf",
+    "file": "pdf/SOP-WT-002_Dialysis_Water_Treatment.pdf"
+  },
+  {
+    "date": "2026-08-18",
+    "format": "text",
+    "file": "text/water_sample_record_RO-H1_2026-08-18.txt"
+  },
+  {
+    "date": "2026-08-19",
+    "format": "markdown",
+    "file": "markdown/Patient_Transfer_Protocol.md"
+  },
+  {
+    "date": "2026-08-20",
+    "format": "powerpoint",
+    "file": "powerpoint/July_2026_Operations_Review.pptx"
+  },
+  {
+    "date": "2026-08-21",
+    "format": "pdf",
+    "file": "pdf/Water_Lab_Report_RO-H1_Aug2026.pdf"
+  },
+  {
+    "date": "2026-08-22",
+    "format": "word",
+    "file": "word/Incident_Report_IR-2026-031_RO-H1.docx"
+  },
+  {
+    "date": "2026-08-23",
+    "format": "csv",
+    "file": "csv/session_transfers_HDP_to_KTH_Aug2026.csv"
+  },
+  {
+    "date": "2026-08-24",
+    "format": "json",
+    "file": "json/disinfection_record_RO-H1.json"
+  },
+  {
+    "date": "2026-08-25",
+    "format": "json",
+    "file": "json/water_test_results_2026.jsonl"
+  },
+  {
+    "date": "2026-08-26",
+    "format": "pdf",
+    "file": "pdf/Water_Lab_Report_RO-H1_Resample.pdf"
+  },
+  {
+    "date": "2026-08-27",
+    "format": "markdown",
+    "file": "markdown/RCA_RO-H1_Endotoxin.md"
+  },
+  {
+    "date": "2026-08-28",
+    "format": "excel",
+    "file": "excel/PM_Schedule_2026.xlsx"
+  },
+  {
+    "date": "2026-08-29",
+    "format": "text",
+    "file": "text/shift_log_KTH_2026-08-29.txt"
+  },
+  {
+    "date": "2026-08-30",
+    "format": "word",
+    "file": "word/Notice_Hepatitis_B_Vaccination_Drive.docx"
+  },
+  {
+    "date": "2026-08-31",
+    "format": "csv",
+    "file": "csv/monthly_sessions_aug_2026.csv"
+  },
+  {
+    "date": "2026-09-01",
+    "format": "excel",
+    "file": "excel/Finance_MIS_Aug_2026.xlsx"
+  },
+  {
+    "date": "2026-09-02",
+    "format": "text",
+    "file": "text/vaccination_drive_summary_2026-09-02.txt"
+  },
+  {
+    "date": "2026-09-03",
+    "format": "word",
+    "file": "word/Infection_Report_Case1_PMP-0412.docx"
+  },
+  {
+    "date": "2026-09-04",
+    "format": "powerpoint",
+    "file": "powerpoint/August_2026_Operations_Review.pptx"
+  },
+  {
+    "date": "2026-09-05",
+    "format": "markdown",
+    "file": "markdown/Hand_Hygiene_Policy.md"
+  },
+  {
+    "date": "2026-09-06",
+    "format": "json",
+    "file": "json/staff_roster_week37.json"
+  },
+  {
+    "date": "2026-09-07",
+    "format": "text",
+    "file": "text/shift_log_PMP_2026-09-07.txt"
+  },
+  {
+    "date": "2026-09-08",
+    "format": "pdf",
+    "file": "pdf/Generator_Load_Test_GEN-P1.pdf"
+  },
+  {
+    "date": "2026-09-09",
+    "format": "pdf",
+    "file": "pdf/Finance_Procurement_Policy.pdf"
+  },
+  {
+    "date": "2026-09-10",
+    "format": "markdown",
+    "file": "markdown/Biomedical_Waste_Management_SOP.md"
+  },
+  {
+    "date": "2026-09-11",
+    "format": "excel",
+    "file": "excel/PMJAY_Claims_Ageing_Sep2026.xlsx"
+  },
+  {
+    "date": "2026-09-12",
+    "format": "word",
+    "file": "word/Infection_Report_Case2_PMP-0388.docx"
+  },
+  {
+    "date": "2026-09-13",
+    "format": "text",
+    "file": "text/email_infection_alert_PMP.txt"
+  },
+  {
+    "date": "2026-09-14",
+    "format": "excel",
+    "file": "excel/Finance_Travel_and_Expense_Rates.xlsx"
+  },
+  {
+    "date": "2026-09-15",
+    "format": "pdf",
+    "file": "pdf/Infection_Control_Audit_PMP_Sep2026.pdf"
+  },
+  {
+    "date": "2026-09-16",
+    "format": "powerpoint",
+    "file": "powerpoint/Pimpri_Infection_Action_Plan.pptx"
+  },
+  {
+    "date": "2026-09-17",
+    "format": "csv",
+    "file": "csv/training_attendance_hand_hygiene_sep2026.csv"
+  },
+  {
+    "date": "2026-09-18",
+    "format": "markdown",
+    "file": "markdown/Catheter_Care_Bundle.md"
+  },
+  {
+    "date": "2026-09-19",
+    "format": "word",
+    "file": "word/Quality_Committee_Minutes_Sep2026.docx"
+  },
+  {
+    "date": "2026-09-20",
+    "format": "excel",
+    "file": "excel/Consumables_Stock_Sep2026.xlsx"
+  },
+  {
+    "date": "2026-09-21",
+    "format": "powerpoint",
+    "file": "powerpoint/Nursing_Quality_Indicators_Aug2026.pptx"
+  },
+  {
+    "date": "2026-09-22",
+    "format": "json",
+    "file": "json/nabh_document_checklist.json"
+  },
+  {
+    "date": "2026-09-23",
+    "format": "powerpoint",
+    "file": "powerpoint/NABH_Readiness_Briefing.pptx"
+  },
+  {
+    "date": "2026-09-24",
+    "format": "pdf",
+    "file": "pdf/NABH_Surveillance_Assessment_Report.pdf"
+  },
+  {
+    "date": "2026-09-25",
+    "format": "csv",
+    "file": "csv/nabh_corrective_action_tracker.csv"
+  },
+  {
+    "date": "2026-09-26",
+    "format": "markdown",
+    "file": "markdown/Patient_Privacy_Notice.md"
+  },
+  {
+    "date": "2026-09-27",
+    "format": "text",
+    "file": "text/shift_log_HDP_2026-09-27.txt"
+  },
+  {
+    "date": "2026-09-28",
+    "format": "word",
+    "file": "word/HR_Leave_and_Attendance_Policy.docx"
+  },
+  {
+    "date": "2026-09-29",
+    "format": "excel",
+    "file": "excel/Staff_Strength_Sep2026.xlsx"
+  },
+  {
+    "date": "2026-09-30",
+    "format": "pdf",
+    "file": "pdf/Infection_Control_Reaudit_PMP_Sep30.pdf"
+  },
+  {
+    "date": "2026-10-01",
+    "format": "csv",
+    "file": "csv/monthly_sessions_sep_2026.csv"
+  },
+  {
+    "date": "2026-10-02",
+    "format": "json",
+    "file": "json/kpi_dashboard_q3_2026.json"
+  },
+  {
+    "date": "2026-10-03",
+    "format": "excel",
+    "file": "excel/Finance_MIS_Sep_2026.xlsx"
+  },
+  {
+    "date": "2026-10-04",
+    "format": "powerpoint",
+    "file": "powerpoint/September_2026_Operations_Review.pptx"
+  },
+  {
+    "date": "2026-10-05",
+    "format": "word",
+    "file": "word/Board_Note_Q3_2026.docx"
+  },
+  {
+    "date": "2026-10-06",
+    "format": "markdown",
+    "file": "markdown/Lessons_Learned_Q3_2026.md"
+  },
+  {
+    "date": "2026-10-07",
+    "format": "text",
+    "file": "text/email_NABH_closure_status.txt"
+  },
+  {
+    "date": "2026-10-08",
+    "format": "pdf",
+    "file": "pdf/Q3_2026_Quality_Report.pdf"
+  },
+  {
+    "date": "2026-10-09",
+    "format": "word",
+    "file": "word/Q3_2026_Board_Pack.docx"
+  }
+]

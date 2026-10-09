@@ -1,0 +1,285 @@
+# VEDA AI — Full Development Stack
+# Usage: docker compose up -d
+
+services:
+  # ============================================
+  # PostgreSQL 16 + Apache AGE + pgvector
+  # Single database: relational + graph + vector
+  # ============================================
+  postgres:
+    image: apache/age:v1.5.0-pg16
+    container_name: veda-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-veda}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-veda_secret_2024}
+      POSTGRES_DB: ${POSTGRES_DB:-veda_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/docker/postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-veda} -d ${POSTGRES_DB:-veda_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - veda-network
+
+  # ============================================
+  # Apache Kafka (KRaft mode — no ZooKeeper)
+  # Event-driven architecture backbone
+  # ============================================
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: veda-kafka
+    restart: unless-stopped
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      CLUSTER_ID: "VEDAai-kafka-cluster-001"
+    volumes:
+      - kafka_data:/tmp/kraft-combined-logs
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 > /dev/null 2>&1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - veda-network
+
+  # ============================================
+  # Kafka UI — Development monitoring
+  # ============================================
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: veda-kafka-ui
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: veda-local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - veda-network
+
+  # ============================================
+  # MinIO — S3-compatible object storage
+  # Stores all uploaded documents per tenant
+  # ============================================
+  minio:
+    image: minio/minio:latest
+    container_name: veda-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-veda_minio_access}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-veda_minio_secret_2024}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - veda-network
+
+  # ============================================
+  # Valkey (Redis-compatible) — Cache & Sessions
+  # ============================================
+  valkey:
+    image: valkey/valkey:8-alpine
+    container_name: veda-valkey
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - valkey_data:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - veda-network
+
+  # ============================================
+  # OpenSearch — Full-text document search
+  # ============================================
+  opensearch:
+    image: opensearchproject/opensearch:2.17.0
+    container_name: veda-opensearch
+    restart: unless-stopped
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - DISABLE_SECURITY_PLUGIN=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\\|yellow\"'"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - veda-network
+
+  # ============================================
+  # OpenSearch Dashboards — Search monitoring
+  # ============================================
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.17.0
+    container_name: veda-opensearch-dashboards
+    restart: unless-stopped
+    ports:
+      - "5601:5601"
+    environment:
+      - OPENSEARCH_HOSTS=["http://opensearch:9200"]
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    networks:
+      - veda-network
+
+  # ============================================
+  # Prometheus — Metrics collection
+  # ============================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: veda-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - veda-network
+
+  # ============================================
+  # Grafana — Dashboards & visualization
+  # ============================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: veda-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-veda_grafana_2024}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - veda-network
+
+  # ============================================
+  # VEDA Intelligence Service
+  # FastAPI (8002) + optional token-protected Jupyter (8888)
+  # ============================================
+  intelligence:
+    build:
+      context: ./services/intelligence
+      dockerfile: Dockerfile
+    container_name: veda-intelligence
+    restart: unless-stopped
+    ports:
+      # Bound to localhost: only the web app on this host should reach the API
+      - "127.0.0.1:8002:8002"
+      - "127.0.0.1:8888:8888"
+    environment:
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-}
+      ENABLE_JUPYTER: ${ENABLE_JUPYTER:-0}
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN:-}
+      VEDA_DATABASE_URL: postgresql://${POSTGRES_USER:-veda}:${POSTGRES_PASSWORD:-veda_secret_2024}@postgres:5432/${POSTGRES_DB:-veda_db}
+      VEDA_OPENSEARCH_URL: http://opensearch:9200
+      VEDA_KAFKA_BROKERS: kafka:9092
+      VEDA_KAFKA_GROUP_ID: veda-intelligence-group
+      VEDA_EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      VEDA_EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-384}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      opensearch:
+        condition: service_healthy
+    networks:
+      - veda-network
+
+  # ============================================
+  # VEDA Ingestion Service
+  # Kafka consumer for document processing
+  # ============================================
+  ingestion:
+    build:
+      context: ./services/ingestion
+      dockerfile: Dockerfile
+    container_name: veda-ingestion
+    restart: unless-stopped
+    environment:
+      VEDA_DATABASE_URL: postgresql://${POSTGRES_USER:-veda}:${POSTGRES_PASSWORD:-veda_secret_2024}@postgres:5432/${POSTGRES_DB:-veda_db}
+      VEDA_KAFKA_BROKERS: kafka:9092
+      VEDA_KAFKA_GROUP_ID: veda-ingestion-group
+      VEDA_MINIO_ENDPOINT: minio:9000
+      VEDA_MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-veda_minio_access}
+      VEDA_MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-veda_minio_secret_2024}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - veda-network
+
+# ============================================
+# VOLUMES
+# ============================================
+volumes:
+  postgres_data:
+  kafka_data:
+  minio_data:
+  valkey_data:
+  opensearch_data:
+  prometheus_data:
+  grafana_data:
+
+# ============================================
+# NETWORKS
+# ============================================
+networks:
+  veda-network:
+    driver: bridge
+    name: veda-network
+

@@ -1,0 +1,416 @@
+/* VEDA AI — Data Uploads page */
+
+.page {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #000000;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e5e5e5;
+  background: #f5f5f5;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #525252;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: #000000;
+}
+
+.company {
+  font-size: 0.8rem;
+  color: #737373;
+}
+
+.company strong {
+  color: #000000;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.titleBlock h1 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.titleBlock p {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: #737373;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.sectionHeader h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.sectionHint {
+  font-size: 0.8rem;
+  color: #737373;
+}
+
+/* ── Format cards ─────────────────────────────── */
+
+.formatGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.formatCard {
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: #fafafa;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.formatCard.dragging {
+  border-color: #000000;
+  background: #f0f0f0;
+}
+
+.formatTop {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.formatIcon {
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid #000000;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #ffffff;
+}
+
+.formatName {
+  font-weight: 800;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.extensions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.ext {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 3px;
+  padding: 0.05rem 0.35rem;
+  background: #ffffff;
+  color: #525252;
+}
+
+.formatDescription {
+  font-size: 0.8rem;
+  color: #737373;
+  margin: 0;
+  flex: 1;
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.55rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  background: #000000;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.uploadButton:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.uploadButton:disabled {
+  background: #a3a3a3;
+  cursor: not-allowed;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+/* ── Upload progress ──────────────────────────── */
+
+.progressList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.progressItem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.3rem 1rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.progressName {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progressBar {
+  grid-column: 1 / -1;
+  height: 4px;
+  background: #e5e5e5;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #000000;
+  transition: width 0.2s;
+}
+
+.progressError {
+  grid-column: 1 / -1;
+  color: #991b1b;
+}
+
+.progressDone {
+  color: #166534;
+}
+
+/* ── Uploads table ────────────────────────────── */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filterChip {
+  border: 1px solid #d4d4d4;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: transparent;
+  color: #525252;
+  cursor: pointer;
+}
+
+.filterChip.active {
+  background: #000000;
+  border-color: #000000;
+  color: #ffffff;
+}
+
+.search {
+  margin-left: auto;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background: #fafafa;
+  min-width: 220px;
+}
+
+.refreshButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  color: #737373;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.tableWrap {
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.table th {
+  padding: 0.7rem 1rem;
+  background: #fafafa;
+  color: #737373;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e5e5;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #e5e5e5;
+  vertical-align: top;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.fileCell {
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.muted {
+  color: #737373;
+}
+
+.formatBadge {
+  font-size: 0.7rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 3px;
+  padding: 0.1rem 0.4rem;
+  background: #fafafa;
+  white-space: nowrap;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.statusReady .dot {
+  background: #166534;
+}
+.statusProcessing .dot {
+  background: #a16207;
+}
+.statusQueued .dot {
+  background: #a3a3a3;
+}
+.statusFailed {
+  color: #991b1b;
+}
+.statusFailed .dot {
+  background: #991b1b;
+}
+
+.errorText {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #991b1b;
+  margin-top: 0.2rem;
+  max-width: 260px;
+}
+
+.empty {
+  padding: 2.5rem;
+  text-align: center;
+  color: #737373;
+  font-size: 0.9rem;
+}
+
+.pageError {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .header,
+  .main {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .search {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.showButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid #d4d4d4;
+  background: #ffffff;
+  border-radius: 4px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.showButton:hover {
+  border-color: #111827;
+}

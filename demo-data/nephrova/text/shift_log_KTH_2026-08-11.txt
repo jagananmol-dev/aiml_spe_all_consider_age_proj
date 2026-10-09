@@ -1,0 +1,8 @@
+SHIFT LOG — Nephrova Kothrud
+Date: 11 August 2026    Shift: Morning (06:30 to 14:30)    In charge: Amit Gokhale
+
+06:30  14 patients scheduled across 12 machines. All machines passed pre-treatment tests.
+08:05  HD-K04 conductivity alarm during treatment. Treatment paused, dialysate rechecked, treatment resumed.
+11:40  HD-K04 conductivity alarm again. Patient moved to a spare station to finish treatment.
+12:00  HD-K04 tagged "do not use" until checked by biomedical engineering.
+14:30  All 28 sessions of the shift completed.

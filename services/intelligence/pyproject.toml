@@ -1,0 +1,50 @@
+[project]
+name = "veda-intelligence"
+version = "0.1.0"
+description = "VEDA AI — Intelligence Engine (Entity Extraction + Knowledge Graph + RAG + Agents)"
+requires-python = ">=3.12"
+dependencies = [
+    # NLP & Entity Extraction
+    "spacy>=3.8.0",                     # NER pipeline
+    "transformers>=4.46.0",             # Hugging Face models
+    "sentence-transformers>=3.3.0",     # Embedding generation
+    "torch>=2.5.0",                     # PyTorch backend
+
+    # Agentic Framework (for future agent orchestration)
+    "langgraph>=0.2.0",                 # Agent orchestration
+    "langchain-core>=0.3.0",            # Core abstractions
+
+    # Knowledge Graph
+    "psycopg[binary]>=3.2.0",           # PostgreSQL (for Apache AGE)
+    "networkx>=3.4.0",                  # Graph algorithms
+
+    # Kafka
+    "confluent-kafka>=2.6.0",
+
+    # API
+    "fastapi>=0.115.0",                 # REST API
+    "uvicorn>=0.32.0",                  # ASGI server
+
+    # Utilities
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.6.0",
+    "structlog>=24.4.0",
+    "httpx>=0.28.0",
+    "numpy>=2.1.0",
+
+    # Monitoring
+    "prometheus-client>=0.21.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100

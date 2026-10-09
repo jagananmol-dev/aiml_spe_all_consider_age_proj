@@ -1,0 +1,59 @@
+[project]
+name = "veda-ingestion"
+version = "0.1.0"
+description = "VEDA AI — Document Ingestion Service"
+requires-python = ">=3.12"
+dependencies = [
+    # Document parsing
+    "pymupdf>=1.25.0",          # PDF text extraction (fitz)
+    "pdfplumber>=0.11.0",       # PDF table extraction
+    "easyocr>=1.7.0",           # OCR for scanned documents
+    "opencv-python>=4.10.0",    # Image preprocessing
+    "openpyxl>=3.1.0",          # Excel file parsing
+    "python-pptx>=1.0.0",       # PowerPoint parsing
+    "python-docx>=1.1.0",       # Word document parsing
+    "ezdxf>=1.3.0",             # CAD/DXF file parsing
+
+    # Kafka
+    "confluent-kafka>=2.6.0",   # Kafka producer/consumer
+    
+    # Storage
+    "minio>=7.2.0",             # S3-compatible storage client
+    
+    # Database
+    "psycopg[binary]>=3.2.0",   # PostgreSQL async driver
+    "sqlalchemy>=2.0.0",        # ORM (for complex queries)
+    
+    # Utilities
+    "pydantic>=2.10.0",         # Data validation
+    "pydantic-settings>=2.6.0", # Settings management
+    "structlog>=24.4.0",        # Structured logging
+    "tenacity>=9.0.0",          # Retry logic
+    "httpx>=0.28.0",            # HTTP client
+    
+    # Monitoring
+    "prometheus-client>=0.21.0", # Metrics
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+]
+
+pid = [
+    # P&ID parsing (optional — requires GPU for best performance)
+    "ultralytics>=8.3.0",       # YOLOv10 for symbol detection
+    "networkx>=3.4.0",          # Graph construction for line tracing
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
