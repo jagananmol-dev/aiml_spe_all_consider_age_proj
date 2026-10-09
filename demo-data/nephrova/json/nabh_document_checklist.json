@@ -1,0 +1,35 @@
+{
+  "organisation": "Nephrova Renal Care Pvt. Ltd.",
+  "prepared_by": "Kiran Bhosale",
+  "date": "2026-09-22",
+  "items": [
+    {
+      "document": "Dialysis water test reports, last 12 months",
+      "status": "Available"
+    },
+    {
+      "document": "Water plant disinfection logs",
+      "status": "Gap: August entry missing at Hadapsar"
+    },
+    {
+      "document": "Machine preventive maintenance records",
+      "status": "Available"
+    },
+    {
+      "document": "Hand hygiene audit reports",
+      "status": "Gap: Pimpri audits were quarterly"
+    },
+    {
+      "document": "Bio-medical waste records and authorisation",
+      "status": "Available"
+    },
+    {
+      "document": "Staff hepatitis B immunisation records",
+      "status": "Available"
+    },
+    {
+      "document": "Patient consent forms",
+      "status": "Available"
+    }
+  ]
+}

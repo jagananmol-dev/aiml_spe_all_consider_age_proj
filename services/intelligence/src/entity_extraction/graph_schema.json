@@ -1,0 +1,168 @@
+{
+  "_comment": "Knowledge-graph schema: entity types, how they are found, and how they relate. Data, not code: override the whole file with VEDA_GRAPH_SCHEMA_FILE, or extend it per tenant with tenants.settings.graph_schema (same shape; types are merged, lists are appended).",
+
+  "types": {
+    "EQUIPMENT_TAG": {
+      "label": "Asset / ID",
+      "color": "#111827",
+      "role": "subject",
+      "description": "an identified asset: a machine, device, piece of equipment, system, unit or site",
+      "patterns": [
+        {
+          "regex": "(?<!-)\\b((?:HD|RO|GEN|DG|UPS)-[A-Z]\\d{1,3}|(?:PUMP|P|PP|CP)-?\\d{2,5}[A-Z]?|(?:V|VES|VESSEL)-?\\d{2,5}[A-Z]?|(?:HX|HE|E)-?\\d{2,5}[A-Z]?|(?:T|TK|TANK)-?\\d{2,5}[A-Z]?|(?:C|COL|COLUMN)-?\\d{2,5}[A-Z]?|(?:R|REACTOR)-?\\d{2,5}[A-Z]?|(?:COMP|K)-?\\d{2,5}[A-Z]?|(?:FCV|PCV|TCV|LCV|FV|PV|TV|LV)-?\\d{2,5}|(?:PSV|PRV|RV)-?\\d{2,5}|(?:FI|PI|TI|LI|FT|PT|TT|LT)-?\\d{2,5}|(?:CDU|VDU|FCC|HDS|NHT|CRU|SRU)-?[A-Z0-9]*|(?:MOV|SOV|AOV|XV)-?\\d{2,5})\\b",
+          "ignore_case": true,
+          "normalize": "upper",
+          "confidence": 0.95
+        }
+      ],
+      "identifier": true,
+      "examples": ["machine", "equipment", "device", "pump", "dialysis machine", "water treatment plant", "generator", "vehicle", "server", "unit", "loan account", "credit facility", "contract", "property", "project"]
+    },
+    "FAILURE_MODE": {
+      "label": "Issue / failure",
+      "color": "#b91c1c",
+      "role": "issue",
+      "description": "a problem: a failure, fault, alarm, defect, incident, breach, risk or shortfall",
+      "terms": [
+        "bearing seizure", "bearing failure", "seal failure", "seal leak", "corrosion", "erosion", "pitting",
+        "stress corrosion cracking", "vibration", "high vibration", "excessive vibration", "leakage", "leak",
+        "external leak", "internal leak", "overheating", "hot spot", "thermal fatigue", "cavitation",
+        "impeller damage", "wear", "fouling", "scaling", "blockage", "plugging", "misalignment",
+        "coupling failure", "electrical fault", "motor burnout", "insulation failure", "fatigue crack",
+        "weld defect", "material defect", "valve stuck", "valve passing", "valve fail to close",
+        "conductivity alarm", "blood leak alarm", "air detector alarm", "venous pressure alarm",
+        "arterial pressure alarm", "temperature alarm", "power failure", "endotoxin exceedance",
+        "bacterial contamination", "membrane fouling", "sensor failure"
+      ],
+      "examples": ["equipment failure", "system outage", "alarm", "defect", "incident", "data breach", "payment default", "compliance breach", "budget overrun", "delay", "error", "contamination"]
+    },
+    "MAINTENANCE_ACTION": {
+      "label": "Action / fix",
+      "color": "#047857",
+      "role": "action",
+      "description": "an action taken: maintenance, repair, replacement, inspection, calibration, corrective or preventive action",
+      "terms": [
+        "overhaul", "major overhaul", "minor overhaul", "replacement", "bearing replacement", "seal replacement",
+        "alignment", "laser alignment", "coupling alignment", "calibration", "recalibration", "loop calibration",
+        "inspection", "visual inspection", "NDT inspection", "hydrotest", "hydrostatic test", "pneumatic test",
+        "cleaning", "flushing", "chemical cleaning", "painting", "surface preparation", "coating", "welding",
+        "repair welding", "overlay welding", "lubrication", "oil change", "greasing", "tightening", "torquing",
+        "bolting", "preventive maintenance", "disinfection", "heat disinfection", "chemical disinfection",
+        "membrane replacement", "filter replacement", "conductivity cell replacement", "battery replacement",
+        "load test", "sanitisation", "sanitization"
+      ],
+      "examples": ["repair", "corrective action", "preventive maintenance", "servicing", "audit", "remediation", "reconciliation", "root cause analysis", "retraining"]
+    },
+    "REGULATION": {
+      "label": "Regulation",
+      "color": "#7c3aed",
+      "role": "governance",
+      "description": "a law, regulation, standard, accreditation or regulator",
+      "patterns": [
+        {
+          "regex": "\\b(OISD[-\\s]?\\d{2,4}|PESO[-\\s]?(?:Rule|Reg|Standard)?\\s*\\d*|Factory\\s+Act\\s*(?:19\\d{2})?|(?-i:IS)[-\\s]?\\d{3,5}(?:[-:]\\d+)?|ISO[-\\s]?\\d{4,5}(?:[-:]\\d+)?|ASME[-\\s]?(?:Sec|Section)?\\s*[IVXLC]+|API[-\\s]?\\d{2,4}|NFPA[-\\s]?\\d{1,4}|IEC[-\\s]?\\d{4,5}|ASTM[-\\s]?[A-Z]\\d{2,4}|OSHA[-\\s]?\\d+|NABH|AAMI|JCI|HIPAA|RBI|SEBI|IRDAI|PMLA|Bio-Medical\\s+Waste\\s+Management\\s+Rules(?:,?\\s*20\\d{2})?|BMW\\s+Rules(?:,?\\s*20\\d{2})?|Clinical\\s+Establishments\\s+Act(?:,?\\s*20\\d{2})?|DPDP\\s+Act(?:,?\\s*20\\d{2})?)\\b",
+          "ignore_case": true,
+          "normalize": "upper_dash",
+          "confidence": 0.92
+        },
+        {
+          "_comment": "Any named act, code or rules, e.g. 'Companies Act, 2013', 'Payment of Gratuity Act 1972'",
+          "regex": "(?<!\\w)((?:[A-Z][a-z]+\\s+(?:(?:of|and|for|on)\\s+)?){1,6}(?:Act|Rules|Regulations)(?:,?\\s*(?:19|20)\\d{2})?)\\b",
+          "ignore_case": false,
+          "normalize": "upper_dash",
+          "confidence": 0.85
+        }
+      ],
+      "examples": ["regulation", "statutory requirement", "accreditation standard", "compliance standard"]
+    },
+    "MEASUREMENT": {
+      "label": "Measurement",
+      "color": "#6b7280",
+      "role": "value",
+      "leaf": true,
+      "description": "a number with a unit",
+      "patterns": [
+        {
+          "regex": "\\b(\\d+(?:\\.\\d+)?)\\s*(kg/cm[²2]|bar|psi|MPa|atm|°[CF]|deg\\s*[CF]|celsius|fahrenheit|m[³3]/hr|m[³3]/h|l/min|GPM|BPH|mm/s|mm|cm|m|inch|ft|kg|ton|MT|lb|RPM|Hz|kW|MW|HP|kVA|%|ppm|ppb|mS/cm|µS/cm|uS/cm|CFU/mL|EU/mL|mmHg|mL/min|mL|mg/dL|g/dL|mmol/L|mEq/L|IU)\\b",
+          "ignore_case": true,
+          "normalize": "strip",
+          "confidence": 0.9,
+          "numeric": true
+        }
+      ]
+    },
+    "CONDITION": {
+      "label": "Condition",
+      "color": "#c2410c",
+      "role": "issue",
+      "description": "a clinical condition, disease, symptom or complication",
+      "terms": [
+        "hypotension", "hypertension", "hyperkalaemia", "hyperkalemia", "anaemia", "anemia", "fluid overload",
+        "muscle cramps", "catheter-related bloodstream infection", "bloodstream infection", "exit site infection",
+        "access thrombosis", "fistula thrombosis", "hepatitis b", "hepatitis c", "chronic kidney disease",
+        "end-stage renal disease", "sepsis", "pyrogenic reaction"
+      ],
+      "examples": ["disease", "infection", "symptom", "clinical complication", "diabetes", "fever"]
+    },
+    "MEDICATION": {
+      "label": "Medication",
+      "color": "#0369a1",
+      "role": "treatment",
+      "description": "a medicine, drug or therapy",
+      "terms": [
+        "heparin", "erythropoietin", "iron sucrose", "normal saline", "vancomycin", "cefazolin", "gentamicin",
+        "calcium gluconate", "alteplase"
+      ],
+      "examples": ["medicine", "antibiotic", "anticoagulant", "injection", "insulin", "paracetamol"]
+    }
+  },
+
+  "relationships": [
+    { "source": "EQUIPMENT_TAG", "target": "FAILURE_MODE", "type": "FAILED_WITH", "inverse": "FAILURE_OF" },
+    { "source": "EQUIPMENT_TAG", "target": "MAINTENANCE_ACTION", "type": "MAINTAINED_BY", "inverse": "PERFORMED_ON" },
+    { "source": "EQUIPMENT_TAG", "target": "REGULATION", "type": "GOVERNED_BY", "inverse": "GOVERNS" },
+    { "source": "EQUIPMENT_TAG", "target": "MEASUREMENT", "type": "HAS_MEASUREMENT", "inverse": "MEASURED_ON" },
+    { "source": "EQUIPMENT_TAG", "target": "LOCATION", "type": "LOCATED_IN", "inverse": "LOCATION_OF" },
+    { "source": "EQUIPMENT_TAG", "target": "PERSON", "type": "ASSIGNED_TO", "inverse": "RESPONSIBLE_FOR" },
+    { "source": "EQUIPMENT_TAG", "target": "MATERIAL", "type": "MADE_OF", "inverse": "MATERIAL_OF" },
+    { "source": "EQUIPMENT_TAG", "target": "CHEMICAL", "type": "USES_CHEMICAL", "inverse": "USED_BY" },
+    { "source": "FAILURE_MODE", "target": "MAINTENANCE_ACTION", "type": "REPAIRED_BY", "inverse": "REPAIRS" },
+    { "source": "PERSON", "target": "FAILURE_MODE", "type": "REPORTED_BY", "inverse": "REPORTED" },
+    { "source": "CONDITION", "target": "MEDICATION", "type": "TREATED_WITH", "inverse": "TREATS" }
+  ],
+
+  "_comment_detection": "An issue paired with one of these actions is DETECTED_BY rather than REPAIRED_BY",
+  "detection_actions": ["inspection", "visual inspection", "ndt inspection", "hydrotest", "hydrostatic test", "pneumatic test"],
+  "detection_relationship": { "type": "DETECTED_BY", "inverse": "DETECTED", "replaces": "REPAIRED_BY" },
+
+  "co_occurrence_types": ["EQUIPMENT_TAG", "CHEMICAL", "REGULATION"],
+
+  "extra_inverse_names": { "OPERATES_AT": "VALUE_OF", "CO_OCCURS_WITH": "CO_OCCURS_WITH" },
+
+  "_comment_semantic": "Embedding-based typing of key phrases that no pattern or term caught. A phrase takes the type of its most similar example (cosine, normalised MiniLM vectors) when it clears min_similarity, beats every other type by min_margin, and beats the background examples. Similar phrases of one type merge into one node at merge_similarity.",
+  "semantic": {
+    "enabled": true,
+    "min_similarity": 0.7,
+    "min_margin": 0.06,
+    "allow_single_words": false,
+    "merge_similarity": 0.9,
+    "query_link_similarity": 0.78,
+    "confidence_cap": 0.8,
+    "max_phrase_words": 4,
+    "min_phrase_chars": 4,
+    "max_candidates_per_document": 400,
+    "_comment_identifiers": "Codes no pattern knows (e.g. 'LN-2041', 'AHU3') are typed by the words just before or after them: the code joins the 'identifier' type whose examples those words resemble, or is skipped.",
+    "identifier_regex": "(?<![-\\w/.])([A-Z]{1,6}-[A-Z]?\\d{1,5}[A-Z]?|[A-Z]{2,6}\\d{2,5}[A-Z]?)(?![-\\w/])",
+    "identifier_context_similarity": 0.55,
+    "background_examples": [
+      "document", "report", "page", "section", "table", "summary", "note", "total", "number", "date", "month",
+      "year", "week", "day", "time", "company", "team", "staff", "patient", "customer", "member", "people",
+      "process", "information", "details", "data", "record", "item", "list", "value", "amount", "level",
+      "plan", "meeting", "board", "policy", "procedure", "schedule", "target", "status", "review period",
+      "log", "evidence", "result", "register", "form", "sheet", "file", "chart", "sample", "practice", "session",
+      "induction", "prevention", "method", "scheme",
+      "pressure", "reading", "component", "part", "care", "site",
+      "risk", "reference", "ticket", "invoice", "order", "case", "version", "quarter"
+    ]
+  }
+}

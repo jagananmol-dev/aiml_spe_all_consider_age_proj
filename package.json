@@ -1,0 +1,7 @@
+{
+  "name": "billionarediaries-dev",
+  "private": true,
+  "scripts": {
+    "dev": "node ./scripts/dev.js"
+  }
+}

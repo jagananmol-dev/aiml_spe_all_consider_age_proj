@@ -1,0 +1,166 @@
+# VEDA AI — CI/CD Pipeline
+name: CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: "20"
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  # ── Frontend: Lint, Test, Build ───────────────────
+  frontend:
+    name: Frontend (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Lint
+        run: pnpm lint
+      
+      - name: Type check
+        run: pnpm tsc --noEmit
+      
+      - name: Run tests
+        run: pnpm test --ci --coverage
+      
+      - name: Build
+        run: pnpm build
+
+  # ── Backend: Lint, Test ────────────────────────────
+  ingestion-service:
+    name: Ingestion Service (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/ingestion
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev]"
+      
+      - name: Lint (Ruff)
+        run: ruff check src/
+      
+      - name: Type check (MyPy)
+        run: mypy src/ --ignore-missing-imports
+      
+      - name: Run tests
+        run: pytest tests/ -v --cov=src --cov-report=xml
+
+  intelligence-service:
+    name: Intelligence Service (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/intelligence
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev]"
+          python -m spacy download en_core_web_sm
+      
+      - name: Lint (Ruff)
+        run: ruff check src/
+      
+      - name: Type check (MyPy)
+        run: mypy src/ --ignore-missing-imports
+      
+      - name: Run tests
+        run: pytest tests/ -v --cov=src --cov-report=xml
+
+  # ── Integration Tests ──────────────────────────────
+  integration:
+    name: Integration Tests
+    needs: [frontend, ingestion-service, intelligence-service]
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: veda
+          POSTGRES_PASSWORD: veda_secret_2024
+          POSTGRES_DB: veda_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run integration tests
+        env:
+          DATABASE_URL: postgresql://veda:veda_secret_2024@localhost:5432/veda_db
+        run: echo "Integration tests will run here"
+
+  # ── Docker Build & Push ────────────────────────────
+  docker:
+    name: Build Docker Images
+    needs: [integration]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    strategy:
+      matrix:
+        service: [ingestion, intelligence]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: docker/setup-buildx-action@v3
+      
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - uses: docker/build-push-action@v6
+        with:
+          context: services/${{ matrix.service }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/${{ matrix.service }}:latest
+            ghcr.io/${{ github.repository }}/${{ matrix.service }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -1,0 +1,25 @@
+{
+  "organisation": "Nephrova Renal Care Pvt. Ltd.",
+  "company": "Nephrova Renal Care Pvt. Ltd.",
+  "quarter": "Q3 2026 (July to September)",
+  "sessions": {
+    "Jul": 3080,
+    "Aug": 3094,
+    "Sep": 3092
+  },
+  "revenue_inr_lakh": {
+    "Jul": 57.13,
+    "Aug": 57.39,
+    "Sep": 57.36
+  },
+  "ebitda_inr_lakh": {
+    "Jul": 4.61,
+    "Aug": 4.76,
+    "Sep": 4.74
+  },
+  "active_patients": 238,
+  "dialysis_machines": 30,
+  "infection_rate_pimpri_sep_per_1000_catheter_days": 3.1,
+  "water_results_above_limit": 1,
+  "pm_jay_outstanding_inr_lakh": 38.6
+}

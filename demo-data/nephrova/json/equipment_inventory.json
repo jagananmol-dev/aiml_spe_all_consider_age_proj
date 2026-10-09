@@ -1,0 +1,196 @@
+{
+  "organisation": "Nephrova Renal Care Pvt. Ltd.",
+  "company": "Nephrova Renal Care Pvt. Ltd.",
+  "centres": [
+    {
+      "centre": "Nephrova Kothrud",
+      "dialysis_machines": [
+        {
+          "tag": "HD-K01",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K02",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K03",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K04",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K05",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K06",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K07",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K08",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K09",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K10",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K11",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-K12",
+          "model": "Renalis R5",
+          "installed": 2021
+        }
+      ],
+      "water_plant": {
+        "tag": "RO-K1",
+        "type": "Double-pass reverse osmosis"
+      },
+      "generator": {
+        "tag": "GEN-K1",
+        "rating": "125 kVA"
+      }
+    },
+    {
+      "centre": "Nephrova Hadapsar",
+      "dialysis_machines": [
+        {
+          "tag": "HD-H01",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-H02",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-H03",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-H04",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-H05",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-H06",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-H07",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-H08",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-H09",
+          "model": "Renalis R5",
+          "installed": 2021
+        },
+        {
+          "tag": "HD-H10",
+          "model": "Renalis R5",
+          "installed": 2021
+        }
+      ],
+      "water_plant": {
+        "tag": "RO-H1",
+        "type": "Double-pass reverse osmosis"
+      },
+      "generator": {
+        "tag": "GEN-H1",
+        "rating": "125 kVA"
+      }
+    },
+    {
+      "centre": "Nephrova Pimpri",
+      "dialysis_machines": [
+        {
+          "tag": "HD-P01",
+          "model": "Renalis R5",
+          "installed": 2023
+        },
+        {
+          "tag": "HD-P02",
+          "model": "Renalis R5",
+          "installed": 2023
+        },
+        {
+          "tag": "HD-P03",
+          "model": "Renalis R5",
+          "installed": 2023
+        },
+        {
+          "tag": "HD-P04",
+          "model": "Renalis R5",
+          "installed": 2023
+        },
+        {
+          "tag": "HD-P05",
+          "model": "Renalis R5",
+          "installed": 2023
+        },
+        {
+          "tag": "HD-P06",
+          "model": "Renalis R5",
+          "installed": 2023
+        },
+        {
+          "tag": "HD-P07",
+          "model": "Renalis R5",
+          "installed": 2023
+        },
+        {
+          "tag": "HD-P08",
+          "model": "Renalis R5",
+          "installed": 2023
+        }
+      ],
+      "water_plant": {
+        "tag": "RO-P1",
+        "type": "Double-pass reverse osmosis"
+      },
+      "generator": {
+        "tag": "GEN-P1",
+        "rating": "125 kVA"
+      }
+    }
+  ],
+  "total_dialysis_machines": 30
+}

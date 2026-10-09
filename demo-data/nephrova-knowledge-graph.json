@@ -1,0 +1,561 @@
+{
+  "tenant": "nephrova",
+  "exported_at": "2026-10-09T18:44:22+00:00",
+  "node_count": 38,
+  "edge_count": 33,
+  "nodes": [
+    {
+      "id": "3fb8fb0c-f780-4a9b-a7ce-d18ff91b8406",
+      "type": "CONDITION",
+      "label": "anaemia"
+    },
+    {
+      "id": "04fefde9-504f-4d33-82f2-7a0aa282a446",
+      "type": "CONDITION",
+      "label": "bloodstream infections"
+    },
+    {
+      "id": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "type": "CONDITION",
+      "label": "catheter-related bloodstream infection"
+    },
+    {
+      "id": "97342a52-a8d0-4fdc-af62-1aff8de7bd8f",
+      "type": "CONDITION",
+      "label": "hyperkalaemia"
+    },
+    {
+      "id": "af1bff9d-51ca-429b-9455-d698d3260d2e",
+      "type": "CONDITION",
+      "label": "hypotension"
+    },
+    {
+      "id": "4cc284a9-a4ad-45bd-9f58-8eeeba9f1052",
+      "type": "EQUIPMENT_TAG",
+      "label": "GEN-H1"
+    },
+    {
+      "id": "07758593-fb25-4777-a141-9aad10ed64c9",
+      "type": "EQUIPMENT_TAG",
+      "label": "GEN-K1"
+    },
+    {
+      "id": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "type": "EQUIPMENT_TAG",
+      "label": "GEN-P1"
+    },
+    {
+      "id": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K04"
+    },
+    {
+      "id": "8924ded3-3a7f-43cb-83db-86f94fc41551",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K07"
+    },
+    {
+      "id": "80e32653-5fc5-476a-8e29-7a38e9b457c7",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K09"
+    },
+    {
+      "id": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "type": "EQUIPMENT_TAG",
+      "label": "RO-H1"
+    },
+    {
+      "id": "89675a7e-312c-4857-bcf9-fdac5dbb677a",
+      "type": "EQUIPMENT_TAG",
+      "label": "RO-K1"
+    },
+    {
+      "id": "f7f40be2-fb34-45bc-9b50-703ecc9f4c13",
+      "type": "EQUIPMENT_TAG",
+      "label": "RO-P1"
+    },
+    {
+      "id": "02983650-792b-4a87-9f18-a4b745dff6b6",
+      "type": "FAILURE_MODE",
+      "label": "air detector alarm"
+    },
+    {
+      "id": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "type": "FAILURE_MODE",
+      "label": "conductivity alarm"
+    },
+    {
+      "id": "97d8948f-ff20-4d90-806a-d18075f378bd",
+      "type": "FAILURE_MODE",
+      "label": "endotoxin exceedance"
+    },
+    {
+      "id": "8b738f1f-1221-413a-8871-48429a1c0026",
+      "type": "FAILURE_MODE",
+      "label": "mains outage"
+    },
+    {
+      "id": "6c33c809-81b8-415f-95c0-083987dcc81d",
+      "type": "FAILURE_MODE",
+      "label": "venous pressure alarm"
+    },
+    {
+      "id": "586f01ff-b560-4232-829a-9902e8a60640",
+      "type": "MAINTENANCE_ACTION",
+      "label": "battery replacement"
+    },
+    {
+      "id": "a18979a6-d368-4744-8b57-50f3da782282",
+      "type": "MAINTENANCE_ACTION",
+      "label": "calibration"
+    },
+    {
+      "id": "966d5a86-87bb-46b3-90ed-71789e73dc35",
+      "type": "MAINTENANCE_ACTION",
+      "label": "chemical disinfection"
+    },
+    {
+      "id": "a0ec964d-8493-4204-b126-85c49fb76b3e",
+      "type": "MAINTENANCE_ACTION",
+      "label": "conductivity cell replacement"
+    },
+    {
+      "id": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "type": "MAINTENANCE_ACTION",
+      "label": "disinfection"
+    },
+    {
+      "id": "45f5f4aa-0dfd-4096-a34e-b79cabb533c5",
+      "type": "MAINTENANCE_ACTION",
+      "label": "heat disinfection"
+    },
+    {
+      "id": "2831da49-8829-4dd5-93e1-4d509583a89b",
+      "type": "MAINTENANCE_ACTION",
+      "label": "load test"
+    },
+    {
+      "id": "558eabed-bed6-475e-a42a-a6db05670392",
+      "type": "MEASUREMENT",
+      "label": "0.04 EU/mL"
+    },
+    {
+      "id": "206981d8-22f7-4e46-b776-0729d3eac238",
+      "type": "MEASUREMENT",
+      "label": "0.25 EU/mL"
+    },
+    {
+      "id": "60404462-02ae-4fc7-a814-690b750d7dd4",
+      "type": "MEASUREMENT",
+      "label": "0.31 EU/mL"
+    },
+    {
+      "id": "4fe6fc9d-702c-4f3e-b7ba-713d5d7375db",
+      "type": "MEASUREMENT",
+      "label": "125 kVA"
+    },
+    {
+      "id": "aa5ea3ed-3334-4f6e-8112-5db126bc3d65",
+      "type": "MEASUREMENT",
+      "label": "14.0 mS/cm"
+    },
+    {
+      "id": "de08ad84-5207-4fad-810d-076d59f4ed85",
+      "type": "MEASUREMENT",
+      "label": "15.6 mS/cm"
+    },
+    {
+      "id": "346e7be5-18b2-4f17-86fb-2297fb82e6d8",
+      "type": "MEDICATION",
+      "label": "calcium gluconate"
+    },
+    {
+      "id": "7c072d47-31f2-4e58-870b-3a0cbf03c7bf",
+      "type": "MEDICATION",
+      "label": "erythropoietin"
+    },
+    {
+      "id": "88fc4d46-157d-409d-9627-01dc4e2763a8",
+      "type": "MEDICATION",
+      "label": "iron sucrose"
+    },
+    {
+      "id": "eff48b23-53ae-429e-9b02-bcad0e3ed435",
+      "type": "MEDICATION",
+      "label": "normal saline"
+    },
+    {
+      "id": "c4c3cb6a-7a08-4144-bb93-a1b5b71b1ab6",
+      "type": "MEDICATION",
+      "label": "vancomycin"
+    },
+    {
+      "id": "f77ec707-cd17-4145-b0c3-96fb3e97c7de",
+      "type": "REGULATION",
+      "label": "ISO-23500"
+    }
+  ],
+  "edges": [
+    {
+      "source": "3fb8fb0c-f780-4a9b-a7ce-d18ff91b8406",
+      "target": "7c072d47-31f2-4e58-870b-3a0cbf03c7bf",
+      "relationship": "TREATED_WITH",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "3fb8fb0c-f780-4a9b-a7ce-d18ff91b8406",
+      "target": "88fc4d46-157d-409d-9627-01dc4e2763a8",
+      "relationship": "TREATED_WITH",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "97342a52-a8d0-4fdc-af62-1aff8de7bd8f",
+      "target": "346e7be5-18b2-4f17-86fb-2297fb82e6d8",
+      "relationship": "TREATED_WITH",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "target": "c4c3cb6a-7a08-4144-bb93-a1b5b71b1ab6",
+      "relationship": "TREATED_WITH",
+      "confidence": 0.85,
+      "source_documents": [
+        "Infection_Report_Case1_PMP-0412.docx",
+        "Infection_Report_Case2_PMP-0388.docx",
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "af1bff9d-51ca-429b-9455-d698d3260d2e",
+      "target": "eff48b23-53ae-429e-9b02-bcad0e3ed435",
+      "relationship": "TREATED_WITH",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf",
+        "Nursing_Quality_Indicators_Aug2026.pptx"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "07758593-fb25-4777-a141-9aad10ed64c9",
+      "target": "4fe6fc9d-702c-4f3e-b7ba-713d5d7375db",
+      "relationship": "HAS_MEASUREMENT",
+      "confidence": 0.925,
+      "source_documents": [
+        "equipment_inventory.json",
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "4cc284a9-a4ad-45bd-9f58-8eeeba9f1052",
+      "target": "4fe6fc9d-702c-4f3e-b7ba-713d5d7375db",
+      "relationship": "HAS_MEASUREMENT",
+      "confidence": 0.925,
+      "source_documents": [
+        "equipment_inventory.json",
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "target": "4fe6fc9d-702c-4f3e-b7ba-713d5d7375db",
+      "relationship": "HAS_MEASUREMENT",
+      "confidence": 0.925,
+      "source_documents": [
+        "equipment_inventory.json",
+        "Generator_Load_Test_GEN-P1.pdf",
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "07758593-fb25-4777-a141-9aad10ed64c9",
+      "target": "2831da49-8829-4dd5-93e1-4d509583a89b",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "4cc284a9-a4ad-45bd-9f58-8eeeba9f1052",
+      "target": "2831da49-8829-4dd5-93e1-4d509583a89b",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "89675a7e-312c-4857-bcf9-fdac5dbb677a",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "target": "2831da49-8829-4dd5-93e1-4d509583a89b",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "Generator_Load_Test_GEN-P1.pdf",
+        "Q3_2026_Board_Pack.docx",
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx",
+        "Lessons_Learned_Q3_2026.md",
+        "nabh_corrective_action_tracker.csv",
+        "NABH_Surveillance_Assessment_Report.pdf",
+        "RCA_RO-H1_Endotoxin.md",
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "f7f40be2-fb34-45bc-9b50-703ecc9f4c13",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "target": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "relationship": "FAILED_WITH",
+      "confidence": 0.9,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx",
+        "email_HD-K04_service_request.txt",
+        "Lessons_Learned_Q3_2026.md",
+        "machine_alarm_log_KTH_2026-08-12.csv",
+        "Q3_2026_Board_Pack.docx",
+        "shift_log_KTH_2026-08-11.txt"
+      ],
+      "first_seen": "2026-08-11"
+    },
+    {
+      "source": "80e32653-5fc5-476a-8e29-7a38e9b457c7",
+      "target": "02983650-792b-4a87-9f18-a4b745dff6b6",
+      "relationship": "FAILED_WITH",
+      "confidence": 0.9,
+      "source_documents": [
+        "machine_alarm_log_KTH_2026-08-12.csv"
+      ],
+      "first_seen": "2026-08-12"
+    },
+    {
+      "source": "8924ded3-3a7f-43cb-83db-86f94fc41551",
+      "target": "6c33c809-81b8-415f-95c0-083987dcc81d",
+      "relationship": "FAILED_WITH",
+      "confidence": 0.9,
+      "source_documents": [
+        "machine_alarm_log_KTH_2026-08-12.csv"
+      ],
+      "first_seen": "2026-08-12"
+    },
+    {
+      "source": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "target": "aa5ea3ed-3334-4f6e-8112-5db126bc3d65",
+      "relationship": "HAS_MEASUREMENT",
+      "confidence": 0.925,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "target": "de08ad84-5207-4fad-810d-076d59f4ed85",
+      "relationship": "HAS_MEASUREMENT",
+      "confidence": 0.925,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "target": "a0ec964d-8493-4204-b126-85c49fb76b3e",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx",
+        "Lessons_Learned_Q3_2026.md",
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "target": "a18979a6-d368-4744-8b57-50f3da782282",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "97d8948f-ff20-4d90-806a-d18075f378bd",
+      "relationship": "FAILED_WITH",
+      "confidence": 0.9,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx",
+        "Lessons_Learned_Q3_2026.md",
+        "Q3_2026_Board_Pack.docx",
+        "RCA_RO-H1_Endotoxin.md",
+        "Water_Lab_Report_RO-H1_Aug2026.pdf"
+      ],
+      "first_seen": "2026-08-21"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "f77ec707-cd17-4145-b0c3-96fb3e97c7de",
+      "relationship": "GOVERNED_BY",
+      "confidence": 0.935,
+      "source_documents": [
+        "Water_Lab_Report_RO-H1_Aug2026.pdf"
+      ],
+      "first_seen": "2026-08-21"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "60404462-02ae-4fc7-a814-690b750d7dd4",
+      "relationship": "HAS_MEASUREMENT",
+      "confidence": 0.925,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx",
+        "Q3_2026_Board_Pack.docx",
+        "RCA_RO-H1_Endotoxin.md",
+        "Water_Lab_Report_RO-H1_Aug2026.pdf"
+      ],
+      "first_seen": "2026-08-21"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "206981d8-22f7-4e46-b776-0729d3eac238",
+      "relationship": "HAS_MEASUREMENT",
+      "confidence": 0.925,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx",
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "45f5f4aa-0dfd-4096-a34e-b79cabb533c5",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "966d5a86-87bb-46b3-90ed-71789e73dc35",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "558eabed-bed6-475e-a42a-a6db05670392",
+      "relationship": "HAS_MEASUREMENT",
+      "confidence": 0.925,
+      "source_documents": [
+        "RCA_RO-H1_Endotoxin.md"
+      ],
+      "first_seen": "2026-08-27"
+    },
+    {
+      "source": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "target": "8b738f1f-1221-413a-8871-48429a1c0026",
+      "relationship": "FAILED_WITH",
+      "confidence": 0.873,
+      "source_documents": [
+        "Generator_Load_Test_GEN-P1.pdf"
+      ],
+      "first_seen": "2026-09-08"
+    },
+    {
+      "source": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "target": "586f01ff-b560-4232-829a-9902e8a60640",
+      "relationship": "MAINTAINED_BY",
+      "confidence": 0.9,
+      "source_documents": [
+        "Generator_Load_Test_GEN-P1.pdf",
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-09-08"
+    },
+    {
+      "source": "97d8948f-ff20-4d90-806a-d18075f378bd",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "REPAIRED_BY",
+      "confidence": 0.85,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "target": "a0ec964d-8493-4204-b126-85c49fb76b3e",
+      "relationship": "REPAIRED_BY",
+      "confidence": 0.85,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md",
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "04fefde9-504f-4d33-82f2-7a0aa282a446",
+      "target": "c4c3cb6a-7a08-4144-bb93-a1b5b71b1ab6",
+      "relationship": "TREATED_WITH",
+      "confidence": 0.825,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    }
+  ]
+}

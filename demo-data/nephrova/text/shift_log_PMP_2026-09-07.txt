@@ -1,0 +1,8 @@
+SHIFT LOG — Nephrova Pimpri
+Date: 7 September 2026    Shift: Afternoon (14:00 to 22:00)    In charge: Suresh Nair
+
+14:10  Mains power failure in the area.
+14:10  UPS-P1 carried all 8 dialysis machines; no treatment was interrupted.
+14:11  GEN-P1 started after 45 seconds, slower than the 10 second target.
+15:25  Mains power restored. Generator stopped.
+16:00  Incident IR-2026-036 raised and biomedical engineering informed.
