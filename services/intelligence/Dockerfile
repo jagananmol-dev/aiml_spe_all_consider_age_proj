@@ -15,7 +15,8 @@ COPY pyproject.toml .
 RUN pip install --no-cache-dir --prefix=/install -e . \
     && pip install --no-cache-dir --prefix=/install jupyter notebook
 
-RUN python -m spacy download en_core_web_sm
+# Packages above went to /install; spaCy must be importable to fetch its model
+RUN PYTHONPATH=/install/lib/python3.12/site-packages python -m spacy download en_core_web_sm
 
 # ── Stage 2: Runtime ─────────────────────────
 FROM python:3.12-slim
