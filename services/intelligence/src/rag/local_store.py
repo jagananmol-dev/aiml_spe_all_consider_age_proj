@@ -25,7 +25,7 @@ import numpy as np
 try:
     import psycopg
 except ImportError:  # pragma: no cover - optional dependency
-    psycopg = None
+    psycopg = None  # type: ignore[assignment]
 
 logger = logging.getLogger("veda.intelligence.local_store")
 

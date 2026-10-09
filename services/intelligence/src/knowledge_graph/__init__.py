@@ -12,7 +12,7 @@ Components:
 - chunk_builder: Prepares graph-enriched chunks for LLM consumption
 """
 
-from .graph_manager import KnowledgeGraphManager
 from .chunk_builder import ChunkBuilder
+from .graph_manager import KnowledgeGraphManager
 
-__all__ = ["KnowledgeGraphManager", "ChunkBuilder"]
+__all__ = ["ChunkBuilder", "KnowledgeGraphManager"]

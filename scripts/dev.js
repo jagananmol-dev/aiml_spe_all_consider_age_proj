@@ -246,6 +246,7 @@ function installPythonDeps(serviceName) {
 
   if (packageCheck.status === 0 && fs.existsSync(installStamp)) {
     console.log(`Python dependencies for ${serviceName} already installed; skipping install.`);
+    if (serviceName === 'intelligence') ensureSpacyModel(venvPython, serviceDir);
     return;
   }
 
@@ -258,6 +259,22 @@ function installPythonDeps(serviceName) {
     fs.writeFileSync(installStamp, new Date().toISOString());
   } catch (error) {
     console.warn(`Could not write install stamp for ${serviceName}: ${error.message}`);
+  }
+  if (serviceName === 'intelligence') ensureSpacyModel(venvPython, serviceDir);
+}
+
+// The knowledge graph uses spaCy's small English model (names, noun phrases,
+// lemmas). Without it extraction still works, with patterns and embeddings only.
+function ensureSpacyModel(venvPython, serviceDir) {
+  const check = spawnSync(venvPython, ['-c', 'import en_core_web_sm'], {
+    cwd: serviceDir,
+    stdio: 'ignore',
+    shell: isWindows,
+  });
+  if (check.status === 0) return;
+  console.log('Installing the spaCy English model for the knowledge graph...');
+  if (!runSync(venvPython, ['-m', 'spacy', 'download', 'en_core_web_sm'], { cwd: serviceDir })) {
+    console.warn('Could not install en_core_web_sm; the graph will skip names and noun phrases.');
   }
 }
 

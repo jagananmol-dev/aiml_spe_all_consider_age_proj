@@ -148,7 +148,7 @@ def process_document(job: dict) -> None:
             f"in {time.time() - started:.1f}s"
         )
     except Exception as e:
-        logger.error(f"❌ Failed to process {job['file_name']}: {e}", exc_info=True)
+        logger.exception(f"❌ Failed to process {job['file_name']}")
         update_document_status(
             tenant_id,
             document_id,

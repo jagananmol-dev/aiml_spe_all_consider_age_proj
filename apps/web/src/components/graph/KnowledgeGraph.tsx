@@ -3,8 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FileText, Loader, RefreshCw, Search, X } from "lucide-react";
 import {
-  layoutGraph,
+  fitView,
+  layoutNatural,
   neighbourhood,
+  nodeRadius,
   type GraphEdge,
   type GraphNode,
   type Point,
@@ -14,8 +16,10 @@ import {
  * Knowledge Graph view.
  *
  * Loads the tenant's whole graph once, lays it out with a force simulation
- * (linked entities pull together, everything else pushes apart) and lets the
- * user search, focus a node's neighbourhood, drag nodes, zoom and pan.
+ * (linked entities pull together, everything else pushes apart, and every
+ * node keeps the room its label needs) and lets the user search, focus a
+ * node's neighbourhood, drag nodes, zoom and pan. Document nodes (each
+ * uploaded file and the entities it mentions) can be shown or hidden.
  */
 
 /** Entity type labels, colours and roles come from the tenant's graph schema. */
@@ -60,9 +64,13 @@ interface View {
 }
 
 export function KnowledgeGraph() {
-  const [nodes, setNodes] = useState<GraphNode[]>([]);
-  const [edges, setEdges] = useState<GraphEdge[]>([]);
+  const [graph, setGraph] = useState<{ nodes: GraphNode[]; edges: GraphEdge[] }>({
+    nodes: [],
+    edges: [],
+  });
   const [types, setTypes] = useState<Record<string, TypeInfo>>({});
+  const [showDocuments, setShowDocuments] = useState(true);
+  const [layoutSize, setLayoutSize] = useState({ width: 0, height: 0 });
   const [positions, setPositions] = useState<Record<string, Point>>({});
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState("");
@@ -85,12 +93,9 @@ export function KnowledgeGraph() {
       const res = await fetch("/api/graph/overview", { cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not load the knowledge graph");
-      setNodes(data.nodes);
-      setEdges(data.edges);
+      setGraph({ nodes: data.nodes, edges: data.edges });
       setTypes(data.types ?? {});
-      setPositions(layoutGraph(data.nodes, data.edges, WIDTH, HEIGHT));
       setSelected(null);
-      setView({ x: 0, y: 0, k: 1 });
       setStatus("ready");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load the knowledge graph");
@@ -112,6 +117,42 @@ export function KnowledgeGraph() {
   const isSubject = useCallback(
     (type?: string) => !!type && types[type]?.role === "subject",
     [types]
+  );
+  const isDocument = useCallback((type: string) => types[type]?.role === "document", [types]);
+  const documentCount = useMemo(
+    () => graph.nodes.filter((n) => isDocument(n.type)).length,
+    [graph, isDocument]
+  );
+
+  // The visible graph: optionally without document nodes (degrees recounted)
+  const { nodes, edges } = useMemo(() => {
+    if (showDocuments) return graph;
+    const hidden = new Set(graph.nodes.filter((n) => isDocument(n.type)).map((n) => n.id));
+    const kept = graph.edges.filter((e) => !hidden.has(e.source) && !hidden.has(e.target));
+    const degree: Record<string, number> = {};
+    for (const e of kept) {
+      degree[e.source] = (degree[e.source] ?? 0) + 1;
+      degree[e.target] = (degree[e.target] ?? 0) + 1;
+    }
+    return {
+      nodes: graph.nodes
+        .filter((n) => !hidden.has(n.id) && degree[n.id])
+        .map((n) => ({ ...n, degree: degree[n.id] })),
+      edges: kept,
+    };
+  }, [graph, showDocuments, isDocument]);
+
+  // Lay out at natural scale (nothing overlaps), then zoom to fit
+  useEffect(() => {
+    const layout = layoutNatural(nodes, edges, (t) => types[t]?.role === "subject");
+    setPositions(layout.positions);
+    setLayoutSize({ width: layout.width, height: layout.height });
+    setView(fitView(layout, WIDTH, HEIGHT));
+  }, [nodes, edges, types]);
+
+  const radius = useCallback(
+    (n: GraphNode | undefined) => nodeRadius(n, isSubject(n?.type)),
+    [isSubject]
   );
 
   const byId = useMemo(() => Object.fromEntries(nodes.map((n) => [n.id, n])), [nodes]);
@@ -176,7 +217,7 @@ export function KnowledgeGraph() {
     const sx = ((e.clientX - rect.left) / rect.width) * WIDTH;
     const sy = ((e.clientY - rect.top) / rect.height) * HEIGHT;
     setView((v) => {
-      const k = Math.min(4, Math.max(0.3, v.k * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
+      const k = Math.min(4, Math.max(0.08, v.k * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
       return { k, x: sx - ((sx - v.x) * k) / v.k, y: sy - ((sy - v.y) * k) / v.k };
     });
   };
@@ -232,12 +273,22 @@ export function KnowledgeGraph() {
             onClick={() => {
               setSelected(null);
               setQuery("");
-              setView({ x: 0, y: 0, k: 1 });
+              setView(fitView(layoutSize, WIDTH, HEIGHT));
             }}
             style={toolButton}
           >
-            Reset view
+            Fit
           </button>
+          {documentCount > 0 && (
+            <label style={{ ...toolButton, cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={showDocuments}
+                onChange={(e) => setShowDocuments(e.target.checked)}
+              />
+              Documents ({documentCount})
+            </label>
+          )}
         </div>
 
         <div
@@ -299,7 +350,7 @@ export function KnowledgeGraph() {
                   const active = selected && (e.source === selected || e.target === selected);
                   const faded = dimmed(e.source) || dimmed(e.target);
                   const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
-                  const r = radius(byId[e.target], isSubject(byId[e.target]?.type));
+                  const r = radius(byId[e.target]);
                   const ex = b.x - ((b.x - a.x) / len) * (r + 2);
                   const ey = b.y - ((b.y - a.y) / len) * (r + 2);
                   return (
@@ -334,6 +385,14 @@ export function KnowledgeGraph() {
                   const s = styleOf(n.type);
                   const isSelected = n.id === selected;
                   const isMatch = matchIds.has(n.id);
+                  // Zoomed far out, only labels that matter stay (no clutter)
+                  const showLabel =
+                    view.k >= 0.6 ||
+                    isSelected ||
+                    isMatch ||
+                    isSubject(n.type) ||
+                    (focus?.has(n.id) ?? false) ||
+                    n.degree >= 6;
                   return (
                     <g
                       key={n.id}
@@ -343,26 +402,29 @@ export function KnowledgeGraph() {
                       onPointerDown={(e) => onPointerDown(e, n.id)}
                     >
                       <circle
-                        r={radius(n, isSubject(n.type))}
+                        r={radius(n)}
                         fill={s.color}
                         stroke={isSelected || isMatch ? "#facc15" : "#ffffff"}
                         strokeWidth={isSelected || isMatch ? 3 : 1.5}
                       />
-                      <text
-                        y={radius(n, isSubject(n.type)) + 11}
-                        fontSize={isSubject(n.type) ? 11 : 9}
-                        fontWeight={isSubject(n.type) ? 700 : 500}
-                        textAnchor="middle"
-                        fill="#111827"
-                        style={{
-                          pointerEvents: "none",
-                          paintOrder: "stroke",
-                          stroke: "#ffffff",
-                          strokeWidth: 3,
-                        }}
-                      >
-                        {n.label}
-                      </text>
+                      {showLabel && (
+                        <text
+                          y={radius(n) + 11}
+                          fontSize={isSubject(n.type) ? 11 : 9}
+                          fontWeight={isSubject(n.type) ? 700 : 500}
+                          textAnchor="middle"
+                          fill="#111827"
+                          style={{
+                            pointerEvents: "none",
+                            paintOrder: "stroke",
+                            stroke: "#ffffff",
+                            strokeWidth: 3,
+                          }}
+                        >
+                          {n.label}
+                        </text>
+                      )}
+                      <title>{`${n.label} — ${styleOf(n.type).label}`}</title>
                     </g>
                   );
                 })}
@@ -506,11 +568,6 @@ export function KnowledgeGraph() {
       </aside>
     </div>
   );
-}
-
-function radius(n: GraphNode | undefined, subject: boolean): number {
-  if (!n) return 6;
-  return Math.min(16, (subject ? 8 : 5) + n.degree * 0.8);
 }
 
 const toolButton: React.CSSProperties = {

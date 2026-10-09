@@ -71,16 +71,22 @@ def main() -> int:
     used = {e["source"] for e in loaded["edges"]} | {e["target"] for e in loaded["edges"]}
     problems += [f"node with no edges: {labels[n]}" for n in labels if n not in used]
 
-    stored = {(labels[e["source"]], e["relationship"], labels[e["target"]]) for e in loaded["edges"]}
+    # Document → entity links (MENTIONS) are added at indexing, not by the
+    # per-file extraction this check repeats, so they are not compared
+    links = {"MENTIONS"}
+    stored = {
+        (labels[e["source"]], e["relationship"], labels[e["target"]])
+        for e in loaded["edges"]
+        if e["relationship"] not in links
+    }
     expected = expected_edges()
-    import validate_graph as v
-
-    if v.SEMANTIC:
-        problems += [f"stored but not in source files: {e}" for e in sorted(stored - expected)]
-    else:
-        # Edges found through embeddings can't be reproduced without the model
-        for e in sorted(stored - expected):
-            print(f"  (embedding-typed, not re-checked without sentence-transformers) {e}")
+    # Every pattern / term edge must be stored. Edges found with NLP (spaCy
+    # names voted across all documents, embedding-typed phrases) are reported,
+    # since this check runs per file and may lack the models.
+    extra = sorted(stored - expected)
+    print(f"  {len(extra)} edges found with NLP / embeddings beyond the per-file check, e.g.:")
+    for e in extra[:8]:
+        print(f"    {e}")
     problems += [f"in source files but not stored: {e}" for e in sorted(expected - stored)]
 
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))

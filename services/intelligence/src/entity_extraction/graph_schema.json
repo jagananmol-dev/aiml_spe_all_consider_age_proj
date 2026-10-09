@@ -114,6 +114,25 @@
         "calcium gluconate", "alteplase"
       ],
       "examples": ["medicine", "antibiotic", "anticoagulant", "injection", "insulin", "paracetamol"]
+    },
+    "PERSON": {
+      "label": "Person",
+      "color": "#a16207",
+      "role": "person",
+      "description": "a named person (found by spaCy NER)"
+    },
+    "LOCATION": {
+      "label": "Location",
+      "color": "#0f766e",
+      "role": "place",
+      "description": "a named site, city or place (found by spaCy NER)"
+    },
+    "DOCUMENT": {
+      "label": "Document",
+      "color": "#94a3b8",
+      "role": "document",
+      "leaf": true,
+      "description": "an uploaded document; linked to the entities it mentions"
     }
   },
 
@@ -128,8 +147,34 @@
     { "source": "EQUIPMENT_TAG", "target": "CHEMICAL", "type": "USES_CHEMICAL", "inverse": "USED_BY" },
     { "source": "FAILURE_MODE", "target": "MAINTENANCE_ACTION", "type": "REPAIRED_BY", "inverse": "REPAIRS" },
     { "source": "PERSON", "target": "FAILURE_MODE", "type": "REPORTED_BY", "inverse": "REPORTED" },
-    { "source": "CONDITION", "target": "MEDICATION", "type": "TREATED_WITH", "inverse": "TREATS" }
+    { "source": "CONDITION", "target": "MEDICATION", "type": "TREATED_WITH", "inverse": "TREATS" },
+    { "source": "MAINTENANCE_ACTION", "target": "PERSON", "type": "PERFORMED_BY", "inverse": "PERFORMED" },
+    { "source": "FAILURE_MODE", "target": "LOCATION", "type": "OCCURRED_AT", "inverse": "SITE_OF" },
+    { "source": "CONDITION", "target": "LOCATION", "type": "OCCURRED_AT", "inverse": "SITE_OF" },
+    { "source": "PERSON", "target": "LOCATION", "type": "WORKS_AT", "inverse": "STAFFED_BY" }
   ],
+
+  "_comment_documents": "Every indexed document becomes a node linked to the entities it mentions (most frequent first), so each upload adds its own node and relations. Values (measurements) are left out: they belong to the asset they were read on.",
+  "document_links": {
+    "type": "DOCUMENT",
+    "relationship": "MENTIONS",
+    "inverse": "MENTIONED_IN",
+    "exclude_roles": ["value", "document"],
+    "max_per_document": 25
+  },
+
+  "_comment_nlp": "spaCy (when a model is installed) parses each document once: named entities with these labels become the mapped types, noun chunks are the candidate phrases for embedding typing, and phrase heads are lemmatised so 'conductivity alarms' and 'conductivity alarm' are one node.",
+  "nlp": {
+    "models": ["en_core_web_sm"],
+    "ner_labels": { "PERSON": "PERSON", "GPE": "LOCATION", "LOC": "LOCATION", "FAC": "LOCATION" },
+    "_comment_cues": "Words just before a name on its line (a record key or a phrase) that vote for its type, three times as strongly as the NER label: small models often read names in forms and tables as places.",
+    "type_cues": {
+      "PERSON": ["name", "owner", "reported by", "by", "from", "to", "present", "attendees", "contact", "prepared by", "approved by", "signed"],
+      "LOCATION": ["centre", "center", "site", "venue", "location", "city", "branch", "at"]
+    },
+    "use_noun_chunks": true,
+    "max_chars": 200000
+  },
 
   "_comment_detection": "An issue paired with one of these actions is DETECTED_BY rather than REPAIRED_BY",
   "detection_actions": ["inspection", "visual inspection", "ndt inspection", "hydrotest", "hydrostatic test", "pneumatic test"],

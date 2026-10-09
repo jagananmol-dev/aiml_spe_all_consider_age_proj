@@ -50,8 +50,8 @@ function LoginForm() {
 
       // Successful login — redirect to dashboard
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }

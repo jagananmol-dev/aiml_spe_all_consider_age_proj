@@ -54,6 +54,12 @@ pid = [
 target-version = "py312"
 line-length = 100
 
+[tool.ruff.lint]
+# The workers and the API degrade instead of failing: an optional backend
+# (graph, previews, Kafka, OCR) that errors for any reason must not fail an
+# upload or a search, so broad `except Exception` with logging is deliberate.
+ignore = ["BLE001", "S110"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]

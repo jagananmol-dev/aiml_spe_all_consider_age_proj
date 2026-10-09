@@ -186,3 +186,134 @@ class TestSearchBoost:
             )
         assert plain[0]["document_id"] == "d1"
         assert boosted[0]["document_id"] == "d2" and stats["graph_boosted_chunks"] == 1
+
+
+class TestDocumentEdges:
+    def test_document_links_its_most_mentioned_entities_without_values(self):
+        from src.knowledge_graph.relationships import document_edges
+
+        entities = [
+            {"entity_type": "EQUIPMENT_TAG", "normalized_value": "HD-K04", "confidence": 0.95},
+            {"entity_type": "EQUIPMENT_TAG", "normalized_value": "HD-K04", "confidence": 0.95},
+            {
+                "entity_type": "FAILURE_MODE",
+                "normalized_value": "conductivity alarm",
+                "confidence": 0.85,
+            },
+            {"entity_type": "MEASUREMENT", "normalized_value": "14.0 mS/cm", "confidence": 0.9},
+        ]
+        edges = document_edges(entities, "job.docx")
+        assert [
+            (e.source["normalized_value"], e.relationship_type, e.target["normalized_value"])
+            for e in edges
+        ] == [
+            ("job.docx", "MENTIONS", "HD-K04"),
+            ("job.docx", "MENTIONS", "conductivity alarm"),
+        ]
+        assert edges[0].source["entity_type"] == "DOCUMENT"
+
+    def test_no_title_no_document_node(self):
+        from src.knowledge_graph.relationships import document_edges
+
+        assert (
+            document_edges([{"entity_type": "FAILURE_MODE", "normalized_value": "leak"}], "") == []
+        )
+
+    def test_new_document_adds_its_node_and_relations(self):
+        from unittest.mock import patch
+
+        from src.knowledge_graph import local_graph
+        from src.rag.pipeline import rag_pipeline
+
+        stored = {}
+        with (
+            patch.object(type(rag_pipeline), "embedding_model", new=None),
+            patch.object(local_graph, "tenant_schema", return_value=get_schema()),
+            patch.object(local_graph, "known_node_values", return_value={}),
+            patch.object(
+                local_graph,
+                "replace_document_graph",
+                side_effect=lambda db, t, d, edges: (
+                    stored.setdefault("edges", edges) and len(edges)
+                ),
+            ),
+        ):
+            rag_pipeline.build_local_graph(
+                "t", "d", "HD-K04 raised a conductivity alarm.", "BME_Report_HD-K04.docx"
+            )
+        triples = {
+            (e.source["normalized_value"], e.relationship_type, e.target["normalized_value"])
+            for e in stored["edges"]
+        }
+        assert ("HD-K04", "FAILED_WITH", "conductivity alarm") in triples
+        assert ("BME_Report_HD-K04.docx", "MENTIONS", "HD-K04") in triples
+
+
+class TestNameTypes:
+    @staticmethod
+    def mention(name, entity_type):
+        return (None, name, entity_type)
+
+    def test_majority_vote_gives_one_type_per_name(self):
+        from src.entity_extraction.extractor import resolve_name_types
+
+        m = self.mention
+        types = resolve_name_types(
+            [
+                m("Pimpri", "LOCATION"),
+                m("Pimpri", "LOCATION"),
+                m("Pimpri", "PERSON"),
+                m("Rahul Pawar", "PERSON"),
+                m("Kavita Pawar", "LOCATION"),
+            ]
+        )
+        assert types["Pimpri"] == "LOCATION"
+        assert types["Kavita Pawar"] == "PERSON"  # shares a surname with a person
+
+    def test_rare_single_words_headings_and_known_types(self):
+        from src.entity_extraction.extractor import resolve_name_types
+
+        m = self.mention
+        types = resolve_name_types(
+            [
+                m("Appendix", "LOCATION"),
+                m("Kothrud", "LOCATION"),
+                m("Kothrud", "LOCATION"),
+                m("Kothrud Hadapsar", "PERSON"),
+                m("Outstanding", "PERSON"),
+                m("Outstanding", "PERSON"),
+                m("Nikhil Joshi", "LOCATION"),
+            ],
+            known={"Nikhil Joshi": "PERSON"},
+        )
+        assert "Appendix" not in types  # one mention of a single word
+        assert "Kothrud Hadapsar" not in types  # contains a place: a table row, not a person
+        assert "Outstanding" not in types  # a person needs a full name
+        assert types["Nikhil Joshi"] == "PERSON"  # already in the graph
+
+
+class TestSpacyParse:
+    @pytest.fixture(scope="class")
+    def nlp(self):
+        spacy = pytest.importorskip("spacy")
+        try:
+            return spacy.load("en_core_web_sm")
+        except OSError:
+            pytest.skip("en_core_web_sm not installed")
+
+    def test_noun_chunks_are_trimmed_and_lemmatised(self, nlp):
+        doc = nlp(
+            "The technician saw repeated conductivity alarms on HD-K04 and two blood leak alarms."
+        )
+        phrases = {c.phrase for c in semantic.noun_chunk_candidates(doc)}
+        assert "conductivity alarm" in phrases and "blood leak alarm" in phrases
+        assert not any("hd-k04" in p or p.startswith(("the ", "repeated ")) for p in phrases)
+
+    def test_plural_terms_map_to_the_listed_term(self, nlp):
+        extractor = EntityExtractor()
+        extractor._spacy_model = nlp
+        values = {
+            e.normalized_value
+            for e in extractor.extract_entities("Two conductivity alarms and leaks.")
+        }
+        assert {"conductivity alarm", "leak"} <= values

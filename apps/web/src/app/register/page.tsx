@@ -69,8 +69,8 @@ export default function RegisterPage() {
 
       // Successful registration — redirect to login
       router.push(`/login?tenant=${formData.tenantSlug}&registered=true`);
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }

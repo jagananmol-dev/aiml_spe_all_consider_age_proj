@@ -1,8 +1,8 @@
 {
   "tenant": "nephrova",
-  "exported_at": "2026-10-09T18:44:22+00:00",
-  "node_count": 38,
-  "edge_count": 33,
+  "exported_at": "2026-10-09T19:26:06+00:00",
+  "node_count": 166,
+  "edge_count": 342,
   "nodes": [
     {
       "id": "3fb8fb0c-f780-4a9b-a7ce-d18ff91b8406",
@@ -10,14 +10,29 @@
       "label": "anaemia"
     },
     {
-      "id": "04fefde9-504f-4d33-82f2-7a0aa282a446",
+      "id": "ef260fdc-e526-4ea6-8700-5f8606c478e3",
       "type": "CONDITION",
-      "label": "bloodstream infections"
+      "label": "bloodstream infection"
     },
     {
       "id": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
       "type": "CONDITION",
       "label": "catheter-related bloodstream infection"
+    },
+    {
+      "id": "561a5d0a-ebba-4edc-9261-c6b9fbb6ecc5",
+      "type": "CONDITION",
+      "label": "chronic kidney disease"
+    },
+    {
+      "id": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "type": "CONDITION",
+      "label": "hepatitis b"
+    },
+    {
+      "id": "fbf6e385-10a0-46ca-8f9a-ec45ed2d478e",
+      "type": "CONDITION",
+      "label": "hepatitis c"
     },
     {
       "id": "97342a52-a8d0-4fdc-af62-1aff8de7bd8f",
@@ -28,6 +43,326 @@
       "id": "af1bff9d-51ca-429b-9455-d698d3260d2e",
       "type": "CONDITION",
       "label": "hypotension"
+    },
+    {
+      "id": "8de5781b-7dee-45fd-9748-2d83f58ccb02",
+      "type": "CONDITION",
+      "label": "muscle cramps"
+    },
+    {
+      "id": "34919eb4-6265-4641-847e-713b6d0ecf2b",
+      "type": "DOCUMENT",
+      "label": "August_2026_Operations_Review.pptx"
+    },
+    {
+      "id": "0f31829b-c910-43c3-97e2-b2b457198ac7",
+      "type": "DOCUMENT",
+      "label": "Biomedical_Waste_Management_SOP.md"
+    },
+    {
+      "id": "2c443fc8-9f2b-46d4-83db-dc4009232fff",
+      "type": "DOCUMENT",
+      "label": "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+    },
+    {
+      "id": "3c48ac70-a5e4-4bdd-bec0-e9eeede6304a",
+      "type": "DOCUMENT",
+      "label": "Board_Note_Q3_2026.docx"
+    },
+    {
+      "id": "1bdb7f64-c95f-46cc-8a85-139c263f3573",
+      "type": "DOCUMENT",
+      "label": "Catheter_Care_Bundle.md"
+    },
+    {
+      "id": "bb7d7772-1ba6-4dcb-a3ee-c8d726f3aebb",
+      "type": "DOCUMENT",
+      "label": "Consumables_Stock_Sep2026.xlsx"
+    },
+    {
+      "id": "4cdff1ef-2813-414a-bcca-faa47f485a62",
+      "type": "DOCUMENT",
+      "label": "disinfection_record_RO-H1.json"
+    },
+    {
+      "id": "1c3edb0d-40e7-43cd-a196-c70b0ef985cb",
+      "type": "DOCUMENT",
+      "label": "email_HD-K04_service_request.txt"
+    },
+    {
+      "id": "89984ff3-963a-4076-8352-546626c6d3d7",
+      "type": "DOCUMENT",
+      "label": "email_infection_alert_PMP.txt"
+    },
+    {
+      "id": "3612ad3a-a1f8-407d-b4ed-65656e35b4bf",
+      "type": "DOCUMENT",
+      "label": "email_NABH_closure_status.txt"
+    },
+    {
+      "id": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "type": "DOCUMENT",
+      "label": "equipment_inventory.json"
+    },
+    {
+      "id": "747afc0e-11eb-4077-8eb1-cbf7126bdfa3",
+      "type": "DOCUMENT",
+      "label": "Finance_Billing_and_Collections_Policy.docx"
+    },
+    {
+      "id": "29eb4534-b54a-442f-b193-7a75e892e9a6",
+      "type": "DOCUMENT",
+      "label": "Finance_Delegation_of_Financial_Authority.pdf"
+    },
+    {
+      "id": "7c2be8fd-b8ea-46dd-b29c-9d5fa2d6377e",
+      "type": "DOCUMENT",
+      "label": "Finance_Patient_Refund_and_Assistance_Policy.md"
+    },
+    {
+      "id": "4765cac0-cc98-4b76-af3d-3bff3a2732cc",
+      "type": "DOCUMENT",
+      "label": "Finance_Procurement_Policy.pdf"
+    },
+    {
+      "id": "2116d0cd-1a73-4482-81aa-5e1055d5f2fc",
+      "type": "DOCUMENT",
+      "label": "Finance_Travel_and_Expense_Rates.xlsx"
+    },
+    {
+      "id": "94470ff1-4315-40db-aa72-d901fec4abcb",
+      "type": "DOCUMENT",
+      "label": "Generator_Load_Test_GEN-P1.pdf"
+    },
+    {
+      "id": "7a59fa15-b411-4713-9fa8-6a7c2151cd43",
+      "type": "DOCUMENT",
+      "label": "HR_Circular_Notice_Period_and_Exit.txt"
+    },
+    {
+      "id": "57587bc2-e64d-478a-8c36-f06d81743edf",
+      "type": "DOCUMENT",
+      "label": "HR_Code_of_Conduct.md"
+    },
+    {
+      "id": "9102389f-a8bd-47de-953a-f8b8d2dab3c6",
+      "type": "DOCUMENT",
+      "label": "HR_Compensation_and_Benefits_Policy.pdf"
+    },
+    {
+      "id": "166aa288-ccb7-4910-bbd3-da7fad699be5",
+      "type": "DOCUMENT",
+      "label": "HR_Leave_and_Attendance_Policy.docx"
+    },
+    {
+      "id": "bdb23694-b592-41cb-a5af-ca955d3a4730",
+      "type": "DOCUMENT",
+      "label": "HR_Performance_Appraisal_Policy.docx"
+    },
+    {
+      "id": "fc7e8178-c698-4547-8155-782bc683b266",
+      "type": "DOCUMENT",
+      "label": "HR_POSH_Policy.md"
+    },
+    {
+      "id": "c562d9c0-f4b2-4f49-94ef-2604fd106ecd",
+      "type": "DOCUMENT",
+      "label": "HR_Recruitment_and_Onboarding_Policy.docx"
+    },
+    {
+      "id": "ee4783ca-5a6c-4b61-9926-662a2d55d8f2",
+      "type": "DOCUMENT",
+      "label": "Incident_Report_IR-2026-031_RO-H1.docx"
+    },
+    {
+      "id": "bded223a-8d77-44ec-b683-acd6056469e0",
+      "type": "DOCUMENT",
+      "label": "Infection_Control_Audit_PMP_Sep2026.pdf"
+    },
+    {
+      "id": "c9d9f013-9489-46b0-b020-947960cbe127",
+      "type": "DOCUMENT",
+      "label": "Infection_Control_Policy.md"
+    },
+    {
+      "id": "6db968f9-bb45-4aaf-ab12-a033b6d2f87a",
+      "type": "DOCUMENT",
+      "label": "Infection_Control_Reaudit_PMP_Sep30.pdf"
+    },
+    {
+      "id": "f535573f-3980-4b36-8ebe-1c22d6841a7d",
+      "type": "DOCUMENT",
+      "label": "Infection_Report_Case1_PMP-0412.docx"
+    },
+    {
+      "id": "c11869c7-f862-4734-beb5-bf73d8802fe2",
+      "type": "DOCUMENT",
+      "label": "Infection_Report_Case2_PMP-0388.docx"
+    },
+    {
+      "id": "026e33f7-4006-4da7-ae67-a88142d44ab6",
+      "type": "DOCUMENT",
+      "label": "July_2026_Operations_Review.pptx"
+    },
+    {
+      "id": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "type": "DOCUMENT",
+      "label": "Lessons_Learned_Q3_2026.md"
+    },
+    {
+      "id": "ad129977-7ee5-49b1-bc4a-00cb14f022f5",
+      "type": "DOCUMENT",
+      "label": "machine_alarm_log_KTH_2026-08-12.csv"
+    },
+    {
+      "id": "bda57a50-678f-47e6-b63d-b123a160afc0",
+      "type": "DOCUMENT",
+      "label": "nabh_corrective_action_tracker.csv"
+    },
+    {
+      "id": "30836219-3963-46ef-92d3-3fc9c921fdb2",
+      "type": "DOCUMENT",
+      "label": "nabh_document_checklist.json"
+    },
+    {
+      "id": "7cd31597-53f1-4cdf-bddf-1fbe4a58a372",
+      "type": "DOCUMENT",
+      "label": "NABH_Readiness_Briefing.pptx"
+    },
+    {
+      "id": "bf7b1740-4baf-4e0b-a598-2d38843d5aaa",
+      "type": "DOCUMENT",
+      "label": "NABH_Surveillance_Assessment_Report.pdf"
+    },
+    {
+      "id": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "type": "DOCUMENT",
+      "label": "Nephrova_Operations_Manual_2026.pdf"
+    },
+    {
+      "id": "370f521b-2ea7-4273-8e78-33cfa659332b",
+      "type": "DOCUMENT",
+      "label": "Notice_Hepatitis_B_Vaccination_Drive.docx"
+    },
+    {
+      "id": "5195d0bd-38b0-4360-99e3-a2736ab47efb",
+      "type": "DOCUMENT",
+      "label": "Nursing_Quality_Indicators_Aug2026.pptx"
+    },
+    {
+      "id": "c5680031-a9ca-4e1e-a96f-577c8eac13c3",
+      "type": "DOCUMENT",
+      "label": "Patient_Privacy_Notice.md"
+    },
+    {
+      "id": "24f541ac-47d5-4546-baca-ab82c86640a5",
+      "type": "DOCUMENT",
+      "label": "Patient_Transfer_Protocol.md"
+    },
+    {
+      "id": "3a8d29ae-993c-4cf6-bdf2-2ad5f3f00f00",
+      "type": "DOCUMENT",
+      "label": "Pimpri_Infection_Action_Plan.pptx"
+    },
+    {
+      "id": "3bd49e16-0852-4644-b381-3a3a2e0470bf",
+      "type": "DOCUMENT",
+      "label": "PM_Schedule_2026.xlsx"
+    },
+    {
+      "id": "f07a0e3f-9ea1-44b5-b705-3eac9d6cdc91",
+      "type": "DOCUMENT",
+      "label": "PMJAY_Claims_Ageing_Sep2026.xlsx"
+    },
+    {
+      "id": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "type": "DOCUMENT",
+      "label": "Q3_2026_Board_Pack.docx"
+    },
+    {
+      "id": "2121a58b-c02e-435b-abed-b9e25bd36e3d",
+      "type": "DOCUMENT",
+      "label": "Q3_2026_Quality_Report.pdf"
+    },
+    {
+      "id": "65415d14-80a6-4ecd-87f6-1bb013ee4176",
+      "type": "DOCUMENT",
+      "label": "Quality_Committee_Minutes_Sep2026.docx"
+    },
+    {
+      "id": "c6e44e9a-9588-4bb8-bd4d-c9aba0fe7360",
+      "type": "DOCUMENT",
+      "label": "RCA_RO-H1_Endotoxin.md"
+    },
+    {
+      "id": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "type": "DOCUMENT",
+      "label": "Risk_and_Asset_Register_2026.xlsx"
+    },
+    {
+      "id": "7cc70167-d4c8-4d10-999a-cf17d3c863f6",
+      "type": "DOCUMENT",
+      "label": "September_2026_Operations_Review.pptx"
+    },
+    {
+      "id": "9d572f37-7fd8-4bb9-ba99-4854133c061a",
+      "type": "DOCUMENT",
+      "label": "shift_log_HDP_2026-09-27.txt"
+    },
+    {
+      "id": "7ae3235c-9427-4ae3-9d5d-c2e32dddd092",
+      "type": "DOCUMENT",
+      "label": "shift_log_KTH_2026-08-11.txt"
+    },
+    {
+      "id": "ebd2be6c-7c25-4915-8e4f-9c5e90757ca8",
+      "type": "DOCUMENT",
+      "label": "shift_log_KTH_2026-08-29.txt"
+    },
+    {
+      "id": "88b8141c-5828-4835-bd53-c723e0c28cce",
+      "type": "DOCUMENT",
+      "label": "shift_log_PMP_2026-09-07.txt"
+    },
+    {
+      "id": "990c1abd-fd83-4a3a-89ab-8f1898180d25",
+      "type": "DOCUMENT",
+      "label": "SOP-WT-002_Dialysis_Water_Treatment.pdf"
+    },
+    {
+      "id": "29c89a4d-09e8-4835-a87a-4a8304f0728c",
+      "type": "DOCUMENT",
+      "label": "staff_roster_week37.json"
+    },
+    {
+      "id": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "type": "DOCUMENT",
+      "label": "training_attendance_hand_hygiene_sep2026.csv"
+    },
+    {
+      "id": "72e46253-8e72-49ac-bd88-4a9e34308af0",
+      "type": "DOCUMENT",
+      "label": "vaccination_drive_summary_2026-09-02.txt"
+    },
+    {
+      "id": "1926750b-66b0-4527-9839-c975cf620ed8",
+      "type": "DOCUMENT",
+      "label": "Water_Lab_Report_RO-H1_Aug2026.pdf"
+    },
+    {
+      "id": "4cbb953e-c738-40ea-b9ac-f52972f2d222",
+      "type": "DOCUMENT",
+      "label": "Water_Lab_Report_RO-H1_Resample.pdf"
+    },
+    {
+      "id": "781f1676-178a-4538-a671-ab85866fbf92",
+      "type": "DOCUMENT",
+      "label": "water_sample_record_RO-H1_2026-08-18.txt"
+    },
+    {
+      "id": "f73958ec-b7f7-4b78-905e-f45816f33bbd",
+      "type": "DOCUMENT",
+      "label": "water_test_results_2026.jsonl"
     },
     {
       "id": "4cc284a9-a4ad-45bd-9f58-8eeeba9f1052",
@@ -45,9 +380,84 @@
       "label": "GEN-P1"
     },
     {
+      "id": "6b861a25-6eeb-41a9-8930-19a39107a077",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H01"
+    },
+    {
+      "id": "3a20ed78-d22e-4747-af63-6bb570ed5fb3",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H02"
+    },
+    {
+      "id": "37ac8786-d775-4765-8ed0-448ad7ea56e8",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H03"
+    },
+    {
+      "id": "40c896b8-4080-4f07-8d66-586b81916c85",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H04"
+    },
+    {
+      "id": "1827dadf-19ec-4569-baca-4c5318917f82",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H05"
+    },
+    {
+      "id": "9bbc2952-5c74-40d9-a331-7c9579b726fe",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H06"
+    },
+    {
+      "id": "37a2b547-76d3-4d47-a3d7-8e9517e1ae1d",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H07"
+    },
+    {
+      "id": "ffd84b77-c7ed-4966-9526-05a1865b4a3a",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H08"
+    },
+    {
+      "id": "116e3f26-a263-45c5-b720-8daba53fd325",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H09"
+    },
+    {
+      "id": "7d9d872b-0165-4382-bfa1-c4a9b4cfdcdb",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-H10"
+    },
+    {
+      "id": "e690e806-2354-429f-a2cc-17e3afafbd01",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K01"
+    },
+    {
+      "id": "bf887934-1ce4-4915-b73c-c9b234dfbd6d",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K02"
+    },
+    {
+      "id": "be48577a-264f-4e91-a12f-ba3d12353cd3",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K03"
+    },
+    {
       "id": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
       "type": "EQUIPMENT_TAG",
       "label": "HD-K04"
+    },
+    {
+      "id": "279a6e4d-128e-442d-876d-444e463ecf6a",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K05"
+    },
+    {
+      "id": "f1480768-3692-4bf9-b157-b9801af61282",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K06"
     },
     {
       "id": "8924ded3-3a7f-43cb-83db-86f94fc41551",
@@ -55,9 +465,29 @@
       "label": "HD-K07"
     },
     {
+      "id": "7483007a-a662-4006-b4ae-254c57294d6e",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K08"
+    },
+    {
       "id": "80e32653-5fc5-476a-8e29-7a38e9b457c7",
       "type": "EQUIPMENT_TAG",
       "label": "HD-K09"
+    },
+    {
+      "id": "883a8898-2c5e-447c-83f9-e64e4f5933f8",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K10"
+    },
+    {
+      "id": "aeb23b05-7c40-44e2-8047-a920f60c50eb",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K11"
+    },
+    {
+      "id": "7440ead9-2589-44ff-a266-af851ccc5861",
+      "type": "EQUIPMENT_TAG",
+      "label": "HD-K12"
     },
     {
       "id": "e457c983-baee-492c-844d-4664d5c1dd0d",
@@ -75,9 +505,19 @@
       "label": "RO-P1"
     },
     {
+      "id": "17ae9b4d-789f-4c47-bd19-d2e5926b203c",
+      "type": "EQUIPMENT_TAG",
+      "label": "UPS-P1"
+    },
+    {
       "id": "02983650-792b-4a87-9f18-a4b745dff6b6",
       "type": "FAILURE_MODE",
       "label": "air detector alarm"
+    },
+    {
+      "id": "8997d68b-9ae3-445a-9c16-cec24ed84640",
+      "type": "FAILURE_MODE",
+      "label": "blood leak alarm"
     },
     {
       "id": "e79116eb-b198-4058-ad8b-3c37496f3e07",
@@ -95,9 +535,39 @@
       "label": "mains outage"
     },
     {
+      "id": "0fbb48f7-0f17-44e5-aea3-ffba3bc6ac66",
+      "type": "FAILURE_MODE",
+      "label": "power failure"
+    },
+    {
+      "id": "c872cadf-497d-45fd-949b-3685a255cfd5",
+      "type": "FAILURE_MODE",
+      "label": "unexplained alarm"
+    },
+    {
       "id": "6c33c809-81b8-415f-95c0-083987dcc81d",
       "type": "FAILURE_MODE",
       "label": "venous pressure alarm"
+    },
+    {
+      "id": "822499d1-bf5a-453f-be8d-c9d1a015b4d7",
+      "type": "LOCATION",
+      "label": "Centre"
+    },
+    {
+      "id": "26d16360-8c40-44ce-8b17-b611757d58d8",
+      "type": "LOCATION",
+      "label": "Hadapsar"
+    },
+    {
+      "id": "514f54ab-efaa-47e2-a7c5-1b7d2ea7f220",
+      "type": "LOCATION",
+      "label": "Kothrud"
+    },
+    {
+      "id": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "type": "LOCATION",
+      "label": "Pimpri"
     },
     {
       "id": "586f01ff-b560-4232-829a-9902e8a60640",
@@ -113,6 +583,11 @@
       "id": "966d5a86-87bb-46b3-90ed-71789e73dc35",
       "type": "MAINTENANCE_ACTION",
       "label": "chemical disinfection"
+    },
+    {
+      "id": "1f1fd072-ebbc-4646-9e7b-d9934c6eb569",
+      "type": "MAINTENANCE_ACTION",
+      "label": "conductivity cell"
     },
     {
       "id": "a0ec964d-8493-4204-b126-85c49fb76b3e",
@@ -133,6 +608,11 @@
       "id": "2831da49-8829-4dd5-93e1-4d509583a89b",
       "type": "MAINTENANCE_ACTION",
       "label": "load test"
+    },
+    {
+      "id": "7ae955ce-43da-45a9-b8e6-c64a6633fc3b",
+      "type": "MAINTENANCE_ACTION",
+      "label": "preventive maintenance"
     },
     {
       "id": "558eabed-bed6-475e-a42a-a6db05670392",
@@ -175,6 +655,11 @@
       "label": "erythropoietin"
     },
     {
+      "id": "451f987b-aa4c-4d54-ae83-e0ef6b0cacad",
+      "type": "MEDICATION",
+      "label": "heparin"
+    },
+    {
       "id": "88fc4d46-157d-409d-9627-01dc4e2763a8",
       "type": "MEDICATION",
       "label": "iron sucrose"
@@ -190,12 +675,417 @@
       "label": "vancomycin"
     },
     {
+      "id": "2a7625eb-7e6f-4fd6-9162-1c6e07c27133",
+      "type": "PERSON",
+      "label": "Ajay Mane"
+    },
+    {
+      "id": "600919ca-34e9-4c79-9726-dd4e5c0231e0",
+      "type": "PERSON",
+      "label": "Anil Thorat"
+    },
+    {
+      "id": "3ec31258-e8b4-41a9-9b74-e86fed6eab88",
+      "type": "PERSON",
+      "label": "Anjali Thomas"
+    },
+    {
+      "id": "11f09dfe-e978-49eb-99ac-ec48228ff1eb",
+      "type": "PERSON",
+      "label": "Asha Lokhande"
+    },
+    {
+      "id": "80fc6f0a-b75f-476f-a177-a4920467ec20",
+      "type": "PERSON",
+      "label": "Deepak Chavan"
+    },
+    {
+      "id": "f71d9a56-72b3-4dbf-bee9-eadabd5dfa84",
+      "type": "PERSON",
+      "label": "Farah Khan"
+    },
+    {
+      "id": "998634ca-bf24-4fdd-8c44-4d0bfe55a562",
+      "type": "PERSON",
+      "label": "Jyoti Sawant"
+    },
+    {
+      "id": "128fef4f-30f1-4051-8670-2dbb3b7d1e4b",
+      "type": "PERSON",
+      "label": "Kavita Pawar"
+    },
+    {
+      "id": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "type": "PERSON",
+      "label": "Kiran Bhosale"
+    },
+    {
+      "id": "5ea0dab5-1ef9-4b5c-a415-a73085eb520e",
+      "type": "PERSON",
+      "label": "Lata Bhosale"
+    },
+    {
+      "id": "f4d1ca16-7341-4023-b37c-56dbb9269316",
+      "type": "PERSON",
+      "label": "Meena Kamble"
+    },
+    {
+      "id": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "type": "PERSON",
+      "label": "Nikhil Joshi"
+    },
+    {
+      "id": "76f9dabf-1792-40c1-ac60-6b3d79b127f5",
+      "type": "PERSON",
+      "label": "Nisha Kadam"
+    },
+    {
+      "id": "833d70d9-4931-4f02-afe4-82a62c8f095d",
+      "type": "PERSON",
+      "label": "Patient Refund"
+    },
+    {
+      "id": "555b1868-46b4-46a4-9df9-c8f3cee70d0a",
+      "type": "PERSON",
+      "label": "Pooja Shinde"
+    },
+    {
+      "id": "3979a68b-6982-4874-a3b7-23deb6a2ac9b",
+      "type": "PERSON",
+      "label": "R. Iyer"
+    },
+    {
+      "id": "7636f70f-c532-473f-aa70-206af998866b",
+      "type": "PERSON",
+      "label": "Rahul Pawar"
+    },
+    {
+      "id": "b3e516c7-c048-4e10-b4f7-7bc09af8929d",
+      "type": "PERSON",
+      "label": "Rekha Shirke"
+    },
+    {
+      "id": "e158b745-e70b-4b17-8153-ebe46c19a7b6",
+      "type": "PERSON",
+      "label": "Ritu Malhotra"
+    },
+    {
+      "id": "f281c7f1-152c-4ee3-a004-51e43254bc7e",
+      "type": "PERSON",
+      "label": "Rohit Salunkhe"
+    },
+    {
+      "id": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "type": "PERSON",
+      "label": "Sameer Deshpande"
+    },
+    {
+      "id": "736e5ed2-c135-42bc-901f-8c7a1f6dd0cc",
+      "type": "PERSON",
+      "label": "Shalini Gaikwad"
+    },
+    {
+      "id": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "type": "PERSON",
+      "label": "Snehal Patil"
+    },
+    {
+      "id": "7ae57eb8-fdd4-40ee-b0a1-e47355ccd2f1",
+      "type": "PERSON",
+      "label": "Sunil Shinde"
+    },
+    {
+      "id": "4132b65a-6344-4df9-a9c2-ffbeba5ae479",
+      "type": "PERSON",
+      "label": "Swati Dhumal"
+    },
+    {
+      "id": "f367a06d-a12c-48d2-b8fd-108265a51fbb",
+      "type": "PERSON",
+      "label": "Vijay Kale"
+    },
+    {
+      "id": "c7807909-894e-4558-8abd-2fe672b410f4",
+      "type": "PERSON",
+      "label": "Vivek Jain"
+    },
+    {
+      "id": "d50948f1-1ecd-425b-8392-ac0eb1af0799",
+      "type": "REGULATION",
+      "label": "BIO-MEDICAL-WASTE-MANAGEMENT-RULES-2016"
+    },
+    {
+      "id": "98a4975c-c7ff-408d-8a14-5e0330597a9d",
+      "type": "REGULATION",
+      "label": "DPDP-ACT-2023"
+    },
+    {
       "id": "f77ec707-cd17-4145-b0c3-96fb3e97c7de",
       "type": "REGULATION",
       "label": "ISO-23500"
+    },
+    {
+      "id": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "type": "REGULATION",
+      "label": "NABH"
+    },
+    {
+      "id": "2d281ef7-8ec2-420b-ba81-aec7c61f49eb",
+      "type": "REGULATION",
+      "label": "WORKPLACE-ACT,-2013"
     }
   ],
   "edges": [
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "02983650-792b-4a87-9f18-a4b745dff6b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "346e7be5-18b2-4f17-86fb-2297fb82e6d8",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "3fb8fb0c-f780-4a9b-a7ce-d18ff91b8406",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "514f54ab-efaa-47e2-a7c5-1b7d2ea7f220",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "561a5d0a-ebba-4edc-9261-c6b9fbb6ecc5",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "7ae955ce-43da-45a9-b8e6-c64a6633fc3b",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "7c072d47-31f2-4e58-870b-3a0cbf03c7bf",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "822499d1-bf5a-453f-be8d-c9d1a015b4d7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "88fc4d46-157d-409d-9627-01dc4e2763a8",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "8997d68b-9ae3-445a-9c16-cec24ed84640",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "8de5781b-7dee-45fd-9748-2d83f58ccb02",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "97342a52-a8d0-4fdc-af62-1aff8de7bd8f",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "af1bff9d-51ca-429b-9455-d698d3260d2e",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "c4c3cb6a-7a08-4144-bb93-a1b5b71b1ab6",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "c872cadf-497d-45fd-949b-3685a255cfd5",
+      "relationship": "MENTIONS",
+      "confidence": 0.737,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "e158b745-e70b-4b17-8153-ebe46c19a7b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "eff48b23-53ae-429e-9b02-bcad0e3ed435",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "f71d9a56-72b3-4dbf-bee9-eadabd5dfa84",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "f77ec707-cd17-4145-b0c3-96fb3e97c7de",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
+    {
+      "source": "37a28b71-e6a1-49b2-95a7-8a9069bd6315",
+      "target": "fbf6e385-10a0-46ca-8f9a-ec45ed2d478e",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nephrova_Operations_Manual_2026.pdf"
+      ],
+      "first_seen": "2026-07-30"
+    },
     {
       "source": "3fb8fb0c-f780-4a9b-a7ce-d18ff91b8406",
       "target": "7c072d47-31f2-4e58-870b-3a0cbf03c7bf",
@@ -234,7 +1124,8 @@
       "source_documents": [
         "Infection_Report_Case1_PMP-0412.docx",
         "Infection_Report_Case2_PMP-0388.docx",
-        "Nephrova_Operations_Manual_2026.pdf"
+        "Nephrova_Operations_Manual_2026.pdf",
+        "Q3_2026_Board_Pack.docx"
       ],
       "first_seen": "2026-07-30"
     },
@@ -279,6 +1170,26 @@
       "source_documents": [
         "equipment_inventory.json",
         "Generator_Load_Test_GEN-P1.pdf",
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "89675a7e-312c-4857-bcf9-fdac5dbb677a",
+      "target": "514f54ab-efaa-47e2-a7c5-1b7d2ea7f220",
+      "relationship": "LOCATED_IN",
+      "confidence": 0.875,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "LOCATED_IN",
+      "confidence": 0.875,
+      "source_documents": [
         "Risk_and_Asset_Register_2026.xlsx"
       ],
       "first_seen": "2026-07-31"
@@ -351,6 +1262,507 @@
       "first_seen": "2026-07-31"
     },
     {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "07758593-fb25-4777-a141-9aad10ed64c9",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "116e3f26-a263-45c5-b720-8daba53fd325",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "1827dadf-19ec-4569-baca-4c5318917f82",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "2831da49-8829-4dd5-93e1-4d509583a89b",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "37a2b547-76d3-4d47-a3d7-8e9517e1ae1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "37ac8786-d775-4765-8ed0-448ad7ea56e8",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "3a20ed78-d22e-4747-af63-6bb570ed5fb3",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "40c896b8-4080-4f07-8d66-586b81916c85",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "4cc284a9-a4ad-45bd-9f58-8eeeba9f1052",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "555b1868-46b4-46a4-9df9-c8f3cee70d0a",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "6b861a25-6eeb-41a9-8930-19a39107a077",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "7ae955ce-43da-45a9-b8e6-c64a6633fc3b",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "7d9d872b-0165-4382-bfa1-c4a9b4cfdcdb",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "9bbc2952-5c74-40d9-a331-7c9579b726fe",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "be48577a-264f-4e91-a12f-ba3d12353cd3",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "bf887934-1ce4-4915-b73c-c9b234dfbd6d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "e690e806-2354-429f-a2cc-17e3afafbd01",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "0666e11a-93ea-4630-b4bc-c5b15b4fb652",
+      "target": "ffd84b77-c7ed-4966-9526-05a1865b4a3a",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "target": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "relationship": "PERFORMED_BY",
+      "confidence": 0.825,
+      "source_documents": [
+        "RCA_RO-H1_Endotoxin.md",
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "PERFORMED_BY",
+      "confidence": 0.825,
+      "source_documents": [
+        "Risk_and_Asset_Register_2026.xlsx"
+      ],
+      "first_seen": "2026-07-31"
+    },
+    {
+      "source": "57587bc2-e64d-478a-8c36-f06d81743edf",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_Code_of_Conduct.md"
+      ],
+      "first_seen": "2026-08-01"
+    },
+    {
+      "source": "57587bc2-e64d-478a-8c36-f06d81743edf",
+      "target": "e158b745-e70b-4b17-8153-ebe46c19a7b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_Code_of_Conduct.md"
+      ],
+      "first_seen": "2026-08-01"
+    },
+    {
+      "source": "c562d9c0-f4b2-4f49-94ef-2604fd106ecd",
+      "target": "822499d1-bf5a-453f-be8d-c9d1a015b4d7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_Recruitment_and_Onboarding_Policy.docx"
+      ],
+      "first_seen": "2026-08-02"
+    },
+    {
+      "source": "c562d9c0-f4b2-4f49-94ef-2604fd106ecd",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_Recruitment_and_Onboarding_Policy.docx"
+      ],
+      "first_seen": "2026-08-02"
+    },
+    {
+      "source": "c562d9c0-f4b2-4f49-94ef-2604fd106ecd",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "HR_Recruitment_and_Onboarding_Policy.docx"
+      ],
+      "first_seen": "2026-08-02"
+    },
+    {
+      "source": "9102389f-a8bd-47de-953a-f8b8d2dab3c6",
+      "target": "822499d1-bf5a-453f-be8d-c9d1a015b4d7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_Compensation_and_Benefits_Policy.pdf"
+      ],
+      "first_seen": "2026-08-03"
+    },
+    {
+      "source": "9102389f-a8bd-47de-953a-f8b8d2dab3c6",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_Compensation_and_Benefits_Policy.pdf"
+      ],
+      "first_seen": "2026-08-03"
+    },
+    {
+      "source": "9102389f-a8bd-47de-953a-f8b8d2dab3c6",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "HR_Compensation_and_Benefits_Policy.pdf"
+      ],
+      "first_seen": "2026-08-03"
+    },
+    {
+      "source": "bdb23694-b592-41cb-a5af-ca955d3a4730",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_Performance_Appraisal_Policy.docx"
+      ],
+      "first_seen": "2026-08-04"
+    },
+    {
+      "source": "fc7e8178-c698-4547-8155-782bc683b266",
+      "target": "2d281ef7-8ec2-420b-ba81-aec7c61f49eb",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "HR_POSH_Policy.md"
+      ],
+      "first_seen": "2026-08-05"
+    },
+    {
+      "source": "fc7e8178-c698-4547-8155-782bc683b266",
+      "target": "3ec31258-e8b4-41a9-9b74-e86fed6eab88",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_POSH_Policy.md"
+      ],
+      "first_seen": "2026-08-05"
+    },
+    {
+      "source": "fc7e8178-c698-4547-8155-782bc683b266",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_POSH_Policy.md"
+      ],
+      "first_seen": "2026-08-05"
+    },
+    {
+      "source": "7a59fa15-b411-4713-9fa8-6a7c2151cd43",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_Circular_Notice_Period_and_Exit.txt"
+      ],
+      "first_seen": "2026-08-06"
+    },
+    {
+      "source": "29eb4534-b54a-442f-b193-7a75e892e9a6",
+      "target": "822499d1-bf5a-453f-be8d-c9d1a015b4d7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Finance_Delegation_of_Financial_Authority.pdf"
+      ],
+      "first_seen": "2026-08-07"
+    },
+    {
+      "source": "29eb4534-b54a-442f-b193-7a75e892e9a6",
+      "target": "c7807909-894e-4558-8abd-2fe672b410f4",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Finance_Delegation_of_Financial_Authority.pdf"
+      ],
+      "first_seen": "2026-08-07"
+    },
+    {
+      "source": "747afc0e-11eb-4077-8eb1-cbf7126bdfa3",
+      "target": "c7807909-894e-4558-8abd-2fe672b410f4",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Finance_Billing_and_Collections_Policy.docx"
+      ],
+      "first_seen": "2026-08-08"
+    },
+    {
+      "source": "7c2be8fd-b8ea-46dd-b29c-9d5fa2d6377e",
+      "target": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Finance_Patient_Refund_and_Assistance_Policy.md"
+      ],
+      "first_seen": "2026-08-09"
+    },
+    {
+      "source": "7c2be8fd-b8ea-46dd-b29c-9d5fa2d6377e",
+      "target": "833d70d9-4931-4f02-afe4-82a62c8f095d",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Finance_Patient_Refund_and_Assistance_Policy.md"
+      ],
+      "first_seen": "2026-08-09"
+    },
+    {
+      "source": "7c2be8fd-b8ea-46dd-b29c-9d5fa2d6377e",
+      "target": "c7807909-894e-4558-8abd-2fe672b410f4",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Finance_Patient_Refund_and_Assistance_Policy.md"
+      ],
+      "first_seen": "2026-08-09"
+    },
+    {
+      "source": "c9d9f013-9489-46b0-b020-947960cbe127",
+      "target": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Infection_Control_Policy.md"
+      ],
+      "first_seen": "2026-08-10"
+    },
+    {
+      "source": "c9d9f013-9489-46b0-b020-947960cbe127",
+      "target": "ef260fdc-e526-4ea6-8700-5f8606c478e3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Infection_Control_Policy.md"
+      ],
+      "first_seen": "2026-08-10"
+    },
+    {
+      "source": "c9d9f013-9489-46b0-b020-947960cbe127",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Infection_Control_Policy.md"
+      ],
+      "first_seen": "2026-08-10"
+    },
+    {
+      "source": "c9d9f013-9489-46b0-b020-947960cbe127",
+      "target": "fbf6e385-10a0-46ca-8f9a-ec45ed2d478e",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Infection_Control_Policy.md"
+      ],
+      "first_seen": "2026-08-10"
+    },
+    {
       "source": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
       "target": "e79116eb-b198-4058-ad8b-3c37496f3e07",
       "relationship": "FAILED_WITH",
@@ -361,6 +1773,26 @@
         "Lessons_Learned_Q3_2026.md",
         "machine_alarm_log_KTH_2026-08-12.csv",
         "Q3_2026_Board_Pack.docx",
+        "shift_log_KTH_2026-08-11.txt"
+      ],
+      "first_seen": "2026-08-11"
+    },
+    {
+      "source": "7ae3235c-9427-4ae3-9d5d-c2e32dddd092",
+      "target": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "shift_log_KTH_2026-08-11.txt"
+      ],
+      "first_seen": "2026-08-11"
+    },
+    {
+      "source": "7ae3235c-9427-4ae3-9d5d-c2e32dddd092",
+      "target": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
         "shift_log_KTH_2026-08-11.txt"
       ],
       "first_seen": "2026-08-11"
@@ -384,6 +1816,116 @@
         "machine_alarm_log_KTH_2026-08-12.csv"
       ],
       "first_seen": "2026-08-12"
+    },
+    {
+      "source": "ad129977-7ee5-49b1-bc4a-00cb14f022f5",
+      "target": "02983650-792b-4a87-9f18-a4b745dff6b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "machine_alarm_log_KTH_2026-08-12.csv"
+      ],
+      "first_seen": "2026-08-12"
+    },
+    {
+      "source": "ad129977-7ee5-49b1-bc4a-00cb14f022f5",
+      "target": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "machine_alarm_log_KTH_2026-08-12.csv"
+      ],
+      "first_seen": "2026-08-12"
+    },
+    {
+      "source": "ad129977-7ee5-49b1-bc4a-00cb14f022f5",
+      "target": "6c33c809-81b8-415f-95c0-083987dcc81d",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "machine_alarm_log_KTH_2026-08-12.csv"
+      ],
+      "first_seen": "2026-08-12"
+    },
+    {
+      "source": "ad129977-7ee5-49b1-bc4a-00cb14f022f5",
+      "target": "80e32653-5fc5-476a-8e29-7a38e9b457c7",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "machine_alarm_log_KTH_2026-08-12.csv"
+      ],
+      "first_seen": "2026-08-12"
+    },
+    {
+      "source": "ad129977-7ee5-49b1-bc4a-00cb14f022f5",
+      "target": "8924ded3-3a7f-43cb-83db-86f94fc41551",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "machine_alarm_log_KTH_2026-08-12.csv"
+      ],
+      "first_seen": "2026-08-12"
+    },
+    {
+      "source": "ad129977-7ee5-49b1-bc4a-00cb14f022f5",
+      "target": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "machine_alarm_log_KTH_2026-08-12.csv"
+      ],
+      "first_seen": "2026-08-12"
+    },
+    {
+      "source": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "target": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "relationship": "ASSIGNED_TO",
+      "confidence": 0.875,
+      "source_documents": [
+        "email_HD-K04_service_request.txt"
+      ],
+      "first_seen": "2026-08-13"
+    },
+    {
+      "source": "1c3edb0d-40e7-43cd-a196-c70b0ef985cb",
+      "target": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "email_HD-K04_service_request.txt"
+      ],
+      "first_seen": "2026-08-13"
+    },
+    {
+      "source": "1c3edb0d-40e7-43cd-a196-c70b0ef985cb",
+      "target": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "email_HD-K04_service_request.txt"
+      ],
+      "first_seen": "2026-08-13"
+    },
+    {
+      "source": "1c3edb0d-40e7-43cd-a196-c70b0ef985cb",
+      "target": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "email_HD-K04_service_request.txt"
+      ],
+      "first_seen": "2026-08-13"
+    },
+    {
+      "source": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "target": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "relationship": "REPORTED_BY",
+      "confidence": 0.825,
+      "source_documents": [
+        "email_HD-K04_service_request.txt"
+      ],
+      "first_seen": "2026-08-13"
     },
     {
       "source": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
@@ -428,6 +1970,406 @@
       "first_seen": "2026-08-14"
     },
     {
+      "source": "2c443fc8-9f2b-46d4-83db-dc4009232fff",
+      "target": "1f1fd072-ebbc-4646-9e7b-d9934c6eb569",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "2c443fc8-9f2b-46d4-83db-dc4009232fff",
+      "target": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "2c443fc8-9f2b-46d4-83db-dc4009232fff",
+      "target": "7636f70f-c532-473f-aa70-206af998866b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "2c443fc8-9f2b-46d4-83db-dc4009232fff",
+      "target": "a0ec964d-8493-4204-b126-85c49fb76b3e",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "2c443fc8-9f2b-46d4-83db-dc4009232fff",
+      "target": "a18979a6-d368-4744-8b57-50f3da782282",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "2c443fc8-9f2b-46d4-83db-dc4009232fff",
+      "target": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "BME_Job_Report_BME-2026-0311_HD-K04.docx"
+      ],
+      "first_seen": "2026-08-14"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "07758593-fb25-4777-a141-9aad10ed64c9",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "116e3f26-a263-45c5-b720-8daba53fd325",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "1827dadf-19ec-4569-baca-4c5318917f82",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "279a6e4d-128e-442d-876d-444e463ecf6a",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "37a2b547-76d3-4d47-a3d7-8e9517e1ae1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "37ac8786-d775-4765-8ed0-448ad7ea56e8",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "3a20ed78-d22e-4747-af63-6bb570ed5fb3",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "40c896b8-4080-4f07-8d66-586b81916c85",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "4cc284a9-a4ad-45bd-9f58-8eeeba9f1052",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "6b861a25-6eeb-41a9-8930-19a39107a077",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "7440ead9-2589-44ff-a266-af851ccc5861",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "7483007a-a662-4006-b4ae-254c57294d6e",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "7d9d872b-0165-4382-bfa1-c4a9b4cfdcdb",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "80e32653-5fc5-476a-8e29-7a38e9b457c7",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "883a8898-2c5e-447c-83f9-e64e4f5933f8",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "8924ded3-3a7f-43cb-83db-86f94fc41551",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "9bbc2952-5c74-40d9-a331-7c9579b726fe",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "aeb23b05-7c40-44e2-8047-a920f60c50eb",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "be48577a-264f-4e91-a12f-ba3d12353cd3",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "bf887934-1ce4-4915-b73c-c9b234dfbd6d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "e690e806-2354-429f-a2cc-17e3afafbd01",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "f1480768-3692-4bf9-b157-b9801af61282",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "680c19d1-46bb-4388-bd93-601e1a7891d0",
+      "target": "ffd84b77-c7ed-4966-9526-05a1865b4a3a",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "equipment_inventory.json"
+      ],
+      "first_seen": "2026-08-16"
+    },
+    {
+      "source": "990c1abd-fd83-4a3a-89ab-8f1898180d25",
+      "target": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "SOP-WT-002_Dialysis_Water_Treatment.pdf"
+      ],
+      "first_seen": "2026-08-17"
+    },
+    {
+      "source": "990c1abd-fd83-4a3a-89ab-8f1898180d25",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "SOP-WT-002_Dialysis_Water_Treatment.pdf"
+      ],
+      "first_seen": "2026-08-17"
+    },
+    {
+      "source": "990c1abd-fd83-4a3a-89ab-8f1898180d25",
+      "target": "966d5a86-87bb-46b3-90ed-71789e73dc35",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "SOP-WT-002_Dialysis_Water_Treatment.pdf"
+      ],
+      "first_seen": "2026-08-17"
+    },
+    {
+      "source": "990c1abd-fd83-4a3a-89ab-8f1898180d25",
+      "target": "f77ec707-cd17-4145-b0c3-96fb3e97c7de",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "SOP-WT-002_Dialysis_Water_Treatment.pdf"
+      ],
+      "first_seen": "2026-08-17"
+    },
+    {
+      "source": "781f1676-178a-4538-a671-ab85866fbf92",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "water_sample_record_RO-H1_2026-08-18.txt"
+      ],
+      "first_seen": "2026-08-18"
+    },
+    {
+      "source": "24f541ac-47d5-4546-baca-ab82c86640a5",
+      "target": "3ec31258-e8b4-41a9-9b74-e86fed6eab88",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Patient_Transfer_Protocol.md"
+      ],
+      "first_seen": "2026-08-19"
+    },
+    {
+      "source": "24f541ac-47d5-4546-baca-ab82c86640a5",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Patient_Transfer_Protocol.md"
+      ],
+      "first_seen": "2026-08-19"
+    },
+    {
+      "source": "026e33f7-4006-4da7-ae67-a88142d44ab6",
+      "target": "514f54ab-efaa-47e2-a7c5-1b7d2ea7f220",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "July_2026_Operations_Review.pptx"
+      ],
+      "first_seen": "2026-08-20"
+    },
+    {
+      "source": "026e33f7-4006-4da7-ae67-a88142d44ab6",
+      "target": "e158b745-e70b-4b17-8153-ebe46c19a7b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "July_2026_Operations_Review.pptx"
+      ],
+      "first_seen": "2026-08-20"
+    },
+    {
       "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
       "target": "97d8948f-ff20-4d90-806a-d18075f378bd",
       "relationship": "FAILED_WITH",
@@ -465,6 +2407,36 @@
       "first_seen": "2026-08-21"
     },
     {
+      "source": "1926750b-66b0-4527-9839-c975cf620ed8",
+      "target": "97d8948f-ff20-4d90-806a-d18075f378bd",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Water_Lab_Report_RO-H1_Aug2026.pdf"
+      ],
+      "first_seen": "2026-08-21"
+    },
+    {
+      "source": "1926750b-66b0-4527-9839-c975cf620ed8",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Water_Lab_Report_RO-H1_Aug2026.pdf"
+      ],
+      "first_seen": "2026-08-21"
+    },
+    {
+      "source": "1926750b-66b0-4527-9839-c975cf620ed8",
+      "target": "f77ec707-cd17-4145-b0c3-96fb3e97c7de",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "Water_Lab_Report_RO-H1_Aug2026.pdf"
+      ],
+      "first_seen": "2026-08-21"
+    },
+    {
       "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
       "target": "206981d8-22f7-4e46-b776-0729d3eac238",
       "relationship": "HAS_MEASUREMENT",
@@ -496,6 +2468,166 @@
       "first_seen": "2026-08-22"
     },
     {
+      "source": "ee4783ca-5a6c-4b61-9926-662a2d55d8f2",
+      "target": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "ee4783ca-5a6c-4b61-9926-662a2d55d8f2",
+      "target": "45f5f4aa-0dfd-4096-a34e-b79cabb533c5",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "ee4783ca-5a6c-4b61-9926-662a2d55d8f2",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "ee4783ca-5a6c-4b61-9926-662a2d55d8f2",
+      "target": "966d5a86-87bb-46b3-90ed-71789e73dc35",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "ee4783ca-5a6c-4b61-9926-662a2d55d8f2",
+      "target": "97d8948f-ff20-4d90-806a-d18075f378bd",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "ee4783ca-5a6c-4b61-9926-662a2d55d8f2",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "ee4783ca-5a6c-4b61-9926-662a2d55d8f2",
+      "target": "f71d9a56-72b3-4dbf-bee9-eadabd5dfa84",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Incident_Report_IR-2026-031_RO-H1.docx"
+      ],
+      "first_seen": "2026-08-22"
+    },
+    {
+      "source": "4cdff1ef-2813-414a-bcca-faa47f485a62",
+      "target": "45f5f4aa-0dfd-4096-a34e-b79cabb533c5",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "disinfection_record_RO-H1.json"
+      ],
+      "first_seen": "2026-08-24"
+    },
+    {
+      "source": "4cdff1ef-2813-414a-bcca-faa47f485a62",
+      "target": "7636f70f-c532-473f-aa70-206af998866b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "disinfection_record_RO-H1.json"
+      ],
+      "first_seen": "2026-08-24"
+    },
+    {
+      "source": "4cdff1ef-2813-414a-bcca-faa47f485a62",
+      "target": "966d5a86-87bb-46b3-90ed-71789e73dc35",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "disinfection_record_RO-H1.json"
+      ],
+      "first_seen": "2026-08-24"
+    },
+    {
+      "source": "4cdff1ef-2813-414a-bcca-faa47f485a62",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "disinfection_record_RO-H1.json"
+      ],
+      "first_seen": "2026-08-24"
+    },
+    {
+      "source": "45f5f4aa-0dfd-4096-a34e-b79cabb533c5",
+      "target": "7636f70f-c532-473f-aa70-206af998866b",
+      "relationship": "PERFORMED_BY",
+      "confidence": 0.825,
+      "source_documents": [
+        "disinfection_record_RO-H1.json"
+      ],
+      "first_seen": "2026-08-24"
+    },
+    {
+      "source": "f73958ec-b7f7-4b78-905e-f45816f33bbd",
+      "target": "89675a7e-312c-4857-bcf9-fdac5dbb677a",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "water_test_results_2026.jsonl"
+      ],
+      "first_seen": "2026-08-25"
+    },
+    {
+      "source": "f73958ec-b7f7-4b78-905e-f45816f33bbd",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "water_test_results_2026.jsonl"
+      ],
+      "first_seen": "2026-08-25"
+    },
+    {
+      "source": "f73958ec-b7f7-4b78-905e-f45816f33bbd",
+      "target": "f7f40be2-fb34-45bc-9b50-703ecc9f4c13",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "water_test_results_2026.jsonl"
+      ],
+      "first_seen": "2026-08-25"
+    },
+    {
+      "source": "4cbb953e-c738-40ea-b9ac-f52972f2d222",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Water_Lab_Report_RO-H1_Resample.pdf"
+      ],
+      "first_seen": "2026-08-26"
+    },
+    {
       "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
       "target": "558eabed-bed6-475e-a42a-a6db05670392",
       "relationship": "HAS_MEASUREMENT",
@@ -504,6 +2636,277 @@
         "RCA_RO-H1_Endotoxin.md"
       ],
       "first_seen": "2026-08-27"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "26d16360-8c40-44ce-8b17-b611757d58d8",
+      "relationship": "LOCATED_IN",
+      "confidence": 0.875,
+      "source_documents": [
+        "RCA_RO-H1_Endotoxin.md"
+      ],
+      "first_seen": "2026-08-27"
+    },
+    {
+      "source": "c6e44e9a-9588-4bb8-bd4d-c9aba0fe7360",
+      "target": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "RCA_RO-H1_Endotoxin.md"
+      ],
+      "first_seen": "2026-08-27"
+    },
+    {
+      "source": "c6e44e9a-9588-4bb8-bd4d-c9aba0fe7360",
+      "target": "26d16360-8c40-44ce-8b17-b611757d58d8",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "RCA_RO-H1_Endotoxin.md"
+      ],
+      "first_seen": "2026-08-27"
+    },
+    {
+      "source": "c6e44e9a-9588-4bb8-bd4d-c9aba0fe7360",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "RCA_RO-H1_Endotoxin.md"
+      ],
+      "first_seen": "2026-08-27"
+    },
+    {
+      "source": "c6e44e9a-9588-4bb8-bd4d-c9aba0fe7360",
+      "target": "97d8948f-ff20-4d90-806a-d18075f378bd",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "RCA_RO-H1_Endotoxin.md"
+      ],
+      "first_seen": "2026-08-27"
+    },
+    {
+      "source": "c6e44e9a-9588-4bb8-bd4d-c9aba0fe7360",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "RCA_RO-H1_Endotoxin.md"
+      ],
+      "first_seen": "2026-08-27"
+    },
+    {
+      "source": "c6e44e9a-9588-4bb8-bd4d-c9aba0fe7360",
+      "target": "f71d9a56-72b3-4dbf-bee9-eadabd5dfa84",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "RCA_RO-H1_Endotoxin.md"
+      ],
+      "first_seen": "2026-08-27"
+    },
+    {
+      "source": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "target": "f71d9a56-72b3-4dbf-bee9-eadabd5dfa84",
+      "relationship": "PERFORMED_BY",
+      "confidence": 0.825,
+      "source_documents": [
+        "nabh_corrective_action_tracker.csv",
+        "RCA_RO-H1_Endotoxin.md"
+      ],
+      "first_seen": "2026-08-27"
+    },
+    {
+      "source": "3bd49e16-0852-4644-b381-3a3a2e0470bf",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "PM_Schedule_2026.xlsx"
+      ],
+      "first_seen": "2026-08-28"
+    },
+    {
+      "source": "3bd49e16-0852-4644-b381-3a3a2e0470bf",
+      "target": "89675a7e-312c-4857-bcf9-fdac5dbb677a",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "PM_Schedule_2026.xlsx"
+      ],
+      "first_seen": "2026-08-28"
+    },
+    {
+      "source": "3bd49e16-0852-4644-b381-3a3a2e0470bf",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "PM_Schedule_2026.xlsx"
+      ],
+      "first_seen": "2026-08-28"
+    },
+    {
+      "source": "3bd49e16-0852-4644-b381-3a3a2e0470bf",
+      "target": "f7f40be2-fb34-45bc-9b50-703ecc9f4c13",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "PM_Schedule_2026.xlsx"
+      ],
+      "first_seen": "2026-08-28"
+    },
+    {
+      "source": "ebd2be6c-7c25-4915-8e4f-9c5e90757ca8",
+      "target": "7636f70f-c532-473f-aa70-206af998866b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "shift_log_KTH_2026-08-29.txt"
+      ],
+      "first_seen": "2026-08-29"
+    },
+    {
+      "source": "ebd2be6c-7c25-4915-8e4f-9c5e90757ca8",
+      "target": "7ae955ce-43da-45a9-b8e6-c64a6633fc3b",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "shift_log_KTH_2026-08-29.txt"
+      ],
+      "first_seen": "2026-08-29"
+    },
+    {
+      "source": "7ae955ce-43da-45a9-b8e6-c64a6633fc3b",
+      "target": "7636f70f-c532-473f-aa70-206af998866b",
+      "relationship": "PERFORMED_BY",
+      "confidence": 0.825,
+      "source_documents": [
+        "shift_log_KTH_2026-08-29.txt"
+      ],
+      "first_seen": "2026-08-29"
+    },
+    {
+      "source": "370f521b-2ea7-4273-8e78-33cfa659332b",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Notice_Hepatitis_B_Vaccination_Drive.docx"
+      ],
+      "first_seen": "2026-08-30"
+    },
+    {
+      "source": "370f521b-2ea7-4273-8e78-33cfa659332b",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Notice_Hepatitis_B_Vaccination_Drive.docx"
+      ],
+      "first_seen": "2026-08-30"
+    },
+    {
+      "source": "72e46253-8e72-49ac-bd88-4a9e34308af0",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "vaccination_drive_summary_2026-09-02.txt"
+      ],
+      "first_seen": "2026-09-02"
+    },
+    {
+      "source": "f535573f-3980-4b36-8ebe-1c22d6841a7d",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Infection_Report_Case1_PMP-0412.docx"
+      ],
+      "first_seen": "2026-09-03"
+    },
+    {
+      "source": "f535573f-3980-4b36-8ebe-1c22d6841a7d",
+      "target": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Infection_Report_Case1_PMP-0412.docx"
+      ],
+      "first_seen": "2026-09-03"
+    },
+    {
+      "source": "f535573f-3980-4b36-8ebe-1c22d6841a7d",
+      "target": "c4c3cb6a-7a08-4144-bb93-a1b5b71b1ab6",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Infection_Report_Case1_PMP-0412.docx"
+      ],
+      "first_seen": "2026-09-03"
+    },
+    {
+      "source": "34919eb4-6265-4641-847e-713b6d0ecf2b",
+      "target": "e158b745-e70b-4b17-8153-ebe46c19a7b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "August_2026_Operations_Review.pptx"
+      ],
+      "first_seen": "2026-09-04"
+    },
+    {
+      "source": "29c89a4d-09e8-4835-a87a-4a8304f0728c",
+      "target": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "staff_roster_week37.json"
+      ],
+      "first_seen": "2026-09-06"
+    },
+    {
+      "source": "29c89a4d-09e8-4835-a87a-4a8304f0728c",
+      "target": "7636f70f-c532-473f-aa70-206af998866b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "staff_roster_week37.json"
+      ],
+      "first_seen": "2026-09-06"
+    },
+    {
+      "source": "88b8141c-5828-4835-bd53-c723e0c28cce",
+      "target": "0fbb48f7-0f17-44e5-aea3-ffba3bc6ac66",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "shift_log_PMP_2026-09-07.txt"
+      ],
+      "first_seen": "2026-09-07"
+    },
+    {
+      "source": "88b8141c-5828-4835-bd53-c723e0c28cce",
+      "target": "17ae9b4d-789f-4c47-bd19-d2e5926b203c",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "shift_log_PMP_2026-09-07.txt"
+      ],
+      "first_seen": "2026-09-07"
+    },
+    {
+      "source": "88b8141c-5828-4835-bd53-c723e0c28cce",
+      "target": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "shift_log_PMP_2026-09-07.txt"
+      ],
+      "first_seen": "2026-09-07"
     },
     {
       "source": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
@@ -527,6 +2930,1018 @@
       "first_seen": "2026-09-08"
     },
     {
+      "source": "94470ff1-4315-40db-aa72-d901fec4abcb",
+      "target": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Generator_Load_Test_GEN-P1.pdf"
+      ],
+      "first_seen": "2026-09-08"
+    },
+    {
+      "source": "94470ff1-4315-40db-aa72-d901fec4abcb",
+      "target": "2831da49-8829-4dd5-93e1-4d509583a89b",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Generator_Load_Test_GEN-P1.pdf"
+      ],
+      "first_seen": "2026-09-08"
+    },
+    {
+      "source": "94470ff1-4315-40db-aa72-d901fec4abcb",
+      "target": "586f01ff-b560-4232-829a-9902e8a60640",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Generator_Load_Test_GEN-P1.pdf"
+      ],
+      "first_seen": "2026-09-08"
+    },
+    {
+      "source": "94470ff1-4315-40db-aa72-d901fec4abcb",
+      "target": "8b738f1f-1221-413a-8871-48429a1c0026",
+      "relationship": "MENTIONS",
+      "confidence": 0.795,
+      "source_documents": [
+        "Generator_Load_Test_GEN-P1.pdf"
+      ],
+      "first_seen": "2026-09-08"
+    },
+    {
+      "source": "94470ff1-4315-40db-aa72-d901fec4abcb",
+      "target": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Generator_Load_Test_GEN-P1.pdf"
+      ],
+      "first_seen": "2026-09-08"
+    },
+    {
+      "source": "4765cac0-cc98-4b76-af3d-3bff3a2732cc",
+      "target": "c7807909-894e-4558-8abd-2fe672b410f4",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Finance_Procurement_Policy.pdf"
+      ],
+      "first_seen": "2026-09-09"
+    },
+    {
+      "source": "0f31829b-c910-43c3-97e2-b2b457198ac7",
+      "target": "d50948f1-1ecd-425b-8392-ac0eb1af0799",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "Biomedical_Waste_Management_SOP.md"
+      ],
+      "first_seen": "2026-09-10"
+    },
+    {
+      "source": "0f31829b-c910-43c3-97e2-b2b457198ac7",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Biomedical_Waste_Management_SOP.md"
+      ],
+      "first_seen": "2026-09-10"
+    },
+    {
+      "source": "f07a0e3f-9ea1-44b5-b705-3eac9d6cdc91",
+      "target": "c7807909-894e-4558-8abd-2fe672b410f4",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "PMJAY_Claims_Ageing_Sep2026.xlsx"
+      ],
+      "first_seen": "2026-09-11"
+    },
+    {
+      "source": "c11869c7-f862-4734-beb5-bf73d8802fe2",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Infection_Report_Case2_PMP-0388.docx"
+      ],
+      "first_seen": "2026-09-12"
+    },
+    {
+      "source": "c11869c7-f862-4734-beb5-bf73d8802fe2",
+      "target": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Infection_Report_Case2_PMP-0388.docx"
+      ],
+      "first_seen": "2026-09-12"
+    },
+    {
+      "source": "c11869c7-f862-4734-beb5-bf73d8802fe2",
+      "target": "c4c3cb6a-7a08-4144-bb93-a1b5b71b1ab6",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Infection_Report_Case2_PMP-0388.docx"
+      ],
+      "first_seen": "2026-09-12"
+    },
+    {
+      "source": "89984ff3-963a-4076-8352-546626c6d3d7",
+      "target": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "email_infection_alert_PMP.txt"
+      ],
+      "first_seen": "2026-09-13"
+    },
+    {
+      "source": "89984ff3-963a-4076-8352-546626c6d3d7",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "email_infection_alert_PMP.txt"
+      ],
+      "first_seen": "2026-09-13"
+    },
+    {
+      "source": "89984ff3-963a-4076-8352-546626c6d3d7",
+      "target": "3ec31258-e8b4-41a9-9b74-e86fed6eab88",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "email_infection_alert_PMP.txt"
+      ],
+      "first_seen": "2026-09-13"
+    },
+    {
+      "source": "89984ff3-963a-4076-8352-546626c6d3d7",
+      "target": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "email_infection_alert_PMP.txt"
+      ],
+      "first_seen": "2026-09-13"
+    },
+    {
+      "source": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "OCCURRED_AT",
+      "confidence": 0.8,
+      "source_documents": [
+        "email_infection_alert_PMP.txt",
+        "Lessons_Learned_Q3_2026.md",
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-09-13"
+    },
+    {
+      "source": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "WORKS_AT",
+      "confidence": 0.8,
+      "source_documents": [
+        "email_infection_alert_PMP.txt"
+      ],
+      "first_seen": "2026-09-13"
+    },
+    {
+      "source": "3ec31258-e8b4-41a9-9b74-e86fed6eab88",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "WORKS_AT",
+      "confidence": 0.8,
+      "source_documents": [
+        "email_infection_alert_PMP.txt"
+      ],
+      "first_seen": "2026-09-13"
+    },
+    {
+      "source": "2116d0cd-1a73-4482-81aa-5e1055d5f2fc",
+      "target": "c7807909-894e-4558-8abd-2fe672b410f4",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Finance_Travel_and_Expense_Rates.xlsx"
+      ],
+      "first_seen": "2026-09-14"
+    },
+    {
+      "source": "bded223a-8d77-44ec-b683-acd6056469e0",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Infection_Control_Audit_PMP_Sep2026.pdf"
+      ],
+      "first_seen": "2026-09-15"
+    },
+    {
+      "source": "bded223a-8d77-44ec-b683-acd6056469e0",
+      "target": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Infection_Control_Audit_PMP_Sep2026.pdf"
+      ],
+      "first_seen": "2026-09-15"
+    },
+    {
+      "source": "3a8d29ae-993c-4cf6-bdf2-2ad5f3f00f00",
+      "target": "3ec31258-e8b4-41a9-9b74-e86fed6eab88",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Pimpri_Infection_Action_Plan.pptx"
+      ],
+      "first_seen": "2026-09-16"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "11f09dfe-e978-49eb-99ac-ec48228ff1eb",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "128fef4f-30f1-4051-8670-2dbb3b7d1e4b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "2a7625eb-7e6f-4fd6-9162-1c6e07c27133",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "4132b65a-6344-4df9-a9c2-ffbeba5ae479",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "5ea0dab5-1ef9-4b5c-a415-a73085eb520e",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "600919ca-34e9-4c79-9726-dd4e5c0231e0",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "736e5ed2-c135-42bc-901f-8c7a1f6dd0cc",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "76f9dabf-1792-40c1-ac60-6b3d79b127f5",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "7ae57eb8-fdd4-40ee-b0a1-e47355ccd2f1",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "80fc6f0a-b75f-476f-a177-a4920467ec20",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "998634ca-bf24-4fdd-8c44-4d0bfe55a562",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "b3e516c7-c048-4e10-b4f7-7bc09af8929d",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "f281c7f1-152c-4ee3-a004-51e43254bc7e",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "f367a06d-a12c-48d2-b8fd-108265a51fbb",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "6f973ad6-0489-42fc-a526-292681c7e1cb",
+      "target": "f4d1ca16-7341-4023-b37c-56dbb9269316",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "training_attendance_hand_hygiene_sep2026.csv"
+      ],
+      "first_seen": "2026-09-17"
+    },
+    {
+      "source": "1bdb7f64-c95f-46cc-8a85-139c263f3573",
+      "target": "3ec31258-e8b4-41a9-9b74-e86fed6eab88",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Catheter_Care_Bundle.md"
+      ],
+      "first_seen": "2026-09-18"
+    },
+    {
+      "source": "65415d14-80a6-4ecd-87f6-1bb013ee4176",
+      "target": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Quality_Committee_Minutes_Sep2026.docx"
+      ],
+      "first_seen": "2026-09-19"
+    },
+    {
+      "source": "65415d14-80a6-4ecd-87f6-1bb013ee4176",
+      "target": "21f0d350-43be-4808-86d9-722a4664d06b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Quality_Committee_Minutes_Sep2026.docx"
+      ],
+      "first_seen": "2026-09-19"
+    },
+    {
+      "source": "65415d14-80a6-4ecd-87f6-1bb013ee4176",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Quality_Committee_Minutes_Sep2026.docx"
+      ],
+      "first_seen": "2026-09-19"
+    },
+    {
+      "source": "65415d14-80a6-4ecd-87f6-1bb013ee4176",
+      "target": "3ec31258-e8b4-41a9-9b74-e86fed6eab88",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Quality_Committee_Minutes_Sep2026.docx"
+      ],
+      "first_seen": "2026-09-19"
+    },
+    {
+      "source": "65415d14-80a6-4ecd-87f6-1bb013ee4176",
+      "target": "555b1868-46b4-46a4-9df9-c8f3cee70d0a",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Quality_Committee_Minutes_Sep2026.docx"
+      ],
+      "first_seen": "2026-09-19"
+    },
+    {
+      "source": "65415d14-80a6-4ecd-87f6-1bb013ee4176",
+      "target": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "Quality_Committee_Minutes_Sep2026.docx"
+      ],
+      "first_seen": "2026-09-19"
+    },
+    {
+      "source": "65415d14-80a6-4ecd-87f6-1bb013ee4176",
+      "target": "e158b745-e70b-4b17-8153-ebe46c19a7b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Quality_Committee_Minutes_Sep2026.docx"
+      ],
+      "first_seen": "2026-09-19"
+    },
+    {
+      "source": "65415d14-80a6-4ecd-87f6-1bb013ee4176",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Quality_Committee_Minutes_Sep2026.docx"
+      ],
+      "first_seen": "2026-09-19"
+    },
+    {
+      "source": "bb7d7772-1ba6-4dcb-a3ee-c8d726f3aebb",
+      "target": "451f987b-aa4c-4d54-ae83-e0ef6b0cacad",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Consumables_Stock_Sep2026.xlsx"
+      ],
+      "first_seen": "2026-09-20"
+    },
+    {
+      "source": "5195d0bd-38b0-4360-99e3-a2736ab47efb",
+      "target": "3ec31258-e8b4-41a9-9b74-e86fed6eab88",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Nursing_Quality_Indicators_Aug2026.pptx"
+      ],
+      "first_seen": "2026-09-21"
+    },
+    {
+      "source": "5195d0bd-38b0-4360-99e3-a2736ab47efb",
+      "target": "3fb8fb0c-f780-4a9b-a7ce-d18ff91b8406",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nursing_Quality_Indicators_Aug2026.pptx"
+      ],
+      "first_seen": "2026-09-21"
+    },
+    {
+      "source": "5195d0bd-38b0-4360-99e3-a2736ab47efb",
+      "target": "8de5781b-7dee-45fd-9748-2d83f58ccb02",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nursing_Quality_Indicators_Aug2026.pptx"
+      ],
+      "first_seen": "2026-09-21"
+    },
+    {
+      "source": "5195d0bd-38b0-4360-99e3-a2736ab47efb",
+      "target": "af1bff9d-51ca-429b-9455-d698d3260d2e",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nursing_Quality_Indicators_Aug2026.pptx"
+      ],
+      "first_seen": "2026-09-21"
+    },
+    {
+      "source": "5195d0bd-38b0-4360-99e3-a2736ab47efb",
+      "target": "eff48b23-53ae-429e-9b02-bcad0e3ed435",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Nursing_Quality_Indicators_Aug2026.pptx"
+      ],
+      "first_seen": "2026-09-21"
+    },
+    {
+      "source": "30836219-3963-46ef-92d3-3fc9c921fdb2",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "nabh_document_checklist.json"
+      ],
+      "first_seen": "2026-09-22"
+    },
+    {
+      "source": "30836219-3963-46ef-92d3-3fc9c921fdb2",
+      "target": "7ae955ce-43da-45a9-b8e6-c64a6633fc3b",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "nabh_document_checklist.json"
+      ],
+      "first_seen": "2026-09-22"
+    },
+    {
+      "source": "30836219-3963-46ef-92d3-3fc9c921fdb2",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "nabh_document_checklist.json"
+      ],
+      "first_seen": "2026-09-22"
+    },
+    {
+      "source": "30836219-3963-46ef-92d3-3fc9c921fdb2",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "nabh_document_checklist.json"
+      ],
+      "first_seen": "2026-09-22"
+    },
+    {
+      "source": "7cd31597-53f1-4cdf-bddf-1fbe4a58a372",
+      "target": "26d16360-8c40-44ce-8b17-b611757d58d8",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "NABH_Readiness_Briefing.pptx"
+      ],
+      "first_seen": "2026-09-23"
+    },
+    {
+      "source": "7cd31597-53f1-4cdf-bddf-1fbe4a58a372",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "NABH_Readiness_Briefing.pptx"
+      ],
+      "first_seen": "2026-09-23"
+    },
+    {
+      "source": "7cd31597-53f1-4cdf-bddf-1fbe4a58a372",
+      "target": "3979a68b-6982-4874-a3b7-23deb6a2ac9b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "NABH_Readiness_Briefing.pptx"
+      ],
+      "first_seen": "2026-09-23"
+    },
+    {
+      "source": "7cd31597-53f1-4cdf-bddf-1fbe4a58a372",
+      "target": "514f54ab-efaa-47e2-a7c5-1b7d2ea7f220",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "NABH_Readiness_Briefing.pptx"
+      ],
+      "first_seen": "2026-09-23"
+    },
+    {
+      "source": "7cd31597-53f1-4cdf-bddf-1fbe4a58a372",
+      "target": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "NABH_Readiness_Briefing.pptx"
+      ],
+      "first_seen": "2026-09-23"
+    },
+    {
+      "source": "7cd31597-53f1-4cdf-bddf-1fbe4a58a372",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "NABH_Readiness_Briefing.pptx"
+      ],
+      "first_seen": "2026-09-23"
+    },
+    {
+      "source": "7cd31597-53f1-4cdf-bddf-1fbe4a58a372",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "NABH_Readiness_Briefing.pptx"
+      ],
+      "first_seen": "2026-09-23"
+    },
+    {
+      "source": "bf7b1740-4baf-4e0b-a598-2d38843d5aaa",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "NABH_Surveillance_Assessment_Report.pdf"
+      ],
+      "first_seen": "2026-09-24"
+    },
+    {
+      "source": "bf7b1740-4baf-4e0b-a598-2d38843d5aaa",
+      "target": "3979a68b-6982-4874-a3b7-23deb6a2ac9b",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "NABH_Surveillance_Assessment_Report.pdf"
+      ],
+      "first_seen": "2026-09-24"
+    },
+    {
+      "source": "bf7b1740-4baf-4e0b-a598-2d38843d5aaa",
+      "target": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "NABH_Surveillance_Assessment_Report.pdf"
+      ],
+      "first_seen": "2026-09-24"
+    },
+    {
+      "source": "bf7b1740-4baf-4e0b-a598-2d38843d5aaa",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "NABH_Surveillance_Assessment_Report.pdf"
+      ],
+      "first_seen": "2026-09-24"
+    },
+    {
+      "source": "bf7b1740-4baf-4e0b-a598-2d38843d5aaa",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "NABH_Surveillance_Assessment_Report.pdf"
+      ],
+      "first_seen": "2026-09-24"
+    },
+    {
+      "source": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "target": "f71d9a56-72b3-4dbf-bee9-eadabd5dfa84",
+      "relationship": "ASSIGNED_TO",
+      "confidence": 0.875,
+      "source_documents": [
+        "nabh_corrective_action_tracker.csv"
+      ],
+      "first_seen": "2026-09-25"
+    },
+    {
+      "source": "bda57a50-678f-47e6-b63d-b123a160afc0",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "nabh_corrective_action_tracker.csv"
+      ],
+      "first_seen": "2026-09-25"
+    },
+    {
+      "source": "bda57a50-678f-47e6-b63d-b123a160afc0",
+      "target": "514f54ab-efaa-47e2-a7c5-1b7d2ea7f220",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "nabh_corrective_action_tracker.csv"
+      ],
+      "first_seen": "2026-09-25"
+    },
+    {
+      "source": "bda57a50-678f-47e6-b63d-b123a160afc0",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "nabh_corrective_action_tracker.csv"
+      ],
+      "first_seen": "2026-09-25"
+    },
+    {
+      "source": "bda57a50-678f-47e6-b63d-b123a160afc0",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "nabh_corrective_action_tracker.csv"
+      ],
+      "first_seen": "2026-09-25"
+    },
+    {
+      "source": "bda57a50-678f-47e6-b63d-b123a160afc0",
+      "target": "f71d9a56-72b3-4dbf-bee9-eadabd5dfa84",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "nabh_corrective_action_tracker.csv"
+      ],
+      "first_seen": "2026-09-25"
+    },
+    {
+      "source": "c5680031-a9ca-4e1e-a96f-577c8eac13c3",
+      "target": "98a4975c-c7ff-408d-8a14-5e0330597a9d",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "Patient_Privacy_Notice.md"
+      ],
+      "first_seen": "2026-09-26"
+    },
+    {
+      "source": "c5680031-a9ca-4e1e-a96f-577c8eac13c3",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Patient_Privacy_Notice.md"
+      ],
+      "first_seen": "2026-09-26"
+    },
+    {
+      "source": "9d572f37-7fd8-4bb9-ba99-4854133c061a",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "shift_log_HDP_2026-09-27.txt"
+      ],
+      "first_seen": "2026-09-27"
+    },
+    {
+      "source": "9d572f37-7fd8-4bb9-ba99-4854133c061a",
+      "target": "f71d9a56-72b3-4dbf-bee9-eadabd5dfa84",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "shift_log_HDP_2026-09-27.txt"
+      ],
+      "first_seen": "2026-09-27"
+    },
+    {
+      "source": "166aa288-ccb7-4910-bbd3-da7fad699be5",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "HR_Leave_and_Attendance_Policy.docx"
+      ],
+      "first_seen": "2026-09-28"
+    },
+    {
+      "source": "166aa288-ccb7-4910-bbd3-da7fad699be5",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "HR_Leave_and_Attendance_Policy.docx"
+      ],
+      "first_seen": "2026-09-28"
+    },
+    {
+      "source": "6db968f9-bb45-4aaf-ab12-a033b6d2f87a",
+      "target": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Infection_Control_Reaudit_PMP_Sep30.pdf"
+      ],
+      "first_seen": "2026-09-30"
+    },
+    {
+      "source": "7cc70167-d4c8-4d10-999a-cf17d3c863f6",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "September_2026_Operations_Review.pptx"
+      ],
+      "first_seen": "2026-10-04"
+    },
+    {
+      "source": "7cc70167-d4c8-4d10-999a-cf17d3c863f6",
+      "target": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "September_2026_Operations_Review.pptx"
+      ],
+      "first_seen": "2026-10-04"
+    },
+    {
+      "source": "7cc70167-d4c8-4d10-999a-cf17d3c863f6",
+      "target": "e158b745-e70b-4b17-8153-ebe46c19a7b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "September_2026_Operations_Review.pptx"
+      ],
+      "first_seen": "2026-10-04"
+    },
+    {
+      "source": "3c48ac70-a5e4-4bdd-bec0-e9eeede6304a",
+      "target": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "Board_Note_Q3_2026.docx"
+      ],
+      "first_seen": "2026-10-05"
+    },
+    {
+      "source": "3c48ac70-a5e4-4bdd-bec0-e9eeede6304a",
+      "target": "c7807909-894e-4558-8abd-2fe672b410f4",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Board_Note_Q3_2026.docx"
+      ],
+      "first_seen": "2026-10-05"
+    },
+    {
+      "source": "3c48ac70-a5e4-4bdd-bec0-e9eeede6304a",
+      "target": "e158b745-e70b-4b17-8153-ebe46c19a7b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Board_Note_Q3_2026.docx"
+      ],
+      "first_seen": "2026-10-05"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "26d16360-8c40-44ce-8b17-b611757d58d8",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "514f54ab-efaa-47e2-a7c5-1b7d2ea7f220",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "97d8948f-ff20-4d90-806a-d18075f378bd",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "a0ec964d-8493-4204-b126-85c49fb76b3e",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "c872cadf-497d-45fd-949b-3685a255cfd5",
+      "relationship": "MENTIONS",
+      "confidence": 0.737,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
+      "source": "cf649718-e3da-4cef-ab24-cada2b0d7183",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Lessons_Learned_Q3_2026.md"
+      ],
+      "first_seen": "2026-10-06"
+    },
+    {
       "source": "97d8948f-ff20-4d90-806a-d18075f378bd",
       "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
       "relationship": "REPAIRED_BY",
@@ -548,10 +3963,330 @@
       "first_seen": "2026-10-06"
     },
     {
-      "source": "04fefde9-504f-4d33-82f2-7a0aa282a446",
+      "source": "3612ad3a-a1f8-407d-b4ed-65656e35b4bf",
+      "target": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "email_NABH_closure_status.txt"
+      ],
+      "first_seen": "2026-10-07"
+    },
+    {
+      "source": "3612ad3a-a1f8-407d-b4ed-65656e35b4bf",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "email_NABH_closure_status.txt"
+      ],
+      "first_seen": "2026-10-07"
+    },
+    {
+      "source": "3612ad3a-a1f8-407d-b4ed-65656e35b4bf",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "email_NABH_closure_status.txt"
+      ],
+      "first_seen": "2026-10-07"
+    },
+    {
+      "source": "2121a58b-c02e-435b-abed-b9e25bd36e3d",
+      "target": "26d16360-8c40-44ce-8b17-b611757d58d8",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Quality_Report.pdf"
+      ],
+      "first_seen": "2026-10-08"
+    },
+    {
+      "source": "2121a58b-c02e-435b-abed-b9e25bd36e3d",
+      "target": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "Q3_2026_Quality_Report.pdf"
+      ],
+      "first_seen": "2026-10-08"
+    },
+    {
+      "source": "2121a58b-c02e-435b-abed-b9e25bd36e3d",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Quality_Report.pdf"
+      ],
+      "first_seen": "2026-10-08"
+    },
+    {
+      "source": "2121a58b-c02e-435b-abed-b9e25bd36e3d",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Quality_Report.pdf"
+      ],
+      "first_seen": "2026-10-08"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "2134ef09-01fd-4f86-afc5-09d0863923aa",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "26d16360-8c40-44ce-8b17-b611757d58d8",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "2831da49-8829-4dd5-93e1-4d509583a89b",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "2caf4d4a-dd01-455f-8164-d314391843a7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "45f5f4aa-0dfd-4096-a34e-b79cabb533c5",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "514f54ab-efaa-47e2-a7c5-1b7d2ea7f220",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "5180bc61-f592-4b68-a01c-0be0bd78a0bf",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "586f01ff-b560-4232-829a-9902e8a60640",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "6d6205ba-988d-4b75-a959-d47328f9ce42",
+      "relationship": "MENTIONS",
+      "confidence": 0.92,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "6f289ec5-7827-4248-a8fb-c96bdfa5d2d3",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "822499d1-bf5a-453f-be8d-c9d1a015b4d7",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "8b738f1f-1221-413a-8871-48429a1c0026",
+      "relationship": "MENTIONS",
+      "confidence": 0.795,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "97d8948f-ff20-4d90-806a-d18075f378bd",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "a0ec964d-8493-4204-b126-85c49fb76b3e",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "a9064ff0-1c93-4ac7-9e4b-0b892676c238",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "aad40f64-f36e-4e4c-ab30-677d5d0bbbae",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
       "target": "c4c3cb6a-7a08-4144-bb93-a1b5b71b1ab6",
-      "relationship": "TREATED_WITH",
-      "confidence": 0.825,
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "c7807909-894e-4558-8abd-2fe672b410f4",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "c872cadf-497d-45fd-949b-3685a255cfd5",
+      "relationship": "MENTIONS",
+      "confidence": 0.737,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "e158b745-e70b-4b17-8153-ebe46c19a7b6",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "e457c983-baee-492c-844d-4664d5c1dd0d",
+      "relationship": "MENTIONS",
+      "confidence": 0.95,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "e79116eb-b198-4058-ad8b-3c37496f3e07",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "f6d126b5-1a92-4044-a4cf-5c06de389c43",
+      "relationship": "MENTIONS",
+      "confidence": 0.8,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "eb12afe9-51a2-42af-8fc8-37e62cdedf87",
+      "target": "faff1424-580c-4bbf-80d5-75b8e25edefc",
+      "relationship": "MENTIONS",
+      "confidence": 0.85,
+      "source_documents": [
+        "Q3_2026_Board_Pack.docx"
+      ],
+      "first_seen": "2026-10-09"
+    },
+    {
+      "source": "9f7186bc-63ad-45ea-a761-535de1bc4f1d",
+      "target": "26d16360-8c40-44ce-8b17-b611757d58d8",
+      "relationship": "OCCURRED_AT",
+      "confidence": 0.8,
       "source_documents": [
         "Q3_2026_Board_Pack.docx"
       ],

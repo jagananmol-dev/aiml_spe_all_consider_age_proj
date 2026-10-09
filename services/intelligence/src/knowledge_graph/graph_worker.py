@@ -22,14 +22,15 @@ can run in parallel with Kafka consumer group load balancing.
 import json
 import logging
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from typing import Any
 
 try:
-    from confluent_kafka import Consumer, Producer, KafkaError
+    from confluent_kafka import Consumer, KafkaError, Producer
 except ImportError:  # pragma: no cover - optional dependency
-    Consumer = Producer = None
+    Consumer = Producer = None  # type: ignore[assignment,misc]
 
-    class KafkaError(Exception):
+    class KafkaError(Exception):  # type: ignore[no-redef]
         _PARTITION_EOF = 0
 
 
@@ -37,7 +38,7 @@ try:
     from pydantic_settings import BaseSettings
 except ImportError:  # pragma: no cover - optional dependency
 
-    class BaseSettings:
+    class BaseSettings:  # type: ignore[no-redef]
         def __init__(self, **kwargs):
             for key, value in kwargs.items():
                 setattr(self, key, value)
@@ -46,7 +47,7 @@ except ImportError:  # pragma: no cover - optional dependency
 try:
     from sentence_transformers import SentenceTransformer
 except ImportError:  # pragma: no cover - optional dependency
-    SentenceTransformer = None
+    SentenceTransformer = None  # type: ignore[assignment,misc]
 
 from ..entity_extraction import semantic
 from ..entity_extraction.extractor import IndustrialEntityExtractor
@@ -191,7 +192,7 @@ class KnowledgeGraphWorker:
         Returns a summary dict with processing statistics.
         """
         start_time = time.time()
-        stats = {
+        stats: dict[str, Any] = {
             "document_id": document_id,
             "entities_extracted": 0,
             "nodes_upserted": 0,
@@ -224,7 +225,7 @@ class KnowledgeGraphWorker:
 
         except Exception as e:
             error_msg = f"Entity extraction failed: {e}"
-            logger.error(error_msg, exc_info=True)
+            logger.exception(error_msg)
             stats["errors"].append(error_msg)
 
             # Publish failure event
@@ -235,7 +236,7 @@ class KnowledgeGraphWorker:
                     "tenant_id": tenant_id,
                     "document_id": document_id,
                     "error": str(e),
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                 },
             )
             return stats
@@ -253,11 +254,11 @@ class KnowledgeGraphWorker:
 
         except Exception as e:
             error_msg = f"Graph node upsert failed: {e}"
-            logger.error(error_msg, exc_info=True)
+            logger.exception(error_msg)
             stats["errors"].append(error_msg)
 
         # ─── Step 3: Build relationships ──────────────
-        logger.info(f"🔗 Building relationships between entities...")
+        logger.info("🔗 Building relationships between entities...")
 
         try:
             relationships_created = await self.graph_manager.build_document_relationships(
@@ -270,7 +271,7 @@ class KnowledgeGraphWorker:
 
         except Exception as e:
             error_msg = f"Relationship building failed: {e}"
-            logger.error(error_msg, exc_info=True)
+            logger.exception(error_msg)
             stats["errors"].append(error_msg)
 
         # ─── Step 4: Store entities in relational DB ──
@@ -284,7 +285,7 @@ class KnowledgeGraphWorker:
             logger.warning(f"Entity DB storage failed (non-critical): {e}")
 
         # ─── Step 5: Generate embeddings ──────────────
-        logger.info(f"📐 Generating embeddings for document chunks...")
+        logger.info("📐 Generating embeddings for document chunks...")
 
         try:
             embeddings_count = await self._generate_and_store_embeddings(
@@ -303,13 +304,13 @@ class KnowledgeGraphWorker:
                     "document_id": document_id,
                     "chunks_embedded": embeddings_count,
                     "model": settings.embedding_model,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                 },
             )
 
         except Exception as e:
             error_msg = f"Embedding generation failed: {e}"
-            logger.error(error_msg, exc_info=True)
+            logger.exception(error_msg)
             stats["errors"].append(error_msg)
 
             self._publish_event(
@@ -319,7 +320,7 @@ class KnowledgeGraphWorker:
                     "tenant_id": tenant_id,
                     "document_id": document_id,
                     "error": str(e),
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                 },
             )
 
@@ -340,7 +341,7 @@ class KnowledgeGraphWorker:
                     }
                     for e in entity_dicts
                 ],
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             },
         )
 
@@ -352,7 +353,7 @@ class KnowledgeGraphWorker:
                 "document_id": document_id,
                 "nodesCreated": stats["nodes_upserted"],
                 "edgesCreated": stats["relationships_created"],
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             },
         )
 
@@ -383,6 +384,7 @@ class KnowledgeGraphWorker:
         embeddings with sentence-transformers.
         """
         import psycopg
+
         from .chunk_builder import ChunkBuilder
 
         builder = ChunkBuilder(
@@ -516,7 +518,7 @@ class KnowledgeGraphWorker:
         # Load the embedding model up front: entity extraction types phrases
         # with it, and it runs before the embedding step of the first document
         try:
-            self.embedding_model
+            _ = self.embedding_model
         except Exception as e:
             logger.warning(f"Embedding model unavailable, typing entities with patterns only: {e}")
 
@@ -566,7 +568,7 @@ class KnowledgeGraphWorker:
                         continue
 
                     # Process the document
-                    stats = loop.run_until_complete(
+                    loop.run_until_complete(
                         self.process_document(
                             tenant_id=tenant_id,
                             document_id=document_id,
@@ -582,8 +584,8 @@ class KnowledgeGraphWorker:
                     # Commit offset after successful processing
                     consumer.commit(asynchronous=False)
 
-                except Exception as e:
-                    logger.error(f"❌ Failed to process document: {e}", exc_info=True)
+                except Exception:
+                    logger.exception("❌ Failed to process document")
                     # Still commit to avoid reprocessing poison pills forever
                     consumer.commit(asynchronous=False)
 

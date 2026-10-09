@@ -12,12 +12,12 @@ VEDA is a multi-tenant RAG (retrieval-augmented generation) platform. Any compan
 |:--|:--|
 | **One agent per company** | A tenant *is* its agent. Retrieval runs over everything that tenant has uploaded and never touches another tenant's data (every query is tenant-scoped, and PostgreSQL row-level security is enabled). |
 | **Grounded answers with sources** | Every answer is built from retrieved passages and cites them `[1]`, `[2]`. The UI shows which documents and passages were used and how long retrieval took. If nothing matches well, the answer says so and points to what the documents *do* cover. |
-| **Domain-agnostic knowledge graph** | Entities and relationships come from `graph_schema.json` plus per-tenant extensions, not from code. Embeddings type phrases nobody listed, such as "payment default", "data breach" or "security audit", so a new industry works without code changes. |
+| **Domain-agnostic knowledge graph** | Entities and relationships come from `graph_schema.json` plus per-tenant extensions, not from code. spaCy finds people, places and noun phrases, and embeddings type phrases nobody listed, such as "payment default" or "data breach", so a new industry works without code changes. Every uploaded document becomes a node linked to what it mentions. |
 | **Efficient embeddings** | One MiniLM model serves search, entity typing and graph linking. Phrase vectors are cached and documents are embedded in one batch each, so typing a document is a single matrix product. Measured on the demo: about 12 ms per document for graph extraction and 6–26 ms per search. |
 | **Many formats** | PDF, Word, PowerPoint, Excel, CSV, JSON/JSONL, Markdown, text, and images through OCR. Office files get an in-browser preview. |
 | **Runs on a laptop** | Local mode needs only PostgreSQL and Python. There is no Docker, Kafka or vector extension, and Ollama provides a local LLM. Full mode scales out with Kafka, MinIO, pgvector, Apache AGE and OpenSearch. |
 | **Private LLM by default** | Chat uses Ollama (local) or any OpenAI-compatible endpoint. Documents never have to leave your infrastructure. |
-| **Tested** | 350 Python tests and 220 web tests, a CI workflow, and a demo tenant with scripted end-to-end checks (22 known-answer chat questions). |
+| **Tested** | 447 Python tests (357 intelligence, 90 ingestion) and 222 web tests, CI with lint and type checks, and a demo tenant with scripted end-to-end checks (22 known-answer chat questions). |
 
 ---
 
@@ -41,13 +41,13 @@ flowchart LR
 1. **Upload:** the web app stores the file and queues a `documents` row.
 2. **Parse:** the ingestion worker claims the job, picks a parser by file type, extracts text and a preview, and records failures on the document so the upload page can show them.
 3. **Index:** the intelligence service splits text into chunks, merging small ones up to 1,500 characters. It embeds each chunk together with its document title and stores the vectors.
-4. **Graph:** entities are extracted in four layers:
+4. **Graph:** spaCy parses the document once. That one parse supplies named entities, noun phrases and lemmas. Entities are then found in four layers:
    - schema regex patterns (asset codes, measurements, regulations)
-   - schema term lists
-   - embedding-typed key phrases, plus unknown codes typed by the words before them ("loan LN-2041")
-   - spaCy NER, if a spaCy model is installed
+   - schema term lists, plurals included ("conductivity alarms" is the term "conductivity alarm")
+   - spaCy NER for people and places, filtered to proper nouns, with one type per name decided by votes
+   - embedding-typed noun phrases, plus unknown codes typed by the words before them ("loan LN-2041")
 
-   Entities in the same sentence or record are linked by the schema's relationship rules. Near-duplicate names merge into existing nodes by cosine similarity.
+   Entities in the same sentence or record are linked by the schema's relationship rules. Near-duplicate names merge into existing nodes by cosine similarity. The document itself becomes a node that `MENTIONS` its most-cited entities, so every upload adds its own node and relations.
 
 ### Ask → answer
 
@@ -89,7 +89,15 @@ flowchart TB
 
 - **Roles:** each type has a role (`subject`, `issue`, `action`, `value` and so on). Views and graph walks use these roles instead of type names.
 - **Per-document edges:** edges are stored per source document, so re-indexing or deleting a document updates the graph exactly.
-- **Rebuild:** after changing a schema, run `python -m src.knowledge_graph.rebuild --tenant <slug>`.
+- **Rebuild:** after changing a schema, run `python -m src.knowledge_graph.rebuild --tenant <slug>`. It parses all documents once in a batch (`nlp.pipe`) and decides each name's type by votes across the whole collection:
+  - how spaCy labelled each mention
+  - context cues such as "Owner:" or "Reported by"
+  - names it is listed with (coordination in the parse)
+  - other names with the same surname
+
+  It then rebuilds the graph from scratch from those parses.
+- **Layout:** every node keeps the room its circle and label need, and the view zooms to fit instead of squeezing nodes together. Document nodes can be hidden with one toggle.
+- **Demo size:** the demo's 72 documents give 166 nodes and 342 edges.
 
 ---
 
@@ -191,8 +199,9 @@ To replace the base schema for a whole deployment, set `VEDA_GRAPH_SCHEMA_FILE`.
 ## Testing
 
 ```bash
-cd apps/web && npx jest                                   # 220 tests
-cd services/intelligence && .venv/Scripts/python -m pytest tests -q   # 350 tests
+cd apps/web && npx jest                                                # 222 tests
+cd services/intelligence && .venv/Scripts/python -m pytest tests -q   # 357 tests
+cd services/ingestion && .venv/Scripts/python -m pytest tests -q      # 90 tests
 ```
 
 CI (`.github/workflows/ci.yml`) runs lint, type checks, tests and the build for the web app and both services.
@@ -201,7 +210,7 @@ CI (`.github/workflows/ci.yml`) runs lint, type checks, tests and the build for 
 
 ## Known limitations
 
-- **Embedding typing is statistical.** Most phrases are typed well, but some get the wrong type (for example "blood pressure" as a condition). Each company tunes this with its schema terms, examples and thresholds.
+- **NLP and embedding typing are statistical.** Most entities are typed well, but some slip through, for example a heading read as a person's name. Each company tunes this with its schema terms, examples, NER cues and thresholds.
 - **Local vector search is linear per tenant.** That is fast for thousands of passages; large tenants should use full mode (pgvector HNSW).
 - **Work orders are not extracted.** The work-orders list on the Maintenance page is only filled through its API. The findings above it come from documents.
 - **Full mode is less exercised.** Local mode is what the demo and most tests exercise; the Kafka, AGE and OpenSearch path has unit tests but less end-to-end use.

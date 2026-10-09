@@ -12,10 +12,9 @@ This is the critical bridge between the knowledge graph and any future paid LLM:
 The chunk format is provider-agnostic — works with OpenAI, Anthropic, Google, etc.
 """
 
-import re
 import logging
+import re
 from dataclasses import dataclass, field
-from typing import Optional
 
 logger = logging.getLogger("veda.intelligence.chunk_builder")
 
@@ -141,7 +140,7 @@ class ChunkBuilder:
             return []
 
         metadata = metadata or {}
-        chunks = []
+        chunks: list[PreparedChunk] = []
 
         # Step 1: Split into sections
         sections = self._split_into_sections(text)
@@ -241,7 +240,7 @@ class ChunkBuilder:
 
     def _split_large_section(self, text: str) -> list[str]:
         """Split a large section into overlapping chunks."""
-        chunks = []
+        chunks: list[str] = []
         paragraphs = text.split("\n\n")
 
         current_chunk = ""
@@ -274,7 +273,7 @@ class ChunkBuilder:
         # Split on sentence-ending punctuation followed by space
         sentences = re.split(r"(?<=[.!?])\s+", text)
 
-        chunks = []
+        chunks: list[str] = []
         current = ""
         for sentence in sentences:
             if len(current) + len(sentence) + 1 > self.max_chunk_size:

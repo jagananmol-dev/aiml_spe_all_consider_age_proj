@@ -8,16 +8,21 @@ schema.py), never from this file:
 1. Schema patterns: structured entities (asset codes, measurements,
    regulations). Shipped with plant and healthcare patterns as defaults.
 2. Schema terms: exact, whole-word vocabulary per type.
-3. Embeddings (semantic.py): key phrases nobody listed are typed by their
+3. spaCy NER (if a model is installed): people and places, with the
+   label → type map from the schema's "nlp" block.
+4. Embeddings (semantic.py): key phrases nobody listed are typed by their
    most similar schema example, unknown codes by the words around them, and
    near-duplicates ("anemia" / "anaemia") merge into one entity. Runs when the
    RAG pipeline has registered its embedding model.
-4. spaCy NER for persons, dates, locations and organisations, if installed.
+
+spaCy parses a document once; that one parse gives the named entities, the
+noun chunks used as candidate phrases, and the lemmas that make "alarms" and
+"alarm" one node.
 """
 
 import logging
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Any
 
 from . import semantic
 from .schema import GraphSchema, get_schema
@@ -35,13 +40,13 @@ class ExtractedEntity:
     confidence: float
     start_offset: int
     end_offset: int
-    page_number: Optional[int] = None
+    page_number: int | None = None
     attributes: dict = field(default_factory=dict)
 
 
 def _normalize(value: str, how: str) -> str:
     if how in ("upper", "upper_dash"):
-        return value.upper().replace(" ", "-")
+        return "-".join(value.upper().split())  # any whitespace, line breaks included
     if how == "lower":
         return value.lower()
     return value.strip()
@@ -65,15 +70,129 @@ MAINTENANCE_ACTIONS = (
     else set()
 )
 
-SPACY_TYPE_MAP = {
-    "PERSON": "PERSON",
-    "DATE": "DATE",
-    "GPE": "LOCATION",
-    "LOC": "LOCATION",
-    "FAC": "LOCATION",
-    "ORG": "ORGANIZATION",
-    "QUANTITY": "MEASUREMENT",
-}
+# Default NER label → entity type map; the schema's nlp.ner_labels overrides it
+SPACY_TYPE_MAP = {"PERSON": "PERSON", "GPE": "LOCATION", "LOC": "LOCATION", "FAC": "LOCATION"}
+
+
+def _clean_name(span, entity_type: str) -> str | None:
+    """
+    A named entity's display name, or None when it does not look like one.
+    Small NER models tag headings and table cells ("Appendix", "Board Note")
+    as names, so a name must be 1–4 capitalised, letters-only words that the
+    tagger also reads as proper nouns, and a person needs a full name.
+    """
+    name = " ".join(span.text.replace("’s", "").replace("'s", "").split())
+    words = name.split()
+    if not 1 <= len(words) <= 4 or len(name) < 3:
+        return None
+    if entity_type == "PERSON" and len(words) < 2:
+        return None
+    if any(not w[0].isupper() or not w.replace("-", "").replace(".", "").isalpha() for w in words):
+        return None
+    if any(t.pos_ not in ("PROPN", "PUNCT") for t in span):
+        return None
+    return name
+
+
+CUE_WEIGHT = 3
+CONJ_WEIGHT = 2
+
+
+def _cue_type(text: str, start: int, cues: dict[str, list[str]]) -> str | None:
+    """The type whose cue ends the text just before a name on its line ("Owner:", "Reported by")."""
+    line_start = text.rfind("\n", 0, start) + 1
+    before = text[max(line_start, start - 30) : start].lower().rstrip(" :,-–—\t")
+    for entity_type, words in cues.items():
+        for cue in words:
+            if before == cue or before.endswith((" " + cue, "." + cue, "\t" + cue)):
+                return entity_type
+    return None
+
+
+def ner_mentions(doc, schema: GraphSchema) -> list[tuple[Any, str, str]]:
+    """
+    (span, clean name, type vote) for every usable named entity in a parse.
+    A context cue before the name adds CUE_WEIGHT extra votes for its type.
+    """
+    labels = schema.nlp.get("ner_labels", SPACY_TYPE_MAP)
+    cues = schema.nlp.get("type_cues", {})
+    ents = [e for e in doc.ents if labels.get(e.label_)]
+    # Token index → the type its entity was labelled, for coordination votes
+    token_type = {t.i: labels[e.label_] for e in ents for t in e}
+    out = []
+    for ent in ents:
+        mapped_type = labels[ent.label_]
+        cued = (
+            _cue_type(doc.text, ent.start_char, cues)
+            if cues and isinstance(doc.text, str)
+            else None
+        )
+        name = _clean_name(ent, cued or mapped_type)
+        if name is None:
+            continue
+        out.append((ent, name, mapped_type))
+        if cued:
+            out.extend([(ent, name, cued)] * CUE_WEIGHT)
+        # Coordination: names in one list ("Thomas, Kiran Bhosale, Pooja
+        # Shinde") are the same kind of thing, so each conjunct votes
+        # (spaCy sometimes parses comma lists as appositions)
+        root = getattr(ent, "root", None)
+        if root is not None and isinstance(getattr(root, "dep_", None), str):
+            siblings = [c for c in root.children if c.dep_ in ("conj", "appos")]
+            if root.dep_ in ("conj", "appos"):
+                siblings.append(root.head)
+            for sibling in siblings:
+                other = token_type.get(sibling.i)
+                if other and not (ent.start <= sibling.i < ent.end):
+                    out.extend([(ent, name, other)] * CONJ_WEIGHT)
+    return out
+
+
+def resolve_name_types(
+    mentions: list[tuple[Any, str, str]], known: dict[str, str] | None = None
+) -> dict[str, str]:
+    """
+    One type per name, by majority vote over its mentions (a name already in
+    the graph keeps its type). Single-word names need two mentions, and a
+    multi-word "name" that contains another name of a different type is a
+    heading or table row ("Kothrud Hadapsar Pimpri"), not a name.
+    """
+    known = known or {}
+    votes: dict[str, dict[str, int]] = {}
+    for _, name, entity_type in mentions:
+        tally = votes.setdefault(name, {})
+        tally[entity_type] = tally.get(entity_type, 0) + 1
+    resolved: dict[str, str] = {}
+    for name, tally in votes.items():
+        if " " not in name and sum(tally.values()) < 2 and name not in known:
+            continue
+        resolved[name] = known.get(name) or max(tally, key=lambda t: (tally[t], t))
+    # Shared surnames: "Kavita Pawar" was read as a place, "Rahul Pawar" a
+    # person. Each other name with the same last word adds one vote for its
+    # type (from a snapshot, so the result does not depend on order).
+    snapshot = dict(resolved)
+    by_surname: dict[str, list[str]] = {}
+    for name in snapshot:
+        if " " in name:
+            by_surname.setdefault(name.split()[-1], []).append(name)
+    for name in snapshot:
+        if " " not in name or name in known:
+            continue
+        score = dict(votes[name])
+        for other in by_surname[name.split()[-1]]:
+            if other != name:
+                score[snapshot[other]] = score.get(snapshot[other], 0) + 1
+        resolved[name] = max(score, key=lambda t: (score[t], t))
+
+    # A person needs a full name, whatever the votes say ("Outstanding")
+    resolved = {n: t for n, t in resolved.items() if t != "PERSON" or " " in n}
+
+    singles = {n: t for n, t in resolved.items() if " " not in n}
+    return {
+        name: t
+        for name, t in resolved.items()
+        if " " not in name or all(singles.get(w) in (None, t) for w in name.split())
+    }
 
 
 class EntityExtractor:
@@ -97,7 +216,7 @@ class EntityExtractor:
                 logger.warning("spaCy not installed — skipping general NER")
                 self._spacy_unavailable = True
                 return None
-            for model_name in ("en_core_web_trf", "en_core_web_sm"):
+            for model_name in _DEFAULT.nlp.get("models", ["en_core_web_sm"]):
                 try:
                     self._spacy_model = spacy.load(model_name)
                     break
@@ -117,6 +236,9 @@ class EntityExtractor:
         page_number: int | None = None,
         schema: GraphSchema | None = None,
         known_nodes: dict[str, list[str]] | None = None,
+        use_nlp: bool = True,
+        doc=None,
+        name_types: dict[str, str] | None = None,
     ) -> list[ExtractedEntity]:
         """
         Extract all entity types from the given text.
@@ -128,9 +250,24 @@ class EntityExtractor:
             known_nodes: The tenant's existing node values by type; a new
                 phrase close enough to one of them reuses its name, so the
                 same thing becomes one node across documents
+            use_nlp: parse with spaCy (off for short questions, where the
+                phrase heuristic is enough and latency matters)
+            doc: an existing spaCy parse of `text` (batch callers parse once
+                with nlp.pipe and pass it in)
+            name_types: decided types of named entities (from votes over a
+                whole collection); default: decided from this document
         """
         schema = schema or get_schema()
         entities: list[ExtractedEntity] = []
+        typer = semantic.get_typer(schema) if text.strip() else None
+
+        # One spaCy parse, shared by NER, noun chunks and lemmas
+        nlp = self.nlp if use_nlp and text.strip() and doc is None else None
+        if nlp is not None:
+            try:
+                doc = nlp(text[: int(schema.nlp.get("max_chars", 200_000))])
+            except Exception as e:
+                logger.warning(f"spaCy parse skipped: {e}")
 
         # 1. Schema patterns
         for p in schema.patterns:
@@ -164,7 +301,7 @@ class EntityExtractor:
                     ExtractedEntity(
                         entity_type=entity_type,
                         value=match.group(0),
-                        normalized_value=match.group(0).lower(),
+                        normalized_value=schema.canonical_term(entity_type, match.group(0)),
                         confidence=0.85,
                         start_offset=match.start(),
                         end_offset=match.end(),
@@ -172,32 +309,49 @@ class EntityExtractor:
                     )
                 )
 
-        # 3. Embeddings: phrases and codes nobody listed
-        typer = semantic.get_typer(schema)
-        if typer is not None and text.strip():
-            try:
-                entities.extend(self._semantic_entities(text, page_number, schema, typer, entities))
-                entities = self._merge_near_duplicates(entities, schema, typer, known_nodes or {})
-            except Exception as e:  # typing is an enrichment: never fail extraction
-                logger.warning(f"Semantic entity typing skipped: {e}")
-
-        # 4. spaCy NER for general entities (persons, dates, locations, orgs)
-        nlp = self.nlp
-        doc_ents = nlp(text[:100000]).ents if nlp is not None else ()  # 100k char cap
-        for ent in doc_ents:
-            mapped_type = SPACY_TYPE_MAP.get(ent.label_)
-            if mapped_type:
+        # 3. spaCy NER: people and places (not over a pattern or term match),
+        # one type per name (see resolve_name_types)
+        if doc is not None:
+            taken = [(e.start_offset, e.end_offset) for e in entities]
+            mentions = [
+                m
+                for m in ner_mentions(doc, schema)
+                if not any(s < m[0].end_char and m[0].start_char < e for s, e in taken)
+            ]
+            if name_types is None:
+                labels = set(schema.nlp.get("ner_labels", SPACY_TYPE_MAP).values())
+                known = {v: t for t in labels for v in (known_nodes or {}).get(t, [])}
+                name_types = resolve_name_types(mentions, known)
+            seen_spans: set[tuple[int, int]] = set()
+            for ent, name, _ in mentions:
+                if (ent.start_char, ent.end_char) in seen_spans:
+                    continue
+                seen_spans.add((ent.start_char, ent.end_char))
+                mapped_type = name_types.get(name)
+                if mapped_type is None:
+                    continue
                 entities.append(
                     ExtractedEntity(
                         entity_type=mapped_type,
                         value=ent.text,
-                        normalized_value=ent.text.strip(),
+                        normalized_value=name,
                         confidence=0.80,
                         start_offset=ent.start_char,
                         end_offset=ent.end_char,
                         page_number=page_number,
+                        attributes={"source": "ner", "label": ent.label_},
                     )
                 )
+
+        # 4. Embeddings: phrases and codes nobody listed
+        if typer is not None:
+            try:
+                entities.extend(
+                    self._semantic_entities(text, page_number, schema, typer, entities, doc)
+                )
+                entities = self._merge_near_duplicates(entities, schema, typer, known_nodes or {})
+            except Exception as e:  # typing is an enrichment: never fail extraction
+                logger.warning(f"Semantic entity typing skipped: {e}")
 
         entities = self._deduplicate(entities)
         logger.info(f"Extracted {len(entities)} entities from text ({len(text)} chars)")
@@ -210,6 +364,7 @@ class EntityExtractor:
         schema: GraphSchema,
         typer: semantic.SemanticTyper,
         found: list[ExtractedEntity],
+        doc=None,
     ) -> list[ExtractedEntity]:
         cfg = schema.semantic
         taken = [(e.start_offset, e.end_offset) for e in found]
@@ -221,16 +376,18 @@ class EntityExtractor:
         cap = float(cfg.get("confidence_cap", 0.8))
 
         # Key phrases → the type of their nearest example
-        candidates = [
-            c
-            for c in semantic.candidate_phrases(
-                text,
-                max_words=int(cfg.get("max_phrase_words", 4)),
-                min_chars=int(cfg.get("min_phrase_chars", 4)),
-                limit=int(cfg.get("max_candidates_per_document", 400)),
-            )
-            if any(not overlaps(s, e) for s, e in c.spans)
-        ]
+        # Noun chunks from the spaCy parse when there is one (syntactic
+        # phrases, lemmatised heads), else content-word runs
+        limits = {
+            "max_words": int(cfg.get("max_phrase_words", 4)),
+            "min_chars": int(cfg.get("min_phrase_chars", 4)),
+            "limit": int(cfg.get("max_candidates_per_document", 400)),
+        }
+        if doc is not None and schema.nlp.get("use_noun_chunks", True):
+            mined = semantic.noun_chunk_candidates(doc, **limits)
+        else:
+            mined = semantic.candidate_phrases(text, **limits)
+        candidates = [c for c in mined if any(not overlaps(s, e) for s, e in c.spans)]
         for cand, typed in zip(candidates, typer.classify([c.phrase for c in candidates])):
             if typed is None:
                 continue
