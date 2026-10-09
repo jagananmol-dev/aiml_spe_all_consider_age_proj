@@ -42,9 +42,14 @@ POLL_SECONDS = float(os.environ.get("LOCAL_WORKER_POLL_SECONDS", "2"))
 INDEX_TIMEOUT_SECONDS = float(os.environ.get("LOCAL_WORKER_INDEX_TIMEOUT", "900"))
 STALE_MINUTES = 15
 
+# A document that crashes or hangs the worker is retried at most this often
+MAX_ATTEMPTS = 3
+
 CLAIM_SQL = """
     UPDATE documents
-    SET status = 'processing', parsing_status = 'processing', updated_at = NOW()
+    SET status = 'processing', parsing_status = 'processing', updated_at = NOW(),
+        metadata = COALESCE(metadata, '{}'::jsonb)
+            || jsonb_build_object('attempts', COALESCE((metadata->>'attempts')::int, 0) + 1)
     WHERE id = (
         SELECT id FROM documents
         WHERE status = 'uploaded' AND storage_bucket = 'local'
@@ -55,11 +60,22 @@ CLAIM_SQL = """
     RETURNING id::text, tenant_id::text, title, file_name, storage_path
 """
 
+# Documents left in 'processing' by a crashed worker go back to the queue,
+# unless they have already had MAX_ATTEMPTS tries: then they are marked
+# failed, so one bad file cannot crash the worker over and over
 REQUEUE_STALE_SQL = """
     UPDATE documents
-    SET status = 'uploaded', parsing_status = 'pending', updated_at = NOW()
+    SET status = CASE WHEN COALESCE((metadata->>'attempts')::int, 0) >= %(max)s
+                      THEN 'failed' ELSE 'uploaded' END,
+        parsing_status = CASE WHEN COALESCE((metadata->>'attempts')::int, 0) >= %(max)s
+                              THEN 'failed' ELSE 'pending' END,
+        metadata = CASE WHEN COALESCE((metadata->>'attempts')::int, 0) >= %(max)s
+                        THEN COALESCE(metadata, '{}'::jsonb) || jsonb_build_object(
+                            'error', 'Processing stopped this file several times; it was skipped.')
+                        ELSE metadata END,
+        updated_at = NOW()
     WHERE status = 'processing' AND storage_bucket = 'local'
-      AND updated_at < NOW() - make_interval(mins => %s)
+      AND updated_at < NOW() - make_interval(mins => %(mins)s)
 """
 
 
@@ -92,7 +108,9 @@ def claim_next_document() -> dict | None:
 def requeue_stale_documents() -> int:
     """Put back documents left in 'processing' by a worker that crashed."""
     with psycopg.connect(settings.database_url, connect_timeout=5) as conn:
-        return conn.execute(REQUEUE_STALE_SQL, [STALE_MINUTES]).rowcount
+        return conn.execute(
+            REQUEUE_STALE_SQL, {"max": MAX_ATTEMPTS, "mins": STALE_MINUTES}
+        ).rowcount
 
 
 def index_text(tenant_id: str, document_id: str, title: str, raw_text: str) -> int:

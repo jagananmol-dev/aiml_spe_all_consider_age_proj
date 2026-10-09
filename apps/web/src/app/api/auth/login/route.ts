@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveTenantId, withTenant } from "@/lib/db";
 import { hashPassword, needsRehash, verifyPassword } from "@/lib/password";
+import { clientIp, hit, reset } from "@/lib/rateLimit";
 import { createSessionToken, SESSION_COOKIE, SESSION_MAX_AGE_SECONDS } from "@/lib/session";
 
 const INVALID_CREDENTIALS = "Invalid tenant, email, or password";
@@ -23,6 +24,19 @@ export async function POST(request: NextRequest) {
 
     const cleanSlug = String(tenantSlug).trim().toLowerCase();
     const cleanEmail = String(email).trim().toLowerCase();
+
+    // Slow down password guessing: per account and per address
+    const accountKey = `login:${cleanSlug}:${cleanEmail}`;
+    const wait = Math.max(
+      hit(accountKey, 10, 15 * 60),
+      hit(`login-ip:${clientIp(request.headers)}`, 50, 15 * 60)
+    );
+    if (wait > 0) {
+      return NextResponse.json(
+        { error: `Too many attempts. Try again in ${wait} seconds.` },
+        { status: 429, headers: { "Retry-After": String(wait) } }
+      );
+    }
 
     // 1. Resolve tenant — same error as a bad password so tenants can't be enumerated
     let tenantId: string;
@@ -63,6 +77,8 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: INVALID_CREDENTIALS }, { status: 401 });
     }
+
+    reset(accountKey);
 
     // 3. Issue signed session
     const token = await createSessionToken({

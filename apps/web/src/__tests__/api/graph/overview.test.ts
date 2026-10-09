@@ -21,7 +21,15 @@ const GRAPH = {
     { id: "n1", label: "HD-K04", type: "EQUIPMENT_TAG", degree: 1 },
     { id: "n2", label: "conductivity alarm", type: "FAILURE_MODE", degree: 1 },
   ],
-  edges: [{ source: "n1", target: "n2", relationship: "FAILED_WITH", confidence: 0.9, documents: ["log.csv"] }],
+  edges: [
+    {
+      source: "n1",
+      target: "n2",
+      relationship: "FAILED_WITH",
+      confidence: 0.9,
+      documents: ["log.csv"],
+    },
+  ],
 };
 
 beforeEach(() => {

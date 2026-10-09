@@ -51,8 +51,17 @@ export async function POST(request: NextRequest) {
     const { tenantId } = await getScopedDb();
     const { title, description, severity, category, equipmentTag } = await request.json();
 
-    if (!title) {
-      return NextResponse.json({ error: "Title is required" }, { status: 400 });
+    if (typeof title !== "string" || !title.trim() || title.length > 255) {
+      return NextResponse.json(
+        { error: "Title is required (max 255 characters)" },
+        { status: 400 }
+      );
+    }
+    if (severity !== undefined && !["critical", "warning", "info"].includes(severity)) {
+      return NextResponse.json(
+        { error: "severity must be critical, warning or info" },
+        { status: 400 }
+      );
     }
 
     const [alert] = await withTenant(

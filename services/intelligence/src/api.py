@@ -78,7 +78,9 @@ def _database_url() -> str:
 
 # ── Request/Response Models ───────────────────────────
 class QueryRequest(BaseModel):
-    query: str
+    # Questions plus one earlier turn; a bound keeps one request from
+    # occupying the embedding model
+    query: str = Field(min_length=1, max_length=8000)
     filters: dict | None = None  # Optional: document_type, date_range, equipment
 
 

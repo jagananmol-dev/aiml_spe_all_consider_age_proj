@@ -43,6 +43,8 @@ export async function GET() {
   }
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 /**
  * POST /api/compliance/status
  * Update a compliance rule for the current tenant.
@@ -57,6 +59,12 @@ export async function POST(request: NextRequest) {
         { error: "ruleId and complianceStatus are required" },
         { status: 400 }
       );
+    }
+    if (!UUID.test(String(ruleId))) {
+      return NextResponse.json({ error: "ruleId must be a valid id" }, { status: 400 });
+    }
+    if (typeof complianceStatus !== "string" || complianceStatus.length > 50) {
+      return NextResponse.json({ error: "Invalid complianceStatus" }, { status: 400 });
     }
 
     const rows = await withTenant(

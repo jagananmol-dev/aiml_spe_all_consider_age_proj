@@ -12,6 +12,7 @@
 import { createHash } from "crypto";
 import { POST } from "@/app/api/auth/login/route";
 import { NextRequest } from "next/server";
+import { _resetAll as resetRateLimits } from "@/lib/rateLimit";
 import { hashPassword } from "@/lib/password";
 import { verifySessionToken } from "@/lib/session";
 
@@ -56,6 +57,7 @@ function sessionCookieValue(res: Response): string | undefined {
 }
 
 beforeEach(async () => {
+  resetRateLimits();
   mockState.queries = [];
   mockState.fail = false;
   mockState.user = {
@@ -156,5 +158,25 @@ describe("POST /api/auth/login — server errors", () => {
   it("returns 500 on DB exception", async () => {
     mockState.fail = true;
     expect((await POST(makeRequest(VALID_BODY))).status).toBe(500);
+  });
+});
+
+describe("POST /api/auth/login — rate limiting", () => {
+  it("returns 429 after 10 failed attempts for one account", async () => {
+    let res: Response | undefined;
+    for (let i = 0; i < 11; i++) {
+      res = await POST(
+        new NextRequest("http://localhost/api/auth/login", {
+          method: "POST",
+          body: JSON.stringify({
+            tenantSlug: "nobody",
+            email: "x@y.z",
+            password: "wrong-password",
+          }),
+        })
+      );
+    }
+    expect(res!.status).toBe(429);
+    expect(res!.headers.get("Retry-After")).toBeTruthy();
   });
 });

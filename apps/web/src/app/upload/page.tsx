@@ -16,6 +16,7 @@ import {
   Table,
   Upload,
   Eye,
+  Trash2,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -216,6 +217,19 @@ export default function UploadPage() {
       setLoading(false);
     }
   }, [router]);
+
+  // Delete a document and everything built from it (passages, preview, graph)
+  const deleteDocument = useCallback(async (id: string, title: string) => {
+    if (!window.confirm(`Delete "${title}"? The chatbot and graph will stop using it.`)) return;
+    try {
+      const res = await fetch(`/api/documents/${id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Could not delete the document");
+      setDocuments((docs) => docs.filter((d) => d.id !== id));
+    } catch (err) {
+      setListError(err instanceof Error ? err.message : "Could not delete the document");
+    }
+  }, []);
 
   useEffect(() => {
     fetch("/api/auth/session")
@@ -451,10 +465,22 @@ export default function UploadPage() {
                             type="button"
                             className={styles.showButton}
                             onClick={() =>
-                              setViewing({ id: doc.id, title: doc.title, documentType: formatOf(doc) })
+                              setViewing({
+                                id: doc.id,
+                                title: doc.title,
+                                documentType: formatOf(doc),
+                              })
                             }
                           >
                             <Eye size={13} /> Show
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.showButton}
+                            onClick={() => deleteDocument(doc.id, doc.title)}
+                            title="Delete this document and everything built from it"
+                          >
+                            <Trash2 size={13} /> Delete
                           </button>
                         </td>
                       </tr>

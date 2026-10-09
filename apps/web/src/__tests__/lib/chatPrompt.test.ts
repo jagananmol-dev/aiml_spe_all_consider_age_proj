@@ -1,4 +1,9 @@
-import { buildCatalogChunk, isOverviewQuestion, isSmallTalk, retrievalQuery } from "@/lib/chatPrompt";
+import {
+  buildCatalogChunk,
+  isOverviewQuestion,
+  isSmallTalk,
+  retrievalQuery,
+} from "@/lib/chatPrompt";
 
 describe("isOverviewQuestion", () => {
   it.each([
@@ -80,17 +85,26 @@ describe("buildCatalogChunk", () => {
 });
 
 describe("isSmallTalk", () => {
-  it.each(["hi", "Hii", "hello!", "hey there", "Good morning", "thanks", "thank you!", "ok", "bye"])(
-    "treats %p as small talk",
-    (m) => {
-      expect(isSmallTalk(m)).toBe(true);
-    }
-  );
+  it.each([
+    "hi",
+    "Hii",
+    "hello!",
+    "hey there",
+    "Good morning",
+    "thanks",
+    "thank you!",
+    "ok",
+    "bye",
+  ])("treats %p as small talk", (m) => {
+    expect(isSmallTalk(m)).toBe(true);
+  });
 
-  it.each(["hi, what is the notice period?", "thanks — and who approves refunds?", "summary", "HD-K04"])(
-    "treats %p as a real question",
-    (m) => {
-      expect(isSmallTalk(m)).toBe(false);
-    }
-  );
+  it.each([
+    "hi, what is the notice period?",
+    "thanks — and who approves refunds?",
+    "summary",
+    "HD-K04",
+  ])("treats %p as a real question", (m) => {
+    expect(isSmallTalk(m)).toBe(false);
+  });
 });

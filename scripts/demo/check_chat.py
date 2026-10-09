@@ -5,6 +5,7 @@ Ask the demo tenant's chatbot questions with known answers and check them.
 """
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -61,16 +62,23 @@ def ask(client: httpx.Client, question: str) -> tuple[str, list[str]]:
 
 
 def main() -> int:
-    passed = 0
+    passed = warnings = 0
     with httpx.Client(base_url=BASE, timeout=600) as client:
         client.post("/api/auth/login", json={k: ACCOUNT[k] for k in ("tenantSlug", "email", "password")}).raise_for_status()
         for question, expected in CHECKS:
             answer, titles = ask(client, question)
+            # Every [n] the answer cites must be a passage the user can open
+            cited = {int(n) for n in re.findall(r"\[(\d+)\]", answer)}
+            bad = sorted(n for n in cited if not 1 <= n <= len(titles))
             ok = all(e.lower() in answer.lower() for e in expected)
             passed += ok
-            print(f"\n[{'PASS' if ok else 'FAIL'}] {question}\n  expects {expected}\n  sources: {titles[:4]}")
+            warnings += bool(bad)
+            print(f"\n[{'PASS' if ok else 'FAIL'}] {question}\n  expects {expected}\n  sources ({len(titles)}): {titles[:4]}")
+            if bad:
+                # The chat page drops such numbers; reported so model changes can be compared
+                print(f"  WARNING: cites passages that were not sent: {bad}")
             print("  answer: " + answer.strip().replace("\n", "\n          "))
-    print(f"\n{passed}/{len(CHECKS)} passed")
+    print(f"\n{passed}/{len(CHECKS)} passed, {warnings} answer(s) with an invalid citation")
     return 0 if passed == len(CHECKS) else 1
 
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/lib/db";
 import { hashPassword } from "@/lib/password";
+import { clientIp, hit } from "@/lib/rateLimit";
 
 /**
  * POST /api/auth/register
@@ -9,10 +10,30 @@ import { hashPassword } from "@/lib/password";
  */
 export async function POST(request: NextRequest) {
   try {
-    const { companyName, tenantSlug, email, name, password } = await request.json();
+    const wait = hit(`register-ip:${clientIp(request.headers)}`, 5, 60 * 60);
+    if (wait > 0) {
+      return NextResponse.json(
+        { error: `Too many attempts. Try again in ${wait} seconds.` },
+        { status: 429, headers: { "Retry-After": String(wait) } }
+      );
+    }
 
-    if (!companyName || !tenantSlug || !email || !name || !password) {
+    const body = await request.json();
+    const fields = ["companyName", "tenantSlug", "email", "name", "password"] as const;
+    if (fields.some((f) => typeof body?.[f] !== "string" || !body[f].trim())) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    }
+    const { companyName, tenantSlug, email, name, password } = body as Record<
+      (typeof fields)[number],
+      string
+    >;
+    if (
+      companyName.length > 200 ||
+      name.length > 200 ||
+      email.length > 254 ||
+      password.length > 200
+    ) {
+      return NextResponse.json({ error: "A field is too long" }, { status: 400 });
     }
 
     // Validate email format (server-side, RFC 5322 simplified)
@@ -63,6 +84,8 @@ export async function POST(request: NextRequest) {
 
     // Insert tenant and user in a transaction
     const result = await client.begin(async (sql) => {
+      // The checks above can race with a concurrent sign-up; the unique
+      // constraints still hold and are reported as 409 below
       // 1. Insert tenant
       const [tenant] = await sql`
         INSERT INTO tenants (name, slug, subscription_tier)
@@ -93,6 +116,12 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    if ((error as { code?: string })?.code === "23505") {
+      return NextResponse.json(
+        { error: "Tenant slug or email already registered" },
+        { status: 409 }
+      );
+    }
     console.error("Tenant registration failed:", error);
     return NextResponse.json(
       { error: "Internal server error during registration" },

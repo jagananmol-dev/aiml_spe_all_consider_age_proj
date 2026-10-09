@@ -55,10 +55,13 @@ function ContextLine({ context, timing }: { context: ContextInfo; timing?: Messa
         </span>
       )}
       <span>
-        used <strong>{context.passagesUsed}</strong> passage{context.passagesUsed === 1 ? "" : "s"} from{" "}
-        <strong>{context.documentsUsed}</strong> document{context.documentsUsed === 1 ? "" : "s"}
+        used <strong>{context.passagesUsed}</strong> passage{context.passagesUsed === 1 ? "" : "s"}{" "}
+        from <strong>{context.documentsUsed}</strong> document
+        {context.documentsUsed === 1 ? "" : "s"}
       </span>
-      {context.weakMatch && <span className={styles.contextWeak}> · no close match, nearest passages used</span>}
+      {context.weakMatch && (
+        <span className={styles.contextWeak}> · no close match, nearest passages used</span>
+      )}
       {parts.length > 0 && <span className={styles.contextTiming}> · {parts.join(" · ")}</span>}
     </div>
   );
@@ -76,11 +79,15 @@ function newId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-/** Turn [1] / [2][3] citations into links the markdown renderer can style. */
+/**
+ * Turn [1] / [2][3] citations into links the markdown renderer can style.
+ * A number with no passage behind it (a model sometimes cites a section
+ * number from inside a document) is dropped rather than shown as a citation.
+ */
 function linkCitations(text: string, messageId: string, maxIndex: number): string {
-  return text.replace(/\[(\d{1,2})\](?!\()/g, (match, n) => {
+  return text.replace(/\[(\d{1,2})\](?!\()/g, (_match, n) => {
     const index = Number(n);
-    return index >= 1 && index <= maxIndex ? `[${index}](#cite-${messageId}-${index})` : match;
+    return index >= 1 && index <= maxIndex ? `[${index}](#cite-${messageId}-${index})` : "";
   });
 }
 
