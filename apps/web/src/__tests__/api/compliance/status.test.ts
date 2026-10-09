@@ -68,24 +68,39 @@ describe("GET /api/compliance/status", () => {
 describe("POST /api/compliance/status", () => {
   it("returns 200 on successful update", async () => {
     mockDbState.result = [{ id: "rule-001", compliance_status: "gaps", notes: "" }];
-    const res = await POST(makePostRequest({ ruleId: "rule-001", complianceStatus: "gaps" }));
+    const res = await POST(
+      makePostRequest({ ruleId: "11111111-1111-4111-8111-111111111111", complianceStatus: "gaps" })
+    );
     expect(res.status).toBe(200);
     expect(mockDbState.queries[0].values).toContain(TEST_SESSION.tenantId);
   });
 
   it("returns 404 when rule not found (or different tenant)", async () => {
     mockDbState.result = [];
-    const res = await POST(makePostRequest({ ruleId: "other", complianceStatus: "gaps" }));
+    const res = await POST(
+      makePostRequest({ ruleId: "22222222-2222-4222-8222-222222222222", complianceStatus: "gaps" })
+    );
     expect(res.status).toBe(404);
   });
 
   it("returns 400 when fields are missing", async () => {
-    expect((await POST(makePostRequest({ ruleId: "rule-001" }))).status).toBe(400);
+    expect(
+      (await POST(makePostRequest({ ruleId: "11111111-1111-4111-8111-111111111111" }))).status
+    ).toBe(400);
   });
 
   it("returns 500 on DB error", async () => {
     mockDbState.result = new Error("DB down");
-    const res = await POST(makePostRequest({ ruleId: "r", complianceStatus: "gaps" }));
+    const res = await POST(
+      makePostRequest({ ruleId: "11111111-1111-4111-8111-111111111111", complianceStatus: "gaps" })
+    );
     expect(res.status).toBe(500);
+  });
+});
+
+describe("POST /api/compliance/status — validation", () => {
+  it("returns 400 (not a database error) for an id that is not a UUID", async () => {
+    const res = await POST(makePostRequest({ ruleId: "rule-001", complianceStatus: "gaps" }));
+    expect(res.status).toBe(400);
   });
 });

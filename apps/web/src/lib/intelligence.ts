@@ -8,6 +8,8 @@
  */
 
 const INTELLIGENCE_URL = process.env.INTELLIGENCE_SERVICE_URL || "http://127.0.0.1:8002";
+// A search takes milliseconds; the first call after start-up may load models
+const TIMEOUT_MS = Number(process.env.INTELLIGENCE_TIMEOUT_MS) || 60_000;
 
 export async function intelligenceFetch(
   path: string,
@@ -26,5 +28,6 @@ export async function intelligenceFetch(
     method: "POST",
     headers,
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
   });
 }

@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, rm, writeFile } from "fs/promises";
 import path from "path";
 
 /**
@@ -49,4 +49,14 @@ export async function readLocalFile(relativePath: string): Promise<Buffer> {
     throw new Error("Refusing to read outside the local storage directory");
   }
   return readFile(target);
+}
+
+/** Delete a stored file (no error if it is already gone). Same path checks as reading. */
+export async function deleteLocalFile(relativePath: string): Promise<void> {
+  const root = getLocalStorageDir();
+  const target = path.resolve(root, relativePath);
+  if (!target.startsWith(root + path.sep)) {
+    throw new Error("Refusing to delete outside the local storage directory");
+  }
+  await rm(target, { force: true });
 }

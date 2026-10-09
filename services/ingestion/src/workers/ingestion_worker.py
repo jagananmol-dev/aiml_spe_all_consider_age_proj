@@ -311,6 +311,10 @@ def parse_image_ocr(file_path: str) -> dict:
     }
 
 
+# Rows read per sheet; beyond this a spreadsheet is a data dump, not a document
+MAX_SHEET_ROWS = 20_000
+
+
 def parse_spreadsheet(file_path: str) -> dict:
     """
     Parse Excel/CSV spreadsheets into structured data.
@@ -318,16 +322,21 @@ def parse_spreadsheet(file_path: str) -> dict:
     """
     import openpyxl
 
-    wb = openpyxl.load_workbook(file_path, data_only=True)
+    # read_only streams rows instead of building the whole workbook in memory,
+    # so a small file that decompresses to a huge sheet cannot exhaust it
+    wb = openpyxl.load_workbook(file_path, data_only=True, read_only=True)
 
     all_text_parts = []
     tables = []
 
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
-        sheet_data = []
+        sheet_data: list[list[str]] = []
 
         for row in ws.iter_rows(values_only=True):
+            if len(sheet_data) >= MAX_SHEET_ROWS:
+                logger.warning(f"Sheet {sheet_name!r} truncated at {MAX_SHEET_ROWS} rows")
+                break
             row_data = [str(cell) if cell is not None else "" for cell in row]
             sheet_data.append(row_data)
             all_text_parts.append(" ".join(row_data))

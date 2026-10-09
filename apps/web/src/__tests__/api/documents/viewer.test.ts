@@ -42,7 +42,9 @@ describe("GET /api/documents/:id/file", () => {
   });
 
   it("serves the stored file of the session tenant with its content type", async () => {
-    mockDbState.result = [{ title: "ledger.csv", storage_bucket: "local", storage_path: "t1/ledger.csv" }];
+    mockDbState.result = [
+      { title: "ledger.csv", storage_bucket: "local", storage_path: "t1/ledger.csv" },
+    ];
     const res = await getFile(req(), params(DOC_ID));
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toBe("text/csv; charset=utf-8");
@@ -62,14 +64,19 @@ describe("GET /api/documents/:id/file", () => {
   });
 
   it("refuses a stored path outside the storage directory", async () => {
-    mockDbState.result = [{ title: "x.txt", storage_bucket: "local", storage_path: "../outside.txt" }];
+    mockDbState.result = [
+      { title: "x.txt", storage_bucket: "local", storage_path: "../outside.txt" },
+    ];
     expect((await getFile(req(), params(DOC_ID))).status).toBe(404);
   });
 });
 
 describe("GET /api/documents/:id/preview", () => {
   it("returns the stored preview", async () => {
-    const preview = { kind: "slides", slides: [{ number: 1, title: "Q3", bullets: [], tables: [], notes: "" }] };
+    const preview = {
+      kind: "slides",
+      slides: [{ number: 1, title: "Q3", bullets: [], tables: [], notes: "" }],
+    };
     mockDbState.result = [{ preview }];
     const res = await getPreview(req(), params(DOC_ID));
     expect(res.status).toBe(200);

@@ -140,7 +140,7 @@ cp .env.example .env            # set DATABASE_URL, SESSION_SECRET, INTERNAL_API
 
 # 2. Database
 psql "$DATABASE_URL" -f infrastructure/docker/postgres/init_local.sql
-for f in infrastructure/docker/postgres/local/*.sql; do psql "$DATABASE_URL" -f "$f"; done
+for f in infrastructure/docker/postgres/local/*.sql; do psql "$DATABASE_URL" -f "$f"; done   # 002–005: passages, graph, previews, alerts and work orders
 
 # 3. Python services (one virtualenv each)
 cd services/ingestion    && python -m venv .venv && .venv/Scripts/pip install -e .   # bin/ on Linux/macOS
@@ -157,7 +157,7 @@ npm run dev
 
 ### Demo tenant
 
-`demo-data/` contains a fictional dialysis-care company with 72 documents uploaded one a day: policies, logs, reports, an operations manual, a risk register and a board pack. To load and check it:
+`demo-data/` contains a fictional dialysis-care company with 72 documents uploaded one a day (each one is described in [document.md](document.md)): policies, logs, reports, an operations manual, a risk register and a board pack. To load and check it:
 
 ```bash
 services/ingestion/.venv/Scripts/python.exe scripts/demo/seed_tenant.py      # upload + backdate (idempotent)
@@ -209,6 +209,15 @@ CI (`.github/workflows/ci.yml`) runs lint, type checks, tests and the build for 
 ---
 
 ## Known limitations
+
+Before using it with real company or patient data:
+
+- **One login per company.** Registration creates a single admin; there is no way to invite staff, assign roles or reset a forgotten password yet.
+- **Tenant isolation is enforced in code, not by the database.** Every query filters on the session's tenant (reviewed route by route), but PostgreSQL row-level security is not effective: the app connects as the table owner in Docker mode, and RLS is off in local mode. Enabling it needs a separate role for the background workers.
+- **Sessions are not revocable.** A session cookie stays valid for up to 24 hours, even after logout elsewhere or deactivation.
+- **No audit trail.** Who viewed or deleted what is not recorded (`audit_logs` is unused).
+- **One process holds the caches.** The search index, the login rate limits and the schema cache are in memory; with several app or service instances, they need a shared store such as Redis.
+- **A file that hangs the parser stalls the queue.** Crashes are retried at most 3 times; a parse that never finishes needs a worker restart.
 
 - **NLP and embedding typing are statistical.** Most entities are typed well, but some slip through, for example a heading read as a person's name. Each company tunes this with its schema terms, examples, NER cues and thresholds.
 - **Local vector search is linear per tenant.** That is fast for thousands of passages; large tenants should use full mode (pgvector HNSW).

@@ -14,6 +14,10 @@
 
 import { POST } from "@/app/api/auth/register/route";
 import { NextRequest } from "next/server";
+import { _resetAll as resetRateLimits } from "@/lib/rateLimit";
+
+// Every test comes from the same address; start each with fresh limits
+beforeEach(() => resetRateLimits());
 
 jest.mock("@/lib/db", () => ({
   client: jest.fn(),
@@ -45,6 +49,7 @@ let txQueries: { text: string; values: unknown[] }[] = [];
 
 describe("POST /api/auth/register — happy path", () => {
   beforeEach(() => {
+    resetRateLimits();
     // No existing tenant, no existing user, then begin() returns tenant+user
     (mockClient as unknown as jest.Mock).mockImplementation(
       (strings: TemplateStringsArray, ...values: unknown[]) => {

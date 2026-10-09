@@ -24,7 +24,7 @@ const MOCK_ALERT = {
   id: "alert-uuid-001",
   title: "High Temperature Alert",
   description: "PUMP-101 temperature exceeded threshold",
-  severity: "high",
+  severity: "warning",
   category: "equipment",
   equipment_tag: "PUMP-101",
   status: "open",
@@ -71,8 +71,8 @@ describe("GET /api/alerts/status", () => {
 
 describe("POST /api/alerts/status", () => {
   it("returns 201 with the created alert", async () => {
-    mockDbState.result = [{ id: "alert-new", title: "Leak", severity: "high", status: "open" }];
-    const res = await POST(makePostRequest({ title: "Leak", severity: "high" }));
+    mockDbState.result = [{ id: "alert-new", title: "Leak", severity: "warning", status: "open" }];
+    const res = await POST(makePostRequest({ title: "Leak", severity: "warning" }));
     expect(res.status).toBe(201);
     expect((await res.json()).alert.id).toBe("alert-new");
   });
@@ -96,5 +96,12 @@ describe("POST /api/alerts/status", () => {
   it("returns 500 on DB error", async () => {
     mockDbState.result = new Error("DB down");
     expect((await POST(makePostRequest({ title: "x" }))).status).toBe(500);
+  });
+});
+
+describe("POST /api/alerts/status — validation", () => {
+  it("returns 400 for a severity the database would reject", async () => {
+    const res = await POST(makePostRequest({ title: "Leak", severity: "high" }));
+    expect(res.status).toBe(400);
   });
 });

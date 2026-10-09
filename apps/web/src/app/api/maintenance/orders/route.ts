@@ -54,6 +54,23 @@ export async function POST(request: NextRequest) {
     if (!orderNumber || !title) {
       return NextResponse.json({ error: "Order number and title are required" }, { status: 400 });
     }
+    if (
+      typeof orderNumber !== "string" ||
+      typeof title !== "string" ||
+      orderNumber.length > 100 ||
+      title.length > 255
+    ) {
+      return NextResponse.json(
+        { error: "Order number (max 100) and title (max 255) must be text" },
+        { status: 400 }
+      );
+    }
+    if (tolerances !== undefined && (typeof tolerances !== "object" || Array.isArray(tolerances))) {
+      return NextResponse.json(
+        { error: "tolerances must be an object of name: value" },
+        { status: 400 }
+      );
+    }
 
     const [order] = await withTenant(
       tenantId,

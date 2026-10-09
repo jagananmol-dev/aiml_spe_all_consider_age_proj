@@ -174,7 +174,12 @@ describe("POST /api/chat — answering", () => {
 
   it("answers a question about the whole collection from the document catalog", async () => {
     mockDbState.result = [
-      { name: "Acme Retail", title: "Refund_Policy.md", document_type: "Markdown", uploaded_at: "2026-08-01" },
+      {
+        name: "Acme Retail",
+        title: "Refund_Policy.md",
+        document_type: "Markdown",
+        uploaded_at: "2026-08-01",
+      },
     ];
     retrieval([]); // nothing passes the similarity cut-off for "give a summary"
     mockStream.mockImplementation(async function* () {
@@ -187,7 +192,9 @@ describe("POST /api/chat — answering", () => {
     });
     expect(mockStream).toHaveBeenCalled();
     const [messages] = mockStream.mock.calls[0];
-    expect(messages[messages.length - 1].content).toContain("- 2026-08-01 · Markdown · Refund Policy.md");
+    expect(messages[messages.length - 1].content).toContain(
+      "- 2026-08-01 · Markdown · Refund Policy.md"
+    );
   });
 
   it("answers a greeting from the model without searching", async () => {
@@ -205,7 +212,12 @@ describe("POST /api/chat — answering", () => {
 
   it("still answers with the LLM when only weak matches were found", async () => {
     mockDbState.result = [
-      { name: "Acme Retail", title: "Refund_Policy.md", document_type: "Markdown", uploaded_at: "2026-08-01" },
+      {
+        name: "Acme Retail",
+        title: "Refund_Policy.md",
+        document_type: "Markdown",
+        uploaded_at: "2026-08-01",
+      },
     ];
     retrieval([CHUNK], { low_confidence: true });
     mockStream.mockImplementation(async function* () {
@@ -235,7 +247,9 @@ describe("POST /api/chat — answering", () => {
         ],
       })
     );
-    expect(mockIntelligence.mock.calls[0][2]).toEqual({ query: "What is the refund policy?\nand exchanges?" });
+    expect(mockIntelligence.mock.calls[0][2]).toEqual({
+      query: "What is the refund policy?\nand exchanges?",
+    });
   });
 
   it("does not load the catalog for a specific question", async () => {

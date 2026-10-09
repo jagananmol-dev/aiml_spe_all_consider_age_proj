@@ -377,3 +377,47 @@ CREATE TABLE IF NOT EXISTS document_previews (
     preview JSONB NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- ============================================
+-- Alerts and maintenance (work) orders (dashboard panels)
+-- Same as local/005_alerts_and_orders.sql
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS alerts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    severity VARCHAR(20) DEFAULT 'info' CHECK (severity IN ('critical', 'warning', 'info')),
+    category VARCHAR(100),
+    equipment_tag VARCHAR(100),
+    status VARCHAR(20) DEFAULT 'open' CHECK (status IN ('open', 'acknowledged', 'resolved')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_alerts_tenant ON alerts(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status);
+
+CREATE TABLE IF NOT EXISTS maintenance_orders (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    order_number VARCHAR(100) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    equipment_tag VARCHAR(100),
+    status VARCHAR(20) DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'completed', 'cancelled')),
+    tolerances JSONB DEFAULT '{}',
+    created_by UUID REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_maintenance_tenant ON maintenance_orders(tenant_id);
+
+ALTER TABLE alerts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE maintenance_orders ENABLE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation_alerts ON alerts
+    USING (tenant_id = current_setting('app.current_tenant_id', true)::uuid);
+CREATE POLICY tenant_isolation_maintenance_orders ON maintenance_orders
+    USING (tenant_id = current_setting('app.current_tenant_id', true)::uuid);
