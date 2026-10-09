@@ -6,7 +6,8 @@
  *   gets its own area, larger components nearer the middle
  * - inside a component, linked nodes pull together (springs) and all nodes
  *   push apart (repulsion), so relationships read as clusters, not a ring
- * - the result is scaled to fit the drawing area
+ * - every node keeps the room its circle and label need (collision pass),
+ *   and the view zooms to fit instead of squeezing the picture
  *
  * No randomness: the same graph always gets the same picture.
  */
@@ -82,20 +83,76 @@ export function neighbourhood(id: string, edges: GraphEdge[], hops = 1): Set<str
   return found;
 }
 
-function layoutComponent(ids: string[], edges: GraphEdge[]): Record<string, Point> {
+/** Circle radius of a node: subjects (assets) and well-linked nodes are larger. */
+export function nodeRadius(n: GraphNode | undefined, subject = false): number {
+  if (!n) return 6;
+  return Math.min(16, (subject ? 8 : 5) + n.degree * 0.8);
+}
+
+/** Space a node needs on the canvas: its circle plus the label drawn under it. */
+export function nodeBox(n: GraphNode, subject = false): { w: number; h: number } {
+  const r = nodeRadius(n, subject);
+  const charWidth = subject ? 6.4 : 5.4;
+  return { w: Math.max(2 * r, n.label.length * charWidth + 8), h: 2 * r + 16 };
+}
+
+interface Box {
+  w: number;
+  h: number;
+}
+
+/**
+ * Push apart nodes whose boxes (circle + label) overlap, along the axis
+ * that needs the smaller move. Deterministic: ties move by index order.
+ */
+function resolveCollisions(pos: Point[], boxes: Box[], passes = 80, pad = 6): void {
+  const n = pos.length;
+  for (let pass = 0; pass < passes; pass++) {
+    let moved = false;
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const dx = pos[j].x - pos[i].x;
+        const dy = pos[j].y - pos[i].y;
+        const ox = (boxes[i].w + boxes[j].w) / 2 + pad - Math.abs(dx);
+        const oy = (boxes[i].h + boxes[j].h) / 2 + pad - Math.abs(dy);
+        if (ox <= 0 || oy <= 0) continue;
+        moved = true;
+        if (ox < oy) {
+          const s = (dx > 0 || (dx === 0 && i < j) ? 1 : -1) * (ox / 2);
+          pos[i].x -= s;
+          pos[j].x += s;
+        } else {
+          const s = (dy > 0 || (dy === 0 && i < j) ? 1 : -1) * (oy / 2);
+          pos[i].y -= s;
+          pos[j].y += s;
+        }
+      }
+    }
+    if (!moved) break;
+  }
+}
+
+function layoutComponent(
+  ids: string[],
+  edges: GraphEdge[],
+  boxes: Map<string, Box>
+): Record<string, Point> {
   const n = ids.length;
   const index = new Map(ids.map((id, i) => [id, i]));
+  const size = ids.map((id) => boxes.get(id) ?? { w: 20, h: 20 });
   const pos = ids.map((_, i) => {
     const angle = (2 * Math.PI * i) / n;
-    const r = 20 + 6 * Math.sqrt(n);
+    const r = 30 + 14 * Math.sqrt(n);
     return { x: r * Math.cos(angle), y: r * Math.sin(angle) };
   });
   const links = edges
     .filter((e) => index.has(e.source) && index.has(e.target))
     .map((e) => [index.get(e.source)!, index.get(e.target)!] as const);
 
-  const ideal = 70;
-  const iterations = n > 300 ? 120 : 300;
+  // Springs are as long as the two labels need, plus breathing room
+  const ideal = (a: number, b: number) => 50 + (size[a].w + size[b].w) / 4;
+  const repel = 90;
+  const iterations = n > 300 ? 150 : 300;
   for (let it = 0; it < iterations; it++) {
     const cooling = 1 - it / iterations;
     const force = pos.map(() => ({ x: 0, y: 0 }));
@@ -104,7 +161,7 @@ function layoutComponent(ids: string[], edges: GraphEdge[]): Record<string, Poin
         const dx = pos[i].x - pos[j].x;
         const dy = pos[i].y - pos[j].y;
         const d2 = Math.max(dx * dx + dy * dy, 1);
-        const push = (ideal * ideal) / d2;
+        const push = (repel * repel) / d2;
         force[i].x += dx * push * 0.05;
         force[i].y += dy * push * 0.05;
         force[j].x -= dx * push * 0.05;
@@ -115,7 +172,7 @@ function layoutComponent(ids: string[], edges: GraphEdge[]): Record<string, Poin
       const dx = pos[b].x - pos[a].x;
       const dy = pos[b].y - pos[a].y;
       const d = Math.max(Math.hypot(dx, dy), 1);
-      const pull = ((d - ideal) / d) * 0.1;
+      const pull = ((d - ideal(a, b)) / d) * 0.1;
       force[a].x += dx * pull;
       force[a].y += dy * pull;
       force[b].x -= dx * pull;
@@ -125,42 +182,54 @@ function layoutComponent(ids: string[], edges: GraphEdge[]): Record<string, Poin
       force[i].x -= pos[i].x * 0.01; // gentle gravity to the component centre
       force[i].y -= pos[i].y * 0.01;
       const step = Math.hypot(force[i].x, force[i].y);
-      const max = 12 * cooling + 0.5;
+      const max = 14 * cooling + 0.5;
       const scale = step > max ? max / step : 1;
       pos[i].x += force[i].x * scale;
       pos[i].y += force[i].y * scale;
     }
   }
+  resolveCollisions(pos, size);
   return Object.fromEntries(ids.map((id, i) => [id, pos[i]]));
 }
 
-/** Positions for every node, fitted inside width × height with a margin. */
-export function layoutGraph(
+export interface NaturalLayout {
+  positions: Record<string, Point>;
+  width: number;
+  height: number;
+}
+
+/**
+ * Positions at natural scale: every node keeps the room its circle and label
+ * need, so nothing overlaps; the view zooms to fit instead of squeezing.
+ * Coordinates start at (margin, margin).
+ */
+export function layoutNatural(
   nodes: GraphNode[],
   edges: GraphEdge[],
-  width: number,
-  height: number,
-  margin = 50
-): Record<string, Point> {
-  if (nodes.length === 0) return {};
+  isSubject: (type: string) => boolean = () => false,
+  margin = 40
+): NaturalLayout {
+  if (nodes.length === 0) return { positions: {}, width: 0, height: 0 };
+  const boxes = new Map(nodes.map((n) => [n.id, nodeBox(n, isSubject(n.type))]));
   const groups = components(nodes, edges).map((ids) => {
-    const local = layoutComponent(ids, edges);
-    const xs = ids.map((id) => local[id].x);
-    const ys = ids.map((id) => local[id].y);
-    const box = { minX: Math.min(...xs), minY: Math.min(...ys), w: 0, h: 0 };
-    box.w = Math.max(...xs) - box.minX;
-    box.h = Math.max(...ys) - box.minY;
-    return { ids, local, box };
+    const local = layoutComponent(ids, edges, boxes);
+    const half = (id: string) => boxes.get(id)!;
+    const minX = Math.min(...ids.map((id) => local[id].x - half(id).w / 2));
+    const maxX = Math.max(...ids.map((id) => local[id].x + half(id).w / 2));
+    const minY = Math.min(...ids.map((id) => local[id].y - half(id).h / 2));
+    const maxY = Math.max(...ids.map((id) => local[id].y + half(id).h / 2));
+    return { ids, local, box: { minX, minY, w: maxX - minX, h: maxY - minY } };
   });
 
-  // Shelf-pack the components left to right, wrapping rows to the aspect ratio
-  const gap = 90;
+  // Shelf-pack the components left to right, rows wrapping at a 16:10 shape
+  const gap = 60;
   const totalArea = groups.reduce((s, g) => s + (g.box.w + gap) * (g.box.h + gap), 0);
-  const rowWidth = Math.max(Math.sqrt(totalArea * (width / height)), groups[0].box.w + gap);
-  const placed: Record<string, Point> = {};
+  const rowWidth = Math.max(Math.sqrt(totalArea * 1.6), groups[0].box.w + gap);
+  const positions: Record<string, Point> = {};
   let x = 0;
   let y = 0;
   let rowHeight = 0;
+  let width = 0;
   for (const g of groups) {
     if (x > 0 && x + g.box.w > rowWidth) {
       x = 0;
@@ -168,23 +237,42 @@ export function layoutGraph(
       rowHeight = 0;
     }
     for (const id of g.ids) {
-      placed[id] = { x: x + g.local[id].x - g.box.minX, y: y + g.local[id].y - g.box.minY };
+      positions[id] = {
+        x: margin + x + g.local[id].x - g.box.minX,
+        y: margin + y + g.local[id].y - g.box.minY,
+      };
     }
     x += g.box.w + gap;
+    width = Math.max(width, x - gap);
     rowHeight = Math.max(rowHeight, g.box.h);
   }
+  return { positions, width: width + 2 * margin, height: y + rowHeight + 2 * margin };
+}
 
-  // Fit to the drawing area
-  const all = Object.values(placed);
-  const minX = Math.min(...all.map((p) => p.x));
-  const minY = Math.min(...all.map((p) => p.y));
-  const spanX = Math.max(...all.map((p) => p.x)) - minX || 1;
-  const spanY = Math.max(...all.map((p) => p.y)) - minY || 1;
-  const scale = Math.min((width - 2 * margin) / spanX, (height - 2 * margin) / spanY, 1.6);
-  const offsetX = (width - spanX * scale) / 2;
-  const offsetY = (height - spanY * scale) / 2;
-  for (const id of Object.keys(placed)) {
-    placed[id] = { x: offsetX + (placed[id].x - minX) * scale, y: offsetY + (placed[id].y - minY) * scale };
-  }
-  return placed;
+/** The zoom and pan that show a whole layout inside a width × height frame. */
+export function fitView(
+  layout: { width: number; height: number },
+  width: number,
+  height: number
+): { x: number; y: number; k: number } {
+  if (!layout.width || !layout.height) return { x: 0, y: 0, k: 1 };
+  const k = Math.min(width / layout.width, height / layout.height, 1.5);
+  return { k, x: (width - layout.width * k) / 2, y: (height - layout.height * k) / 2 };
+}
+
+/** Positions for every node, fitted inside width × height (natural layout, scaled). */
+export function layoutGraph(
+  nodes: GraphNode[],
+  edges: GraphEdge[],
+  width: number,
+  height: number
+): Record<string, Point> {
+  const layout = layoutNatural(nodes, edges);
+  const view = fitView(layout, width, height);
+  return Object.fromEntries(
+    Object.entries(layout.positions).map(([id, p]) => [
+      id,
+      { x: view.x + p.x * view.k, y: view.y + p.y * view.k },
+    ])
+  );
 }

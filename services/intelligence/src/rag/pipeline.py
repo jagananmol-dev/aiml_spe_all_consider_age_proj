@@ -14,32 +14,29 @@ chunks ready for any paid LLM to consume. The LLM integration point is the
 PreparedContext object returned by prepare().
 """
 
+import asyncio
+import logging
 import time
 import uuid
-import logging
 from dataclasses import dataclass
-from typing import Optional
 
 import httpx
-import psycopg
 import numpy as np
-from sentence_transformers import SentenceTransformer
-from pydantic import BaseModel
+import psycopg
 from pydantic_settings import BaseSettings
-
-import asyncio
+from sentence_transformers import SentenceTransformer
 
 from ..entity_extraction import semantic
 from ..entity_extraction.schema import get_schema
 from ..knowledge_graph import local_graph
-from ..knowledge_graph.graph_manager import KnowledgeGraphManager
-from ..knowledge_graph.relationships import infer_relationships
-from . import local_store
 from ..knowledge_graph.chunk_builder import (
     ChunkBuilder,
     PreparedChunk,
     PreparedContext,
 )
+from ..knowledge_graph.graph_manager import KnowledgeGraphManager
+from ..knowledge_graph.relationships import document_edges, infer_relationships
+from . import local_store
 
 logger = logging.getLogger("veda.intelligence.rag")
 
@@ -106,7 +103,7 @@ class RetrievedChunk:
     chunk_text: str
     score: float
     source: str  # "vector", "graph", "text", "metadata"
-    metadata: dict = None
+    metadata: dict | None = None
 
     def __post_init__(self):
         if self.metadata is None:
@@ -181,7 +178,7 @@ class RAGPipeline:
         self,
         query_embedding: list[float],
         tenant_id: str,
-        top_k: int = None,
+        top_k: int | None = None,
         stats: dict | None = None,
         boost: dict[str, set[str]] | None = None,
     ) -> list[RetrievedChunk]:
@@ -311,21 +308,32 @@ class RAGPipeline:
             # The graph is an extra view of the document; failing to build it
             # must not undo a successful index
             try:
-                await asyncio.to_thread(self.build_local_graph, tenant_id, document_id, raw_text)
+                await asyncio.to_thread(
+                    self.build_local_graph, tenant_id, document_id, raw_text, title
+                )
             except Exception as e:
                 logger.warning(f"Knowledge graph update failed for document {document_id}: {e}")
 
         return count
 
-    def build_local_graph(self, tenant_id: str, document_id: str, raw_text: str) -> int:
+    def build_local_graph(
+        self,
+        tenant_id: str,
+        document_id: str,
+        raw_text: str,
+        title: str | None = None,
+        doc=None,
+        name_types: dict[str, str] | None = None,
+    ) -> int:
         """
         Extract entities from a document with the tenant's graph schema and
-        store its edges in the local graph. New names close to an existing
-        node's name join that node.
+        store its edges in the local graph: relations between entities, plus
+        (with a title) the document's own node linked to what it mentions.
+        New names close to an existing node's name join that node.
         """
         from ..entity_extraction.extractor import extractor
 
-        self.embedding_model  # registers the encoder used for entity typing
+        _ = self.embedding_model  # registers the encoder used for entity typing
         schema = local_graph.tenant_schema(settings.database_url, tenant_id)
         known = local_graph.known_node_values(settings.database_url, tenant_id)
         entities = [
@@ -336,9 +344,13 @@ class RAGPipeline:
                 "confidence": e.confidence,
                 "start_offset": e.start_offset,
             }
-            for e in extractor.extract_entities(raw_text, schema=schema, known_nodes=known)
+            for e in extractor.extract_entities(
+                raw_text, schema=schema, known_nodes=known, doc=doc, name_types=name_types
+            )
         ]
         edges = infer_relationships(entities, raw_text, schema)
+        if title:
+            edges += document_edges(entities, title, schema)
         return local_graph.replace_document_graph(
             settings.database_url, tenant_id, document_id, edges
         )
@@ -375,7 +387,11 @@ class RAGPipeline:
         return edges, boost
 
     async def retrieve_graph(
-        self, entities: list[str], entity_types: list[str], tenant_id: str, max_hops: int = None
+        self,
+        entities: list[str],
+        entity_types: list[str],
+        tenant_id: str,
+        max_hops: int | None = None,
     ) -> tuple[list[RetrievedChunk], list[dict]]:
         """
         Graph traversal using Apache AGE via KnowledgeGraphManager.
@@ -385,8 +401,8 @@ class RAGPipeline:
             tuple of (chunks for RRF, raw graph context for enrichment)
         """
         max_hops = max_hops or settings.graph_max_hops
-        chunks = []
-        all_graph_context = []
+        chunks: list[RetrievedChunk] = []
+        all_graph_context: list[dict] = []
 
         if not entities or not settings.graph_enabled:
             return chunks, all_graph_context
@@ -439,7 +455,7 @@ class RAGPipeline:
         return chunks, all_graph_context
 
     async def retrieve_text(
-        self, query: str, tenant_id: str, top_k: int = None
+        self, query: str, tenant_id: str, top_k: int | None = None
     ) -> list[RetrievedChunk]:
         """
         Full-text search using OpenSearch.
@@ -447,7 +463,7 @@ class RAGPipeline:
         (equipment tags, regulation numbers, etc.).
         """
         top_k = top_k or settings.text_top_k
-        chunks = []
+        chunks: list[RetrievedChunk] = []
 
         if not settings.opensearch_enabled:
             return chunks
@@ -497,7 +513,7 @@ class RAGPipeline:
         return chunks
 
     def reciprocal_rank_fusion(
-        self, result_lists: list[list[RetrievedChunk]], k: int = None
+        self, result_lists: list[list[RetrievedChunk]], k: int | None = None
     ) -> list[RetrievedChunk]:
         """
         Reciprocal Rank Fusion (RRF) to merge results from multiple retrieval sources.
@@ -564,7 +580,7 @@ class RAGPipeline:
         # 2. Extract entities from query for graph traversal
         from ..entity_extraction.extractor import extractor
 
-        query_entities = extractor.extract_entities(query)
+        query_entities = extractor.extract_entities(query, use_nlp=False)
         subjects = get_schema().subject_types
         entity_values = [e.normalized_value for e in query_entities if e.entity_type in subjects]
         entity_types = [e.entity_type for e in query_entities if e.entity_type in subjects]
@@ -607,7 +623,7 @@ class RAGPipeline:
                 source_type=chunk.source,
                 relevance_score=chunk.score,
                 document_id=chunk.document_id,
-                metadata=chunk.metadata,
+                metadata=chunk.metadata or {},
                 token_estimate=self.chunk_builder.estimate_tokens(chunk.chunk_text),
             )
             for chunk in fused_chunks

@@ -152,3 +152,43 @@ def infer_relationships(
                 confidence = (src.get("confidence", 0.5) + tgt.get("confidence", 0.5)) / 2
                 edges[key] = InferredEdge(src, tgt, rel_type, confidence)
     return list(edges.values())
+
+
+def document_edges(
+    entities: list[dict], title: str, schema: GraphSchema | None = None
+) -> list[InferredEdge]:
+    """
+    Edges from a document node to the entities it mentions (schema
+    "document_links"): most-mentioned first, capped, values left out. This is
+    what places every uploaded document in the graph with its relations.
+    """
+    schema = schema or get_schema()
+    cfg = schema.document_links
+    doc_type, relationship = cfg.get("type"), cfg.get("relationship")
+    if not title or not doc_type or not relationship:
+        return []
+    excluded = {
+        name for name, t in schema.types.items() if t.role in set(cfg.get("exclude_roles", []))
+    } | {doc_type}
+
+    counts: dict[tuple[str, str], int] = {}
+    best: dict[tuple[str, str], dict] = {}
+    for e in entities:
+        if e["entity_type"] in excluded:
+            continue
+        key = (e["entity_type"], e["normalized_value"])
+        counts[key] = counts.get(key, 0) + 1
+        if key not in best or e.get("confidence", 0) > best[key].get("confidence", 0):
+            best[key] = e
+    ranked = sorted(counts, key=lambda k: (-counts[k], k))[: int(cfg.get("max_per_document", 25))]
+
+    document = {
+        "entity_type": doc_type,
+        "value": title,
+        "normalized_value": title,
+        "confidence": 1.0,
+    }
+    return [
+        InferredEdge(document, best[key], relationship, float(best[key].get("confidence", 0.5)))
+        for key in ranked
+    ]

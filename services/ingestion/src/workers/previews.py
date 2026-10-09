@@ -72,7 +72,8 @@ def preview_xlsx(file_path: str) -> dict:
     sheets = []
     try:
         for ws in wb.worksheets:
-            rows, total = [], 0
+            rows: list[list[str]] = []
+            total = 0
             for row in ws.iter_rows(values_only=True):
                 cells = _trim_row([_cell(v) for v in row])
                 if not cells:
@@ -93,7 +94,11 @@ def preview_pptx(file_path: str) -> dict:
     slides = []
     for number, slide in enumerate(deck.slides, start=1):
         title_shape = slide.shapes.title
-        title = title_shape.text_frame.text.strip() if title_shape is not None and title_shape.has_text_frame else ""
+        title = (
+            title_shape.text_frame.text.strip()
+            if title_shape is not None and title_shape.has_text_frame
+            else ""
+        )
         bullets: list[str] = []
         tables: list[list[list[str]]] = []
         title_id = title_shape.shape_id if title_shape is not None else None
@@ -103,11 +108,15 @@ def preview_pptx(file_path: str) -> dict:
             if getattr(shape, "has_text_frame", False):
                 bullets += [p.text.strip() for p in shape.text_frame.paragraphs if p.text.strip()]
             if getattr(shape, "has_table", False):
-                tables.append([[_cell(c.text) for c in row.cells] for row in shape.table.rows][:MAX_ROWS])
+                tables.append(
+                    [[_cell(c.text) for c in row.cells] for row in shape.table.rows][:MAX_ROWS]
+                )
         notes = ""
         if slide.has_notes_slide:
             notes = slide.notes_slide.notes_text_frame.text.strip()
-        slides.append({"number": number, "title": title, "bullets": bullets, "tables": tables, "notes": notes})
+        slides.append(
+            {"number": number, "title": title, "bullets": bullets, "tables": tables, "notes": notes}
+        )
     return {"kind": "slides", "slides": slides}
 
 
@@ -136,7 +145,9 @@ def save_preview(database_url: str, tenant_id: str, document_id: str, preview: d
         )
 
 
-def store_preview_safely(database_url: str, tenant_id: str, document_id: str, file_path: str, extension: str) -> None:
+def store_preview_safely(
+    database_url: str, tenant_id: str, document_id: str, file_path: str, extension: str
+) -> None:
     """Build and save a preview; a failure is logged, never raised (the preview is optional)."""
     try:
         preview = build_preview(file_path, extension)

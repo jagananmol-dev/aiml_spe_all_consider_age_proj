@@ -159,9 +159,12 @@ async def lifespan(app: FastAPI):
     # Load the embedding model in the background so the API is up at once
     # and the first question does not wait for the model
     warm = asyncio.create_task(asyncio.to_thread(rag_pipeline.warm_up))
-    warm.add_done_callback(
-        lambda t: t.exception() and logger.warning(f"Embedding warm-up failed: {t.exception()}")
-    )
+
+    def report(task: asyncio.Task) -> None:
+        if task.exception():
+            logger.warning(f"Embedding warm-up failed: {task.exception()}")
+
+    warm.add_done_callback(report)
     yield
     logger.info("🛑 VEDA Intelligence Service shutting down...")
 
@@ -252,7 +255,7 @@ async def prepare_query_context(
         )
     except Exception as e:
         QUERY_COUNT.labels(tenant_id=x_tenant_id, status="error").inc()
-        logger.error(f"Query preparation failed: {e}", exc_info=True)
+        logger.exception("Query preparation failed")
         raise HTTPException(status_code=500, detail="Internal error") from e
 
 
@@ -296,7 +299,7 @@ async def index_document(
     except RuntimeError as e:
         raise HTTPException(status_code=409, detail=str(e)) from e
     except Exception as e:
-        logger.error(f"Indexing failed for document {request.document_id}: {e}", exc_info=True)
+        logger.exception(f"Indexing failed for document {request.document_id}")
         raise HTTPException(status_code=500, detail="Internal error") from e
 
     return IndexDocumentResponse(
@@ -417,7 +420,7 @@ async def search_knowledge_graph(
         )
 
     except Exception as e:
-        logger.error(f"Graph search failed: {e}", exc_info=True)
+        logger.exception("Graph search failed")
         raise HTTPException(status_code=500, detail="Internal error") from e
 
 
@@ -441,7 +444,7 @@ async def graph_overview(
             local_graph.overview, _database_url(), x_tenant_id, request.limit
         )
     except Exception as e:
-        logger.error(f"Graph overview failed: {e}", exc_info=True)
+        logger.exception("Graph overview failed")
         raise HTTPException(status_code=500, detail="Internal error") from e
 
 
@@ -468,7 +471,7 @@ async def graph_findings(
         )
         return {"findings": items, "types": schema.public_types()}
     except Exception as e:
-        logger.error(f"Graph findings failed: {e}", exc_info=True)
+        logger.exception("Graph findings failed")
         raise HTTPException(status_code=500, detail="Internal error") from e
 
 

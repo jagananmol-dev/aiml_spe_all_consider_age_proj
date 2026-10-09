@@ -35,25 +35,236 @@ logger = logging.getLogger("veda.intelligence.semantic")
 # English function words: they end a candidate phrase. Language plumbing,
 # not domain vocabulary.
 STOPWORDS = frozenset(
-    """a about above after again against all also am an and any are as at be because been before being
-    below between both but by can could did do does doing done down during each either else every few for
-    from further had has have having he her here hers herself him himself his how however i if in into is it
-    its itself just least less let like may me might more most must my myself near need no nor not now of
-    off on once only or other our ours ourselves out over own per please same shall she should since so
-    some such than that the their theirs them themselves then there these they this those through thus to
-    too under until up upon us use used using very via was we were what when where whether which while who
-    whom whose why will with within without would yes yet you your yours yourself yourselves
-    one two three four five six seven eight nine ten first second third new old high low good total
-    each daily weekly monthly yearly annual per cent percent include includes including included
-    """.split()
+    [
+        "a",
+        "about",
+        "above",
+        "after",
+        "again",
+        "against",
+        "all",
+        "also",
+        "am",
+        "an",
+        "and",
+        "any",
+        "are",
+        "as",
+        "at",
+        "be",
+        "because",
+        "been",
+        "before",
+        "being",
+        "below",
+        "between",
+        "both",
+        "but",
+        "by",
+        "can",
+        "could",
+        "did",
+        "do",
+        "does",
+        "doing",
+        "done",
+        "down",
+        "during",
+        "each",
+        "either",
+        "else",
+        "every",
+        "few",
+        "for",
+        "from",
+        "further",
+        "had",
+        "has",
+        "have",
+        "having",
+        "he",
+        "her",
+        "here",
+        "hers",
+        "herself",
+        "him",
+        "himself",
+        "his",
+        "how",
+        "however",
+        "i",
+        "if",
+        "in",
+        "into",
+        "is",
+        "it",
+        "its",
+        "itself",
+        "just",
+        "least",
+        "less",
+        "let",
+        "like",
+        "may",
+        "me",
+        "might",
+        "more",
+        "most",
+        "must",
+        "my",
+        "myself",
+        "near",
+        "need",
+        "no",
+        "nor",
+        "not",
+        "now",
+        "of",
+        "off",
+        "on",
+        "once",
+        "only",
+        "or",
+        "other",
+        "our",
+        "ours",
+        "ourselves",
+        "out",
+        "over",
+        "own",
+        "per",
+        "please",
+        "same",
+        "shall",
+        "she",
+        "should",
+        "since",
+        "so",
+        "some",
+        "such",
+        "than",
+        "that",
+        "the",
+        "their",
+        "theirs",
+        "them",
+        "themselves",
+        "then",
+        "there",
+        "these",
+        "they",
+        "this",
+        "those",
+        "through",
+        "thus",
+        "to",
+        "too",
+        "under",
+        "until",
+        "up",
+        "upon",
+        "us",
+        "use",
+        "used",
+        "using",
+        "very",
+        "via",
+        "was",
+        "we",
+        "were",
+        "what",
+        "when",
+        "where",
+        "whether",
+        "which",
+        "while",
+        "who",
+        "whom",
+        "whose",
+        "why",
+        "will",
+        "with",
+        "within",
+        "without",
+        "would",
+        "yes",
+        "yet",
+        "you",
+        "your",
+        "yours",
+        "yourself",
+        "yourselves",
+        "one",
+        "two",
+        "three",
+        "four",
+        "five",
+        "six",
+        "seven",
+        "eight",
+        "nine",
+        "ten",
+        "first",
+        "second",
+        "third",
+        "new",
+        "old",
+        "high",
+        "low",
+        "good",
+        "total",
+        "each",
+        "daily",
+        "weekly",
+        "monthly",
+        "yearly",
+        "annual",
+        "per",
+        "cent",
+        "percent",
+        "include",
+        "includes",
+        "including",
+        "included",
+    ]
 )
 
 # Common verb forms that also end a phrase, so "vancomycin given" or
 # "conductivity cell replacement followed" are typed without the verb.
 # Words ending in "-ed" are treated the same way (see _is_breaker).
 VERB_FORMS = frozenset(
-    """given found shown shows show taken made done seen gets got uses covers remains remain continues
-    requires require needs catch catches keeps keep goes went came comes says said told""".split()
+    [
+        "given",
+        "found",
+        "shown",
+        "shows",
+        "show",
+        "taken",
+        "made",
+        "done",
+        "seen",
+        "gets",
+        "got",
+        "uses",
+        "covers",
+        "remains",
+        "remain",
+        "continues",
+        "requires",
+        "require",
+        "needs",
+        "catch",
+        "catches",
+        "keeps",
+        "keep",
+        "goes",
+        "went",
+        "came",
+        "comes",
+        "says",
+        "said",
+        "told",
+    ]
 )
 
 
@@ -300,6 +511,52 @@ def candidate_phrases(
         emit(run)
 
     # Keep the phrases most likely to matter: repeated, then multi-word
+    ranked = sorted(
+        found.values(), key=lambda c: (-len(c.spans), -c.phrase.count(" "), c.spans[0][0])
+    )
+    return ranked[:limit]
+
+
+_SKIP_POS = {"DET", "PRON", "NUM", "PUNCT", "SYM", "SPACE", "CCONJ", "ADP", "PART"}
+
+
+def noun_chunk_candidates(
+    doc, max_words: int = 4, min_chars: int = 4, limit: int = 400
+) -> list[Candidate]:
+    """
+    Candidate phrases from a spaCy parse: each noun chunk without leading
+    determiners, numbers or participles ("the repeated conductivity alarms"
+    → "conductivity alarms"), its head lemmatised ("conductivity alarm") so
+    singular and plural are one entity. Chunks containing codes or digits are
+    left to the pattern and identifier steps.
+    """
+    found: dict[str, Candidate] = {}
+    for chunk in doc.noun_chunks:
+        tokens = [t for t in chunk if t.pos_ not in _SKIP_POS and not t.is_space]
+        while tokens and (
+            tokens[0].is_stop
+            or tokens[0].lower_ in STOPWORDS  # also "new", "second", "high"
+            or tokens[0].tag_ in ("VBN", "VBD", "VBG")
+            or tokens[0].pos_ == "VERB"
+        ):
+            tokens = tokens[1:]
+        tokens = tokens[-max_words:]
+        if not tokens or any(any(ch.isdigit() for ch in t.text) for t in tokens):
+            continue
+        # Keep one contiguous span (dropped tokens may sit in the middle)
+        start = tokens[0].i
+        if tokens[-1].i - start + 1 != len(tokens):
+            continue
+        words = [t.text.lower() for t in tokens[:-1]] + [tokens[-1].lemma_.lower()]
+        phrase = " ".join(words)
+        if len(phrase) < min_chars or not phrase.replace(" ", "").replace("-", "").isalpha():
+            continue
+        span = (tokens[0].idx, tokens[-1].idx + len(tokens[-1].text))
+        cand = found.get(phrase)
+        if cand is None:
+            found[phrase] = Candidate(phrase, doc.text[span[0] : span[1]], [span])
+        else:
+            cand.spans.append(span)
     ranked = sorted(
         found.values(), key=lambda c: (-len(c.spans), -c.phrase.count(" "), c.spans[0][0])
     )

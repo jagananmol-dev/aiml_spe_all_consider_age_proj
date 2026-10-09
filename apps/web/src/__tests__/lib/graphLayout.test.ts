@@ -2,9 +2,23 @@
  * VEDA AI — Knowledge graph layout tests
  */
 
-import { components, layoutGraph, neighbourhood, type GraphEdge, type GraphNode } from "@/lib/graphLayout";
+import {
+  components,
+  fitView,
+  layoutGraph,
+  layoutNatural,
+  neighbourhood,
+  nodeBox,
+  type GraphEdge,
+  type GraphNode,
+} from "@/lib/graphLayout";
 
-const node = (id: string, type = "EQUIPMENT_TAG"): GraphNode => ({ id, label: id, type, degree: 1 });
+const node = (id: string, type = "EQUIPMENT_TAG"): GraphNode => ({
+  id,
+  label: id,
+  type,
+  degree: 1,
+});
 const edge = (source: string, target: string): GraphEdge => ({
   source,
   target,
@@ -63,5 +77,44 @@ describe("layoutGraph", () => {
 
   it("handles an empty graph", () => {
     expect(layoutGraph([], [], 1000, 600)).toEqual({});
+  });
+});
+
+describe("layoutNatural", () => {
+  // A hub (like a document) linked to 40 entities with long labels
+  const hub: GraphNode = {
+    id: "hub",
+    label: "Q3_2026_Board_Pack.docx",
+    type: "DOCUMENT",
+    degree: 40,
+  };
+  const leaves: GraphNode[] = Array.from({ length: 40 }, (_, i) => ({
+    id: `n${i}`,
+    label: `catheter-related bloodstream infection ${i}`,
+    type: "CONDITION",
+    degree: 1,
+  }));
+  const nodes = [hub, ...leaves];
+  const edges = leaves.map((n) => edge("hub", n.id));
+  const layout = layoutNatural(nodes, edges);
+
+  it("gives every node room for its circle and label (no overlaps)", () => {
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = layout.positions[nodes[i].id];
+        const b = layout.positions[nodes[j].id];
+        const boxA = nodeBox(nodes[i]);
+        const boxB = nodeBox(nodes[j]);
+        const overlapX = (boxA.w + boxB.w) / 2 - Math.abs(a.x - b.x);
+        const overlapY = (boxA.h + boxB.h) / 2 - Math.abs(a.y - b.y);
+        expect(overlapX <= 0.5 || overlapY <= 0.5).toBe(true);
+      }
+    }
+  });
+
+  it("fits the view by zooming, not by squeezing positions", () => {
+    const view = fitView(layout, 1000, 640);
+    expect(layout.width * view.k).toBeLessThanOrEqual(1000.5);
+    expect(layout.height * view.k).toBeLessThanOrEqual(640.5);
   });
 });

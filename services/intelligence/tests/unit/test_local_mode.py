@@ -302,7 +302,10 @@ class TestExtractorWithoutSpacy:
             extractor.extract_entities("again")
 
         assert any(e.entity_type == "EQUIPMENT_TAG" for e in entities)
-        assert fake_spacy.load.call_count == 2  # trf + sm, attempted once
+        # Each model the schema lists (nlp.models) is tried once, never retried
+        from src.entity_extraction.schema import get_schema
+
+        assert fake_spacy.load.call_count == len(get_schema().nlp["models"])
 
 
 class TestMinimumSimilarity:

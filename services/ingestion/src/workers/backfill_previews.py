@@ -32,8 +32,10 @@ def backfill() -> tuple[int, int]:
     for document_id, tenant_id, file_name, storage_path in rows:
         try:
             path = resolve_storage_path(storage_path)
-            save_preview(settings.database_url, tenant_id, document_id,
-                         build_preview(str(path), file_name.rsplit(".", 1)[-1]))
+            preview = build_preview(str(path), file_name.rsplit(".", 1)[-1])
+            if preview is None:  # a format without a preview
+                continue
+            save_preview(settings.database_url, tenant_id, document_id, preview)
             done += 1
         except Exception as e:
             logger.warning(f"Preview failed for {file_name}: {e}")

@@ -25,13 +25,13 @@ Injection safety:
 import json
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
-from typing import Any, Optional
+from datetime import UTC, datetime, timedelta
+from typing import Any
 
 try:
     import psycopg
 except ImportError:  # pragma: no cover - optional dependency
-    psycopg = None
+    psycopg = None  # type: ignore[assignment]
 
 from .relationships import infer_relationships
 
@@ -51,12 +51,12 @@ class GraphNode:
     entity_type: str
     value: str
     normalized_value: str
-    document_id: Optional[str] = None
-    tenant_id: Optional[str] = None
+    document_id: str | None = None
+    tenant_id: str | None = None
     confidence: float = 0.0
     attributes: dict = field(default_factory=dict)
-    first_seen: Optional[str] = None
-    last_seen: Optional[str] = None
+    first_seen: str | None = None
+    last_seen: str | None = None
 
 
 @dataclass
@@ -66,7 +66,7 @@ class GraphEdge:
     source_value: str
     target_value: str
     relationship_type: str
-    document_id: Optional[str] = None
+    document_id: str | None = None
     confidence: float = 0.0
     attributes: dict = field(default_factory=dict)
 
@@ -270,7 +270,7 @@ class KnowledgeGraphManager:
             "value": value,
             "document_id": document_id,
             "confidence": float(confidence),
-            "now": datetime.now(timezone.utc).isoformat(),
+            "now": datetime.now(UTC).isoformat(),
         }
         try:
             return await self._run_write(conn, query, "node agtype", params, commit)
@@ -379,7 +379,7 @@ class KnowledgeGraphManager:
             "target_type": target_type,
             "document_id": document_id,
             "confidence": float(confidence),
-            "now": datetime.now(timezone.utc).isoformat(),
+            "now": datetime.now(UTC).isoformat(),
         }
         try:
             return await self._run_write(conn, query, "rel agtype", params, commit)
@@ -589,7 +589,7 @@ class KnowledgeGraphManager:
 
         Returns the number of pruned edges.
         """
-        cutoff = (datetime.now(timezone.utc) - timedelta(days=max_age_days)).isoformat()
+        cutoff = (datetime.now(UTC) - timedelta(days=max_age_days)).isoformat()
 
         async with await self._get_connection() as conn:
             await self._set_tenant(conn, tenant_id)
@@ -629,7 +629,7 @@ class KnowledgeGraphManager:
         Returns node count, edge count, entity type distribution,
         and last update timestamp.
         """
-        stats = {
+        stats: dict[str, Any] = {
             "total_nodes": 0,
             "total_edges": 0,
             "entity_types": {},

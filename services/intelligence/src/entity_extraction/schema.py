@@ -63,6 +63,9 @@ class GraphSchema:
     co_occurrence_types: set[str]
     semantic: dict
     identifier_regex: re.Pattern | None
+    term_sets: dict[str, set[str]] = field(default_factory=dict)
+    nlp: dict = field(default_factory=dict)
+    document_links: dict = field(default_factory=dict)
     fingerprint: str = ""
     _role_cache: dict = field(default_factory=dict)
 
@@ -79,6 +82,17 @@ class GraphSchema:
     def leaf_types(self) -> set[str]:
         return {t.name for t in self.types.values() if t.leaf}
 
+    def canonical_term(self, entity_type: str, text: str) -> str:
+        """The listed term a match stands for: "conductivity alarms" → "conductivity alarm"."""
+        value = text.lower()
+        terms = self.term_sets.get(entity_type, set())
+        if value in terms:
+            return value
+        for suffix in ("es", "s"):
+            if value.endswith(suffix) and value[: -len(suffix)] in terms:
+                return value[: -len(suffix)]
+        return value
+
     def public_types(self) -> dict[str, dict]:
         """Labels, colours and roles for the UI."""
         return {
@@ -89,14 +103,16 @@ class GraphSchema:
 
 def term_pattern(terms: list[str]) -> re.Pattern | None:
     """
-    Whole-word, case-insensitive matcher for a term list. Longer phrases are
-    tried first, so "bearing failure" wins over shorter prefixes and
-    "alignment" is not found inside "misalignment".
+    Whole-word, case-insensitive matcher for a term list, plurals included
+    ("leaks", "conductivity alarms"). Longer phrases are tried first, so
+    "bearing failure" wins over shorter prefixes and "alignment" is not
+    found inside "misalignment".
     """
     ordered = sorted({t for t in terms if t.strip()}, key=len, reverse=True)
     if not ordered:
         return None
-    return re.compile(r"\b(?:" + "|".join(re.escape(t) for t in ordered) + r")\b", re.IGNORECASE)
+    alternatives = "|".join(re.escape(t) for t in ordered)
+    return re.compile(r"\b(?:" + alternatives + r")(?:e?s)?\b", re.IGNORECASE)
 
 
 def merge_schema(base: dict, extension: dict | None) -> dict:
@@ -118,7 +134,7 @@ def merge_schema(base: dict, extension: dict | None) -> dict:
     for key in ("relationships", "detection_actions", "co_occurrence_types"):
         if extension.get(key):
             merged[key] = list(merged.get(key, [])) + list(extension[key])
-    for key in ("semantic", "extra_inverse_names"):
+    for key in ("semantic", "extra_inverse_names", "nlp", "document_links"):
         if extension.get(key):
             merged[key] = {**merged.get(key, {}), **extension[key]}
     return merged
@@ -171,6 +187,10 @@ def _compile(raw: dict) -> GraphSchema:
     if detection.get("type") and detection.get("inverse"):
         inverse[detection["type"]] = detection["inverse"]
 
+    links = dict(raw.get("document_links") or {})
+    if links.get("relationship") and links.get("inverse"):
+        inverse[links["relationship"]] = links["inverse"]
+
     semantic = dict(raw.get("semantic") or {})
     identifier_regex = None
     if semantic.get("identifier_regex"):
@@ -192,6 +212,9 @@ def _compile(raw: dict) -> GraphSchema:
         co_occurrence_types=set(raw.get("co_occurrence_types", [])),
         semantic=semantic,
         identifier_regex=identifier_regex,
+        term_sets={name: {x.lower() for x in t.terms} for name, t in types.items()},
+        nlp=dict(raw.get("nlp") or {}),
+        document_links=links,
         fingerprint=hashlib.sha1(json.dumps(raw, sort_keys=True).encode()).hexdigest()[:12],
     )
 

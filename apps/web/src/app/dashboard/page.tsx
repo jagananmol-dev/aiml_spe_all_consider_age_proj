@@ -31,6 +31,49 @@ import {
 import { KnowledgeGraph } from "@/components/graph/KnowledgeGraph";
 import { DocumentFindings } from "@/components/maintenance/DocumentFindings";
 
+interface SessionInfo {
+  name?: string;
+  role?: string;
+  tenantSlug?: string;
+}
+
+interface Alert {
+  id: string;
+  title: string;
+  description: string;
+  severity: string;
+}
+
+interface MaintenanceOrder {
+  id: string;
+  orderNumber: string;
+  title: string;
+  description: string;
+  equipmentTag: string;
+  status: string;
+  tolerances: Record<string, string | number>;
+}
+
+interface CopilotSource {
+  title?: string;
+  document?: string;
+  source?: string;
+  document_id: string;
+  source_type?: string;
+}
+
+interface CopilotData {
+  confidence?: number;
+  formatted?: string;
+  sources?: CopilotSource[];
+  total_token_estimate?: number;
+  confidence_score?: number;
+  formatted_prompt?: string;
+}
+
+const errorMessage = (err: unknown, fallback: string) =>
+  err instanceof Error && err.message ? err.message : fallback;
+
 // Types
 interface Document {
   id: string;
@@ -59,7 +102,7 @@ interface ComplianceRule {
 export default function DashboardPage() {
   const router = useRouter();
   const [activeNav, setActiveNav] = useState("dashboard");
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<SessionInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Data states
@@ -70,17 +113,17 @@ export default function DashboardPage() {
   const [complianceLoading, setComplianceLoading] = useState(false);
 
   // Alerts states
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
   const [alertsLoading, setAlertsLoading] = useState(false);
 
   // Maintenance states
-  const [maintenanceOrders, setMaintenanceOrders] = useState<any[]>([]);
+  const [maintenanceOrders, setMaintenanceOrders] = useState<MaintenanceOrder[]>([]);
   const [maintenanceLoading, setMaintenanceLoading] = useState(false);
 
   // Copilot Q&A states
   const [query, setQuery] = useState("");
   const [chatHistory, setChatHistory] = useState<
-    Array<{ role: "user" | "assistant"; text: string; data?: any }>
+    Array<{ role: "user" | "assistant"; text: string; data?: CopilotData }>
   >([]);
   const [chatLoading, setChatLoading] = useState(false);
 
@@ -220,10 +263,10 @@ export default function DashboardPage() {
           data,
         },
       ]);
-    } catch (err: any) {
+    } catch (err) {
       setChatHistory((prev) => [
         ...prev,
-        { role: "assistant", text: `Error: ${err.message || "Something went wrong"}` },
+        { role: "assistant", text: `Error: ${errorMessage(err, "Something went wrong")}` },
       ]);
     } finally {
       setChatLoading(false);
@@ -251,8 +294,8 @@ export default function DashboardPage() {
       setUploadProgress("Upload successful! Processing has started.");
       setUploadFile(null);
       fetchDocuments();
-    } catch (err: any) {
-      setUploadProgress(`Error: ${err.message}`);
+    } catch (err) {
+      setUploadProgress(`Error: ${errorMessage(err, "Upload failed")}`);
     }
   };
 
@@ -1028,7 +1071,7 @@ export default function DashboardPage() {
                                   flexWrap: "wrap",
                                 }}
                               >
-                                {msg.data.sources.map((src: any, sIdx: number) => (
+                                {msg.data.sources.map((src: CopilotSource, sIdx: number) => (
                                   <div
                                     key={sIdx}
                                     style={{
@@ -1687,7 +1730,7 @@ export default function DashboardPage() {
                                 }}
                               >
                                 <strong>Extracted Parameters:</strong>
-                                {Object.entries(order.tolerances).map(([k, v]: any) => (
+                                {Object.entries(order.tolerances).map(([k, v]) => (
                                   <span key={k}>
                                     {k}: {v}
                                   </span>

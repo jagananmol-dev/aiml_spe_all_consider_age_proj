@@ -33,7 +33,7 @@ from src.entity_extraction import semantic  # noqa: E402
 from src.knowledge_graph import relationships  # noqa: E402
 
 extractor = extractor_mod.IndustrialEntityExtractor()
-extractor._spacy_unavailable = True  # matches the local install (no spaCy model)
+extractor._spacy_unavailable = True  # per-file check: names are typed by votes across all documents at indexing
 
 # Embedding-based typing needs the sentence model. Run with the intelligence
 # venv's packages available to reproduce it; without them only pattern and

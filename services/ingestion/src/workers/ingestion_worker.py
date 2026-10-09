@@ -12,33 +12,34 @@ Kafka consumers that process uploaded documents through the ingestion pipeline:
 import csv
 import io
 import json
+import logging
 import os
 import re
 import tempfile
-import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from typing import Any
 
 # Singleton EasyOCR reader instance
 _easyocr_reader = None
 
 try:
-    from confluent_kafka import Consumer, Producer, KafkaError
+    from confluent_kafka import Consumer, KafkaError, Producer
 except ImportError:  # pragma: no cover - optional dependency
-    Consumer = Producer = None
+    Consumer = Producer = None  # type: ignore[assignment,misc]
 
-    class KafkaError(Exception):
+    class KafkaError(Exception):  # type: ignore[no-redef]
         _PARTITION_EOF = 0
 
 
 try:
     from minio import Minio
 except ImportError:  # pragma: no cover - optional dependency
-    Minio = None
+    Minio = None  # type: ignore[assignment,misc]
 
 try:
     import psycopg
 except ImportError:  # pragma: no cover - optional dependency
-    psycopg = None
+    psycopg = None  # type: ignore[assignment]
 
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
@@ -47,7 +48,7 @@ try:
     from pydantic_settings import BaseSettings
 except ImportError:  # pragma: no cover - optional dependency
 
-    class BaseSettings:
+    class BaseSettings:  # type: ignore[no-redef]
         def __init__(self, **kwargs):
             for key, value in kwargs.items():
                 setattr(self, key, value)
@@ -76,7 +77,7 @@ class Settings(BaseSettings):
     # English only by default: adding "hi" made EasyOCR read Latin-script
     # digits as Devanagari ("2026" → "२०२६"). Set VEDA_OCR_LANGUAGES='["en","hi"]'
     # for Hindi documents.
-    ocr_languages: list[str] = ["en"]
+    ocr_languages: tuple[str, ...] = ("en",)
 
     class Config:
         env_prefix = "VEDA_"
@@ -184,7 +185,7 @@ def parse_pdf(file_path: str) -> dict:
     import fitz  # PyMuPDF
     import pdfplumber
 
-    result = {
+    result: dict[str, Any] = {
         "raw_text": "",
         "page_count": 0,
         "word_count": 0,
@@ -199,9 +200,7 @@ def parse_pdf(file_path: str) -> dict:
     full_text_parts = []
     for page_num, page in enumerate(doc):
         # Expand ligatures ("ﬁ" → "fi") so the text matches what people type
-        page_text = page.get_text(
-            "text", flags=fitz.TEXTFLAGS_TEXT & ~fitz.TEXT_PRESERVE_LIGATURES
-        )
+        page_text = page.get_text("text", flags=fitz.TEXTFLAGS_TEXT & ~fitz.TEXT_PRESERVE_LIGATURES)
         full_text_parts.append(page_text)
 
         result["pages"].append(
@@ -290,7 +289,7 @@ def parse_image_ocr(file_path: str) -> dict:
         # verbose=False: the first-run model download draws a progress bar
         # with characters a Windows (cp1252) console cannot encode, which
         # crashes the download
-        _easyocr_reader = easyocr.Reader(settings.ocr_languages, gpu=use_gpu, verbose=False)
+        _easyocr_reader = easyocr.Reader(list(settings.ocr_languages), gpu=use_gpu, verbose=False)
 
     results = _easyocr_reader.readtext(file_path, detail=1, paragraph=False)
     lines = [_fix_tag_digits(line) for line in _group_ocr_lines(results)]
@@ -721,7 +720,11 @@ def run_ingestion_worker():
                     from .previews import store_preview_safely
 
                     store_preview_safely(
-                        settings.database_url, event.tenant_id, event.document_id, temp_path, file_ext
+                        settings.database_url,
+                        event.tenant_id,
+                        event.document_id,
+                        temp_path,
+                        file_ext,
                     )
                 finally:
                     if os.path.exists(temp_path):
@@ -743,7 +746,7 @@ def run_ingestion_worker():
                     parsed_content={
                         k: v for k, v in result.items() if k not in ("raw_text", "pages", "tables")
                     },
-                    timestamp=datetime.now(timezone.utc).isoformat(),
+                    timestamp=datetime.now(UTC).isoformat(),
                 )
 
                 producer.produce(
@@ -773,7 +776,7 @@ def run_ingestion_worker():
                 )
 
             except Exception as e:
-                logger.error(f"❌ Failed to process document: {e}", exc_info=True)
+                logger.exception("❌ Failed to process document")
 
                 tenant_id = event_data.get("tenantId") or event_data.get("tenant_id")
                 document_id = event_data.get("documentId") or event_data.get("document_id")
@@ -792,7 +795,7 @@ def run_ingestion_worker():
                         tenant_id=tenant_id or "unknown",
                         document_id=document_id or "unknown",
                         error=str(e),
-                        timestamp=datetime.now(timezone.utc).isoformat(),
+                        timestamp=datetime.now(UTC).isoformat(),
                     )
                     producer.produce(
                         TOPICS["DOCUMENT_PARSE_FAILED"],

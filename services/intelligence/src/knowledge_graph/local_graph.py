@@ -23,6 +23,7 @@ import logging
 import threading
 import time
 from collections import deque
+from typing import Any
 
 import numpy as np
 
@@ -34,7 +35,7 @@ from .relationships import InferredEdge
 try:
     import psycopg
 except ImportError:  # pragma: no cover - optional dependency
-    psycopg = None
+    psycopg = None  # type: ignore[assignment]
 
 logger = logging.getLogger("veda.intelligence.local_graph")
 
@@ -149,7 +150,7 @@ def walk(
     if not starts:
         return []
     # Prefer a subject (asset) node when the same text is several entity types
-    start = sorted(starts, key=lambda nid: nodes[nid][0] not in subjects)[0]
+    start = min(starts, key=lambda nid: nodes[nid][0] not in subjects)
 
     results: list[dict] = []
     seen = {start}
@@ -252,7 +253,7 @@ def overview(database_url: str, tenant_id: str, limit: int = 2000) -> dict:
 
 def stats(database_url: str, tenant_id: str) -> dict:
     """Node/edge counts for the tenant's graph."""
-    result = {
+    result: dict[str, Any] = {
         "total_nodes": 0,
         "total_edges": 0,
         "entity_types": {},
@@ -468,9 +469,12 @@ def findings(
         ).fetchall()
 
     roles = {name: t.role or "other" for name, t in schema.types.items()}
+    document_types = schema.types_with_role("document")
     labels = {name: t.label for name, t in schema.types.items()}
     by_subject: dict[tuple[str, str], dict] = {}
     for stype, sval, snorm, ttype, tval, tnorm, rel, conf, docs, last in rows:
+        if stype in document_types or ttype in document_types:
+            continue  # the source documents are listed per asset already
         # Read every edge from the subject's side
         if stype in subjects:
             subject_type, subject_norm, subject_name = stype, snorm, sval
