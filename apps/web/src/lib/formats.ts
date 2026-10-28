@@ -4,7 +4,7 @@
  * Single source of truth for which file formats a company can upload.
  * Used by the upload page (one card per format) and the upload API
  * (server-side validation). Every format listed here has a parser in the
- * ingestion service (services/ingestion/src/workers/ingestion_worker.py);
+ * NLP pipeline (PARSER_MAP in nlp_sts/step01_text_extraction.py);
  * keep the two in sync.
  */
 

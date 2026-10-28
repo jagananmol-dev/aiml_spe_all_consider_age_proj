@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession, withTenant } from "@/lib/db";
+import { ComputeNodeOfflineError, routeLlmThroughComputeNode } from "@/lib/computeNode";
 import { intelligenceFetch } from "@/lib/intelligence";
 import { getLlmConfig, LlmError, streamChat } from "@/lib/llm";
 import {
@@ -86,6 +87,17 @@ export async function POST(request: NextRequest) {
       { error: "The chatbot is not configured. Set LLM_PROVIDER and LLM_MODEL." },
       { status: 503 }
     );
+  }
+
+  // Hosted mode: the model runs on the owner's PC, reached through its tunnel
+  try {
+    llm = await routeLlmThroughComputeNode(llm);
+  } catch (error) {
+    if (error instanceof ComputeNodeOfflineError) {
+      return NextResponse.json({ error: error.message, waking: true }, { status: 503 });
+    }
+    console.error("[chat] Could not reach the compute node:", error);
+    return NextResponse.json({ error: "The assistant is not available right now." }, { status: 503 });
   }
 
   const { tenantId } = session;
@@ -185,6 +197,9 @@ export async function POST(request: NextRequest) {
     chunks = prepared.chunks ?? [];
     retrieval = prepared.retrieval_metadata ?? {};
   } catch (error) {
+    if (error instanceof ComputeNodeOfflineError) {
+      return NextResponse.json({ error: error.message, waking: true }, { status: 503 });
+    }
     console.error("[chat] Intelligence service unreachable:", error);
     return NextResponse.json(
       { error: "The search service is not running. Start it and try again." },

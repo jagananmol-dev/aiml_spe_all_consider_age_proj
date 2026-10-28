@@ -17,10 +17,14 @@ import { SESSION_COOKIE, verifySessionToken, type SessionPayload } from "@/lib/s
 // Connection pool for the application
 const connectionString = process.env.DATABASE_URL!;
 
+// Serverless hosts (Vercel) connect through a transaction pooler such as
+// Supabase's port 6543, which cannot keep prepared statements: set
+// DATABASE_PREPARE=false there, and a small DATABASE_POOL_MAX per instance
 export const client = postgres(connectionString, {
-  max: 20,
+  max: Number(process.env.DATABASE_POOL_MAX) || 20,
   idle_timeout: 20,
   connect_timeout: 10,
+  prepare: process.env.DATABASE_PREPARE !== "false",
 });
 
 export const db = drizzle(client);

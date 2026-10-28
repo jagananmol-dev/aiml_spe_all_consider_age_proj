@@ -31,6 +31,8 @@ export interface LlmConfig {
   numCtx: number;
   temperature: number;
   keepAlive: string;
+  /** Extra request headers, e.g. the internal key for the compute node's /llm proxy */
+  headers?: Record<string, string>;
 }
 
 export class LlmError extends Error {
@@ -93,6 +95,7 @@ async function request(
 ): Promise<ReadableStream<Uint8Array>> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (config.apiKey) headers.Authorization = `Bearer ${config.apiKey}`;
+  if (config.headers) Object.assign(headers, config.headers);
 
   let response: Response;
   try {

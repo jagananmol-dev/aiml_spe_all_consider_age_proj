@@ -6,6 +6,8 @@ Shared fixtures for ingestion worker tests.
 
 import os
 import pytest
+
+import src  # noqa: F401  (puts nlp_sts/ on the import path)
 from unittest.mock import MagicMock, patch
 
 

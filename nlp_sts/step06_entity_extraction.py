@@ -1,16 +1,16 @@
 """
-VEDA AI — Entity Extraction Pipeline
+NLP pipeline — Step 6: Entity extraction (4-layer NER)
 
 Domain-agnostic entity extraction. What to look for comes from the
 knowledge-graph schema (graph_schema.json, extendable per tenant — see
-schema.py), never from this file:
+step04_graph_schema.py), never from this file:
 
 1. Schema patterns: structured entities (asset codes, measurements,
    regulations). Shipped with plant and healthcare patterns as defaults.
 2. Schema terms: exact, whole-word vocabulary per type.
 3. spaCy NER (if a model is installed): people and places, with the
    label → type map from the schema's "nlp" block.
-4. Embeddings (semantic.py): key phrases nobody listed are typed by their
+4. Embeddings (step05_semantic_typing.py): key phrases nobody listed are typed by their
    most similar schema example, unknown codes by the words around them, and
    near-duplicates ("anemia" / "anaemia") merge into one entity. Runs when the
    RAG pipeline has registered its embedding model.
@@ -18,14 +18,16 @@ schema.py), never from this file:
 spaCy parses a document once; that one parse gives the named entities, the
 noun chunks used as candidate phrases, and the lemmas that make "alarms" and
 "alarm" one node.
+
+Next step: step07_relation_extraction.py links the entities into graph edges.
 """
 
 import logging
 from dataclasses import dataclass, field
 from typing import Any
 
-from . import semantic
-from .schema import GraphSchema, get_schema
+from . import step05_semantic_typing as semantic
+from .step04_graph_schema import GraphSchema, get_schema
 
 logger = logging.getLogger("veda.intelligence.entity_extraction")
 
@@ -119,14 +121,12 @@ def ner_mentions(doc, schema: GraphSchema) -> list[tuple[Any, str, str]]:
     ents = [e for e in doc.ents if labels.get(e.label_)]
     # Token index → the type its entity was labelled, for coordination votes
     token_type = {t.i: labels[e.label_] for e in ents for t in e}
+    # spaCy rebuilds Doc.text on every access, so read it once
+    text = doc.text if cues else None
     out = []
     for ent in ents:
         mapped_type = labels[ent.label_]
-        cued = (
-            _cue_type(doc.text, ent.start_char, cues)
-            if cues and isinstance(doc.text, str)
-            else None
-        )
+        cued = _cue_type(text, ent.start_char, cues) if isinstance(text, str) else None
         name = _clean_name(ent, cued or mapped_type)
         if name is None:
             continue
@@ -469,12 +469,17 @@ class EntityExtractor:
             ranked = sorted(
                 (v for t, v in best if t == entity_type), key=lambda v: -best[(entity_type, v)]
             )
-            values = list(dict.fromkeys([*known_nodes.get(entity_type, []), *ranked]))
-            if len(values) < 2:
+            known = list(dict.fromkeys(known_nodes.get(entity_type, [])))
+            if len(known) + len(ranked) < 2:
                 continue
             protected = {v for t, v in curated if t == entity_type}
-            mapping = semantic.merge_similar(
-                values, typer.cache.encode(values), threshold, protected
+            mapping = semantic.merge_into_known(
+                known,
+                typer.cache.encode(known) if known else None,
+                ranked,
+                typer.cache.encode(ranked),
+                threshold,
+                protected,
             )
             for e in entities:
                 if (

@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1550" height="1100" viewBox="0 0 1550 1100">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#b4b2aa"/></marker>
+<style>
+text{font-family:"Segoe UI Variable Display","Segoe UI",Inter,Arial,sans-serif}
+.title{font-size:25px;font-weight:600;fill:#111}
+.sec{font-size:16px;font-weight:600;fill:#555}
+.t{font-size:19px;font-weight:600;fill:#111}
+.t2{font-size:16px;font-weight:600;fill:#333}
+.s{font-size:15px;fill:#4a4a4a}
+.e{font-size:15px;fill:#555}
+.foot{font-size:14px;fill:#777}
+</style></defs>
+<rect width="100%" height="100%" fill="#fff"/>
+<text x="50" y="46" class="title">VEDA AI system design: one tenant-scoped agent per company</text>
+<text x="1500" y="92" class="sec" text-anchor="end">Clients</text>
+<rect x="350" y="104" width="550" height="72" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="372" y="137" class="t">Browser</text>
+<text x="372" y="162" class="s">landing · login · dashboard · chat · upload</text>
+<text x="1500" y="248" class="sec" text-anchor="end">Web app · Next.js 15 · port 3000</text>
+<rect x="50" y="262" width="250" height="100" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="72" y="295" class="t">Documents API</text>
+<text x="72" y="320" class="s">/api/documents/upload</text>
+<text x="72" y="341" class="s">/api/documents/[id] · delete</text>
+<rect x="350" y="262" width="250" height="100" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="372" y="295" class="t">Auth + session</text>
+<text x="372" y="320" class="s">register · login · logout</text>
+<text x="372" y="341" class="s">signed cookie → tenant id</text>
+<rect x="650" y="262" width="250" height="100" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="672" y="295" class="t">Graph API</text>
+<text x="672" y="320" class="s">/api/graph overview, search</text>
+<text x="672" y="341" class="s">knowledge graph view</text>
+<rect x="950" y="262" width="250" height="100" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="972" y="295" class="t">Ops APIs</text>
+<text x="972" y="320" class="s">maintenance · alerts</text>
+<text x="972" y="341" class="s">compliance · work orders</text>
+<rect x="1250" y="262" width="250" height="100" rx="10" fill="#f6f5f2" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="1272" y="295" class="t">Operator CLI</text>
+<text x="1272" y="320" class="s">rebuild --tenant &lt;slug&gt;</text>
+<text x="1272" y="341" class="s">demo seed + chat checks</text>
+<text x="1500" y="428" class="sec" text-anchor="end">Indexing · once per upload</text>
+<rect x="50" y="442" width="250" height="100" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="72" y="475" class="t">Ingestion worker</text>
+<text x="72" y="500" class="s">9 formats + OCR, previews</text>
+<text x="72" y="521" class="s">queue: SKIP LOCKED</text>
+<rect x="350" y="442" width="250" height="100" rx="10" fill="#e6effa" stroke="#2f6fd6" stroke-width="2.5"/>
+<text x="372" y="475" class="t">Extract + relate</text>
+<text x="372" y="500" class="s">regex · terms · spaCy NER</text>
+<text x="372" y="521" class="s">embedding typing · rules</text>
+<rect x="650" y="442" width="250" height="100" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="672" y="475" class="t">Chunk and embed</text>
+<text x="672" y="500" class="s">chunks up to 1,500 chars</text>
+<text x="672" y="521" class="s">embedded with title</text>
+<rect x="950" y="442" width="250" height="100" rx="10" fill="#ecebe8" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="972" y="475" class="t">MiniLM encoder</text>
+<text x="972" y="500" class="s">shared by search,</text>
+<text x="972" y="521" class="s">typing and linking</text>
+<rect x="1250" y="442" width="250" height="100" rx="10" fill="#ecebe8" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="1272" y="475" class="t">graph_schema.json</text>
+<text x="1272" y="500" class="s">types · roles · rules</text>
+<text x="1272" y="521" class="s">+ tenant extensions</text>
+<text x="1500" y="608" class="sec" text-anchor="end">Tenant-scoped store · PostgreSQL with row-level security</text>
+<rect x="50" y="622" width="250" height="100" rx="10" fill="#ecebe8" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="72" y="655" class="t">Documents</text>
+<text x="72" y="680" class="s">title, format, status</text>
+<text x="72" y="701" class="s">files in .data/uploads</text>
+<rect x="350" y="622" width="250" height="100" rx="10" fill="#ecebe8" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="372" y="655" class="t">Knowledge graph</text>
+<text x="372" y="680" class="s">typed nodes, edges</text>
+<text x="372" y="701" class="s">per source document</text>
+<rect x="650" y="622" width="250" height="100" rx="10" fill="#ecebe8" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="672" y="655" class="t">Passages + vectors</text>
+<text x="672" y="680" class="s">384-d, normalised</text>
+<text x="672" y="701" class="s">in-memory index per tenant</text>
+<rect x="950" y="622" width="250" height="100" rx="10" fill="#ecebe8" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="972" y="655" class="t">Tenants + users</text>
+<text x="972" y="680" class="s">sessions, settings</text>
+<text x="972" y="701" class="s">per-company schema</text>
+<rect x="1250" y="622" width="250" height="100" rx="10" fill="#ecebe8" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="1272" y="655" class="t">Alerts + work orders</text>
+<text x="1272" y="680" class="s">findings per asset</text>
+<text x="1272" y="701" class="s">compliance status</text>
+<text x="1500" y="788" class="sec" text-anchor="end">Answering · once per question</text>
+<rect x="50" y="802" width="250" height="100" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="72" y="835" class="t">Chat API</text>
+<text x="72" y="860" class="s">/api/chat · /api/copilot</text>
+<text x="72" y="881" class="s">route: greeting, overview</text>
+<rect x="350" y="802" width="250" height="100" rx="10" fill="#e6effa" stroke="#2f6fd6" stroke-width="2.5"/>
+<text x="372" y="835" class="t">Link to graph</text>
+<text x="372" y="860" class="s">question phrase → node</text>
+<text x="372" y="881" class="s">exact or by embedding</text>
+<rect x="650" y="802" width="250" height="100" rx="10" fill="#e6effa" stroke="#2f6fd6" stroke-width="2.5"/>
+<text x="672" y="835" class="t">Dense search</text>
+<text x="672" y="860" class="s">cosine + entity boost</text>
+<text x="672" y="881" class="s">weak match: fallback</text>
+<rect x="950" y="802" width="250" height="100" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="972" y="835" class="t">Prompt</text>
+<text x="972" y="860" class="s">top passages + catalog</text>
+<text x="972" y="881" class="s">cite [1] to [n] only</text>
+<rect x="1250" y="802" width="250" height="100" rx="10" fill="#f6f5f2" stroke="#c9c6bd" stroke-width="1.6"/>
+<text x="1272" y="835" class="t">LLM</text>
+<text x="1272" y="860" class="s">Ollama (local) or any</text>
+<text x="1272" y="881" class="s">OpenAI-compatible API</text>
+<path d="M625,176 V212" fill="none" stroke="#b4b2aa" stroke-width="1.8"/>
+<path d="M22,212 H1075" fill="none" stroke="#b4b2aa" stroke-width="1.8"/>
+<path d="M260,212 V262" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<path d="M475,212 V262" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<path d="M775,212 V262" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<path d="M1075,212 V262" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="637" y="202" class="e">HTTPS · session cookie</text>
+<path d="M22,212 V852 H50" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="14" y="582" class="e" text-anchor="middle" transform="rotate(-90 14 582)">ask a question</text>
+<path d="M260,362 V442" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="250" y="392" class="e" text-anchor="end">file + row 'uploaded'</text>
+<path d="M300,492 H350" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<path d="M325,492 V408 H775 V442" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="645" y="398" class="e" text-anchor="start">parsed text</text>
+<path d="M260,542 V622" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="272" y="588" class="e" text-anchor="start">preview + status</text>
+<path d="M475,542 V622" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="487" y="588" class="e" text-anchor="start">entities + relations</text>
+<path d="M775,542 V622" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="787" y="588" class="e" text-anchor="start">vectors</text>
+<path d="M950,492 H900" fill="none" stroke="#b4b2aa" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<path d="M260,722 V802" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="272" y="768" class="e" text-anchor="start">catalog</text>
+<path d="M475,722 V802" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="487" y="768" class="e" text-anchor="start">node index</text>
+<path d="M775,722 V802" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="787" y="768" class="e" text-anchor="start">tenant matrix</text>
+<path d="M300,852 H350" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<path d="M600,852 H650" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<path d="M900,852 H950" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<path d="M1200,852 H1250" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<path d="M1375,902 V936 H175 V904" fill="none" stroke="#b4b2aa" stroke-width="1.8"  marker-end="url(#ah)"/>
+<text x="775" y="928" class="e" text-anchor="middle">streamed answer with sources</text>
+<text x="50" y="986" class="sec">Full mode swaps · Docker</text>
+<rect x="50" y="1000" width="250" height="64" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="72" y="1027" class="t2">Kafka</text>
+<text x="72" y="1049" class="s">replaces the Postgres queue</text>
+<rect x="350" y="1000" width="250" height="64" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="372" y="1027" class="t2">MinIO</text>
+<text x="372" y="1049" class="s">replaces .data/uploads</text>
+<rect x="650" y="1000" width="250" height="64" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="672" y="1027" class="t2">Apache AGE</text>
+<text x="672" y="1049" class="s">replaces graph tables</text>
+<rect x="950" y="1000" width="250" height="64" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="972" y="1027" class="t2">pgvector HNSW</text>
+<text x="972" y="1049" class="s">replaces REAL[] + numpy</text>
+<rect x="1250" y="1000" width="250" height="64" rx="10" fill="#fff" stroke="#c9c6bd" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="1272" y="1027" class="t2">OpenSearch</text>
+<text x="1272" y="1049" class="s">adds keyword search</text>
+<text x="50" y="1092" class="foot">Every API query is tenant-scoped SQL. The graph only steers search, so every citation points at a real passage. Web → intelligence calls carry X-Internal-Key.</text>
+</svg>

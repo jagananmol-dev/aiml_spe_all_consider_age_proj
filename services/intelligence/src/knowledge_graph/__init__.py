@@ -9,10 +9,11 @@ entity extraction → graph upsert → relationship building.
 Components:
 - graph_manager: Apache AGE operations (upsert nodes, create edges, consolidate)
 - graph_worker: Kafka consumer for continuous graph maintenance
-- chunk_builder: Prepares graph-enriched chunks for LLM consumption
+- ChunkBuilder: graph-enriched LLM context (nlp_sts/step10_context_building.py)
 """
 
-from .chunk_builder import ChunkBuilder
+from nlp_sts.step10_context_building import ChunkBuilder
+
 from .graph_manager import KnowledgeGraphManager
 
 __all__ = ["ChunkBuilder", "KnowledgeGraphManager"]

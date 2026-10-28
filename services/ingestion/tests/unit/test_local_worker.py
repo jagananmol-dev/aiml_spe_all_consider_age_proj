@@ -86,6 +86,48 @@ class TestProcessDocument:
         }
 
 
+class TestDatabaseStorage:
+    """Hosted mode: the upload's bytes are in document_files, not on disk."""
+
+    def _conn(self, row):
+        conn = MagicMock()
+        conn.__enter__.return_value = conn
+        conn.execute.return_value.fetchone.return_value = row
+        return conn
+
+    def test_parses_bytes_from_the_database(self):
+        job = {**_job("ignored/notes.txt"), "storage_bucket": "db"}
+        conn = self._conn((b"Revenue grew 12% in Q3.",))
+        with (
+            patch.object(local_worker.psycopg, "connect", return_value=conn),
+            patch.object(local_worker, "update_document_status") as status,
+            patch.object(local_worker, "store_preview_safely"),
+            patch.object(local_worker, "index_text", return_value=1) as index,
+        ):
+            local_worker.process_document(job)
+
+        assert conn.execute.call_args.args[1] == (DOC, TENANT)  # scoped to the tenant
+        index.assert_called_once_with(TENANT, DOC, "notes.txt", "Revenue grew 12% in Q3.")
+        assert status.call_args.kwargs["parsing_status"] == "completed"
+
+    def test_temporary_file_is_removed(self):
+        job = {**_job("x"), "storage_bucket": "db"}
+        with patch.object(local_worker.psycopg, "connect", return_value=self._conn((b"hi",))):
+            with local_worker.stored_file(job) as path:
+                assert path.read_bytes() == b"hi"
+                assert path.suffix == ".txt"
+        assert not path.exists()
+
+    def test_missing_row_marks_failed(self):
+        job = {**_job("x"), "storage_bucket": "db"}
+        with (
+            patch.object(local_worker.psycopg, "connect", return_value=self._conn(None)),
+            patch.object(local_worker, "update_document_status") as status,
+        ):
+            local_worker.process_document(job)
+        assert status.call_args.kwargs["status"] == "failed"
+
+
 class TestIndexText:
     def test_sends_tenant_and_internal_key(self, monkeypatch):
         monkeypatch.setattr(local_worker, "INTERNAL_API_KEY", "k3y")
@@ -113,13 +155,14 @@ class TestClaim:
     def test_claim_uses_skip_locked_and_local_bucket(self):
         conn = MagicMock()
         conn.__enter__.return_value = conn
-        conn.execute.return_value.fetchone.return_value = (DOC, TENANT, None, "a.csv", "p")
+        conn.execute.return_value.fetchone.return_value = (DOC, TENANT, None, "a.csv", "p", "db")
         with patch.object(local_worker.psycopg, "connect", return_value=conn):
             job = local_worker.claim_next_document()
         sql = conn.execute.call_args.args[0]
         assert "FOR UPDATE SKIP LOCKED" in sql
-        assert "storage_bucket = 'local'" in sql
+        assert "storage_bucket IN ('local', 'db')" in sql
         assert job["title"] == "a.csv"  # falls back to file name
+        assert job["storage_bucket"] == "db"
 
     def test_no_work(self):
         conn = MagicMock()

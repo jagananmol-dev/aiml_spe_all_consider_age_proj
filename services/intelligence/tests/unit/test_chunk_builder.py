@@ -18,12 +18,11 @@ Tests:
 
 import pytest
 
-from src.knowledge_graph.chunk_builder import (
+from nlp_sts.step02_chunking import CHARS_PER_TOKEN, PreparedChunk
+from nlp_sts.step10_context_building import (
     ChunkBuilder,
-    PreparedChunk,
     PreparedContext,
     SYSTEM_PROMPT,
-    CHARS_PER_TOKEN,
 )
 from tests.conftest import (
     SAMPLE_INDUSTRIAL_TEXT,

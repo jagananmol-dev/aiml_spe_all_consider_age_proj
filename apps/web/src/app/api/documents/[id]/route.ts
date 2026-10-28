@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getScopedDb, UnauthorizedError, withTenant } from "@/lib/db";
 import { getMinioClient } from "@/lib/minio";
-import { deleteLocalFile, LOCAL_BUCKET } from "@/lib/storage";
+import { DB_BUCKET, deleteLocalFile, LOCAL_BUCKET } from "@/lib/storage";
 
 /**
  * DELETE /api/documents/:id
@@ -37,7 +37,9 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     // The row is gone, so the document is no longer used anywhere; a file
     // that cannot be removed is logged for clean-up rather than failing
     try {
-      if (doc.storage_bucket === LOCAL_BUCKET) {
+      if (doc.storage_bucket === DB_BUCKET) {
+        // document_files rows go with the document (ON DELETE CASCADE)
+      } else if (doc.storage_bucket === LOCAL_BUCKET) {
         await deleteLocalFile(doc.storage_path);
       } else {
         await getMinioClient().removeObject(doc.storage_bucket, doc.storage_path);

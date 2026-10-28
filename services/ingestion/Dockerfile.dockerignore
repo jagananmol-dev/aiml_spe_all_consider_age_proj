@@ -1,0 +1,8 @@
+# The build context is the repository root: send only what this image needs
+*
+!services/ingestion/pyproject.toml
+!services/ingestion/src/
+!nlp_sts/
+**/__pycache__/
+**/*.pyc
+**/*.pyo

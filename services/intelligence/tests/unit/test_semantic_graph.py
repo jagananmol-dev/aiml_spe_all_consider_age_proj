@@ -11,10 +11,10 @@ import hashlib
 import numpy as np
 import pytest
 
-from src.entity_extraction import semantic
-from src.entity_extraction.extractor import EntityExtractor
-from src.entity_extraction.schema import get_schema, merge_schema
-from src.knowledge_graph.relationships import infer_relationships
+from nlp_sts import step05_semantic_typing as semantic
+from nlp_sts.step06_entity_extraction import EntityExtractor
+from nlp_sts.step04_graph_schema import get_schema, merge_schema
+from nlp_sts.step07_relation_extraction import infer_relationships
 
 
 def fake_encode(texts: list[str]) -> np.ndarray:
@@ -190,7 +190,7 @@ class TestSearchBoost:
 
 class TestDocumentEdges:
     def test_document_links_its_most_mentioned_entities_without_values(self):
-        from src.knowledge_graph.relationships import document_edges
+        from nlp_sts.step07_relation_extraction import document_edges
 
         entities = [
             {"entity_type": "EQUIPMENT_TAG", "normalized_value": "HD-K04", "confidence": 0.95},
@@ -213,7 +213,7 @@ class TestDocumentEdges:
         assert edges[0].source["entity_type"] == "DOCUMENT"
 
     def test_no_title_no_document_node(self):
-        from src.knowledge_graph.relationships import document_edges
+        from nlp_sts.step07_relation_extraction import document_edges
 
         assert (
             document_edges([{"entity_type": "FAILURE_MODE", "normalized_value": "leak"}], "") == []
@@ -255,7 +255,7 @@ class TestNameTypes:
         return (None, name, entity_type)
 
     def test_majority_vote_gives_one_type_per_name(self):
-        from src.entity_extraction.extractor import resolve_name_types
+        from nlp_sts.step06_entity_extraction import resolve_name_types
 
         m = self.mention
         types = resolve_name_types(
@@ -271,7 +271,7 @@ class TestNameTypes:
         assert types["Kavita Pawar"] == "PERSON"  # shares a surname with a person
 
     def test_rare_single_words_headings_and_known_types(self):
-        from src.entity_extraction.extractor import resolve_name_types
+        from nlp_sts.step06_entity_extraction import resolve_name_types
 
         m = self.mention
         types = resolve_name_types(
@@ -317,3 +317,45 @@ class TestSpacyParse:
             for e in extractor.extract_entities("Two conductivity alarms and leaks.")
         }
         assert {"conductivity alarm", "leak"} <= values
+
+
+# ── Merging into existing nodes ─────────────────────────
+
+
+def test_merge_into_known_maps_to_existing_node():
+    known = ["payment default", "data breach"]
+    values = ["payment defaults", "budget overrun"]
+    mapping = semantic.merge_into_known(
+        known, fake_encode(known), values, fake_encode(["payment default", "budget overrun"]), 0.9
+    )
+    assert mapping == {"payment defaults": "payment default", "budget overrun": "budget overrun"}
+
+
+def test_merge_into_known_clusters_new_values_and_keeps_protected():
+    values = ["credit downgrade", "downgrade credit", "credit"]
+    vectors = fake_encode(values)
+    mapping = semantic.merge_into_known([], None, values, vectors, 0.9, protected={"credit"})
+    assert mapping["downgrade credit"] == "credit downgrade"
+    assert mapping["credit"] == "credit"
+
+
+def test_merge_into_known_never_merges_existing_nodes():
+    known = ["seal leak", "leak seal"]  # identical bag of words, but both exist already
+    mapping = semantic.merge_into_known(
+        known, fake_encode(known), ["leak seal"], fake_encode(["leak seal"]), 0.9
+    )
+    assert mapping == {"leak seal": "leak seal"}
+
+
+def test_merge_into_known_matches_merge_similar_on_new_values():
+    values = [
+        "bearing failure",
+        "failure bearing",
+        "pump vibration",
+        "vibration pump",
+        "valve stuck",
+    ]
+    vectors = fake_encode(values)
+    assert semantic.merge_into_known([], None, values, vectors, 0.9) == semantic.merge_similar(
+        values, vectors, 0.9
+    )

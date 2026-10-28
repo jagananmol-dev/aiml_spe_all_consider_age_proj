@@ -12,8 +12,20 @@ import path from "path";
 
 export const LOCAL_BUCKET = "local";
 
+/**
+ * With STORAGE_BACKEND=db (hosted mode: a serverless web app has no disk the
+ * worker could read), the bytes go into the document_files table next to
+ * the documents row, with storage_bucket = "db". The local worker reads
+ * them from there, and deleting the document deletes the file.
+ */
+export const DB_BUCKET = "db";
+
 export function isLocalStorage(): boolean {
   return process.env.STORAGE_BACKEND === "local";
+}
+
+export function isDbStorage(): boolean {
+  return process.env.STORAGE_BACKEND === "db";
 }
 
 export function getLocalStorageDir(): string {

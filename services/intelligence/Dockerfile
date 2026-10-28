@@ -1,5 +1,6 @@
 # VEDA AI — Intelligence Service Dockerfile
 # Multi-stage build for smaller production image
+# Build context: the repository root (docker build -f services/intelligence/Dockerfile .)
 
 # ── Stage 1: Builder ──────────────────────────
 FROM python:3.12-slim AS builder
@@ -11,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml .
+COPY services/intelligence/pyproject.toml .
 RUN pip install --no-cache-dir --prefix=/install -e . \
     && pip install --no-cache-dir --prefix=/install jupyter notebook
 
@@ -32,10 +33,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /install /usr/local
 COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 
-# Copy source code and notebooks
-COPY src/ src/
-COPY notebooks/ notebooks/
-COPY start.sh .
+# Copy source code, the NLP pipeline (steps 2–10) and notebooks
+COPY services/intelligence/src/ src/
+COPY nlp_sts/ nlp_sts/
+COPY services/intelligence/notebooks/ notebooks/
+COPY services/intelligence/start.sh .
 RUN chmod +x start.sh
 
 # Expose API port + Jupyter port

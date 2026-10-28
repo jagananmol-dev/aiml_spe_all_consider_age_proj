@@ -74,7 +74,7 @@ jobs:
         run: mypy src/ --ignore-missing-imports
       
       - name: Run tests
-        run: pytest tests/ -v --cov=src --cov-report=xml
+        run: pytest tests/ -v --cov=src --cov=nlp_sts --cov-report=xml
 
   intelligence-service:
     name: Intelligence Service (Python)
@@ -96,13 +96,14 @@ jobs:
           python -m spacy download en_core_web_sm
       
       - name: Lint (Ruff)
-        run: ruff check src/
+        # nlp_sts/ is the shared NLP pipeline both services import
+        run: ruff check src/ ../../nlp_sts/ --config pyproject.toml
       
       - name: Type check (MyPy)
         run: mypy src/ --ignore-missing-imports
       
       - name: Run tests
-        run: pytest tests/ -v --cov=src --cov-report=xml
+        run: pytest tests/ -v --cov=src --cov=nlp_sts --cov-report=xml
 
   # ── Integration Tests ──────────────────────────────
   integration:
@@ -160,7 +161,9 @@ jobs:
       
       - uses: docker/build-push-action@v6
         with:
-          context: services/${{ matrix.service }}
+          # Repository root, so the image can include the shared nlp_sts/ pipeline
+          context: .
+          file: services/${{ matrix.service }}/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository }}/${{ matrix.service }}:latest

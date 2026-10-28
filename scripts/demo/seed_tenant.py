@@ -20,6 +20,7 @@ files (the login is kept), then uploads everything again.
 
 import json
 import mimetypes
+import os
 import sys
 import time
 from pathlib import Path
@@ -33,12 +34,15 @@ import company as C  # noqa: E402
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "demo-data" / "nephrova"
 MANIFEST = ROOT / "demo-data" / "nephrova-manifest.json"
-BASE = "http://localhost:3000"
+# Override both to seed a hosted deployment (see DEPLOY.md)
+BASE = os.environ.get("VEDA_BASE_URL", "http://localhost:3000").rstrip("/")
 ACCOUNT = C.ACCOUNT
 UPLOAD_TIME = "18:30:00+05:30"  # each day's documents are uploaded at the end of the working day
 
 
 def database_url() -> str:
+    if os.environ.get("SEED_DATABASE_URL"):
+        return os.environ["SEED_DATABASE_URL"]
     for line in (ROOT / ".env").read_text().splitlines():
         if line.startswith("DATABASE_URL="):
             return line.split("=", 1)[1].strip()

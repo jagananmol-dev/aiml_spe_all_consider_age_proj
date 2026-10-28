@@ -8,7 +8,6 @@ Validate the demo dataset before upload:
     services/ingestion/.venv/Scripts/python.exe scripts/demo/validate_graph.py [--text]
 """
 
-import importlib.util
 import json
 import sys
 from pathlib import Path
@@ -16,21 +15,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "demo-data" / "nephrova"
 
-
-def load(name: str, path: Path):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-ingestion = load("ingestion_worker", ROOT / "services/ingestion/src/workers/ingestion_worker.py")
-# The extractor is a package (it reads graph_schema.json), so import it as one
-sys.path.insert(0, str(ROOT / "services/intelligence"))
-from src.entity_extraction import extractor as extractor_mod  # noqa: E402
-from src.entity_extraction import semantic  # noqa: E402
-from src.knowledge_graph import relationships  # noqa: E402
+# The parsers, extractor and relation rules are steps of the NLP pipeline (nlp_sts/)
+sys.path.insert(0, str(ROOT))
+from nlp_sts import step01_text_extraction as ingestion  # noqa: E402
+from nlp_sts import step05_semantic_typing as semantic  # noqa: E402
+from nlp_sts import step06_entity_extraction as extractor_mod  # noqa: E402
+from nlp_sts import step07_relation_extraction as relationships  # noqa: E402
 
 extractor = extractor_mod.IndustrialEntityExtractor()
 extractor._spacy_unavailable = True  # per-file check: names are typed by votes across all documents at indexing

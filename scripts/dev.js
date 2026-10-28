@@ -266,10 +266,11 @@ function installPythonDeps(serviceName) {
 // The knowledge graph uses spaCy's small English model (names, noun phrases,
 // lemmas). Without it extraction still works, with patterns and embeddings only.
 function ensureSpacyModel(venvPython, serviceDir) {
+  // No shell: on Windows it would pass "-c import en_core_web_sm" unquoted,
+  // a syntax error, so the model looked missing on every start
   const check = spawnSync(venvPython, ['-c', 'import en_core_web_sm'], {
     cwd: serviceDir,
     stdio: 'ignore',
-    shell: isWindows,
   });
   if (check.status === 0) return;
   console.log('Installing the spaCy English model for the knowledge graph...');

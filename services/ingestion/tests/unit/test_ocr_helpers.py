@@ -8,8 +8,8 @@ VEDA AI — OCR post-processing tests
 
 from unittest.mock import MagicMock, patch
 
-from src.workers import ingestion_worker
-from src.workers.ingestion_worker import _fix_tag_digits, _group_ocr_lines
+from nlp_sts import step01_text_extraction as text_extraction
+from nlp_sts.step01_text_extraction import _fix_tag_digits, _group_ocr_lines
 
 
 def box(x, y, text, w=100, h=30, conf=0.9):
@@ -45,10 +45,10 @@ def test_parse_image_ocr_builds_lines():
     reader = MagicMock()
     reader.readtext.return_value = [box(10, 10, "NAMEPLATE"), box(10, 60, "Tag: P-1O1A")]
     with (
-        patch.object(ingestion_worker, "_easyocr_reader", reader),
+        patch.object(text_extraction, "_easyocr_reader", reader),
         patch.dict("sys.modules", {"easyocr": MagicMock(), "torch": MagicMock()}),
     ):
-        result = ingestion_worker.parse_image_ocr("scan.png")
+        result = text_extraction.parse_image_ocr("scan.png")
     assert result["raw_text"] == "NAMEPLATE\nTag: P-101A"
     assert result["word_count"] == 3
     assert result["ocr_details"][0]["confidence"] == 0.9

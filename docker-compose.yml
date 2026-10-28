@@ -208,8 +208,9 @@ services:
   # ============================================
   intelligence:
     build:
-      context: ./services/intelligence
-      dockerfile: Dockerfile
+      # Repository root, so the image can include the shared nlp_sts/ pipeline
+      context: .
+      dockerfile: services/intelligence/Dockerfile
     container_name: veda-intelligence
     restart: unless-stopped
     ports:
@@ -242,8 +243,9 @@ services:
   # ============================================
   ingestion:
     build:
-      context: ./services/ingestion
-      dockerfile: Dockerfile
+      # Repository root, so the image can include the shared nlp_sts/ pipeline
+      context: .
+      dockerfile: services/ingestion/Dockerfile
     container_name: veda-ingestion
     restart: unless-stopped
     environment:

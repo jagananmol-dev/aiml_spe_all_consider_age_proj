@@ -103,30 +103,120 @@ flowchart TB
 
 ## Architecture
 
+![VEDA architecture: indexing path, tenant-scoped store, answering path](Report/veda_architecture.png)
+
+VEDA has two paths that share one tenant-scoped PostgreSQL store and one sentence encoder:
+
+- The **indexing path** runs once per upload.
+- The **answering path** runs once per question.
+
+The knowledge graph changes the *ranking* of passages, never the *context*: only real document text reaches the LLM, so every citation can be checked.
+
+### Components
+
+```mermaid
+flowchart LR
+    subgraph Browser
+        UI[Web UI<br/>chat · uploads · graph · dashboards]
+    end
+    subgraph Web["apps/web — Next.js 15 (:3000)"]
+        API[API routes<br/>auth · chat · documents · graph<br/>alerts · maintenance · compliance]
+        LLMC[LLM client<br/>lib/llm.ts]
+    end
+    subgraph Ingestion["services/ingestion — Python (:8001)"]
+        WK[Local worker<br/>claims jobs, parses files, OCR, previews]
+    end
+    subgraph Intelligence["services/intelligence — FastAPI (:8002)"]
+        IDX["/documents/index<br/>chunk · embed · extract · graph"]
+        QRY["/query/prepare<br/>graph link · dense search · RRF"]
+        GR["/graph/overview · /graph/findings"]
+        ENC[(MiniLM encoder<br/>+ spaCy en_core_web_sm)]
+    end
+    DB[(PostgreSQL<br/>tenant-scoped)]
+    OL[Ollama llama3<br/>or OpenAI-compatible API]
+
+    UI --> API
+    API -->|store file, queue row| DB
+    WK -->|claim: FOR UPDATE SKIP LOCKED| DB
+    WK -->|parsed text| IDX
+    IDX --> DB
+    API -->|question| QRY
+    QRY --> DB
+    API --> GR
+    API --> LLMC --> OL
+    IDX -.-> ENC
+    QRY -.-> ENC
+```
+
+| Component | Technology | Responsibility |
+|:--|:--|:--|
+| Web app and API | Next.js 15, TypeScript | Upload, chat (streamed NDJSON), graph view, dashboards, signed HMAC sessions, rate limits |
+| Ingestion service | Python: PyMuPDF, pdfplumber, EasyOCR, python-docx, python-pptx, openpyxl | Parse 16 file extensions to text, OCR images, build previews, track status |
+| Intelligence service | Python: FastAPI, sentence-transformers, spaCy, NumPy | Chunking, embeddings, entity and relation extraction, knowledge graph, retrieval |
+| Store | PostgreSQL 16 (+ pgvector, Apache AGE in full mode) | Documents, chunks, vectors, graph; every query filtered by `tenant_id` |
+| LLM | Ollama (llama3 8B) or any OpenAI-compatible API | Answer generation, streamed token by token |
+| Keyword search (full mode) | OpenSearch | BM25 retrieval, fused with dense results by Reciprocal Rank Fusion |
+| Queue and files (full mode) | Kafka + MinIO | Event-driven ingestion, object storage |
+
+The NLP inside the intelligence service is described file by file in [NLP_README.md](NLP_README.md).
+
+### Data model
+
+| Table | Holds |
+|:--|:--|
+| `tenants`, `users` | One row per company (its agent) and its login; `tenants.settings.graph_schema` holds the company's schema extension |
+| `documents`, `document_files` | One row per upload with its status (`uploaded` → `processing` → `indexed` / `failed`); file bytes in hosted mode |
+| `document_chunks` | Passages (≤1,500 characters) with their 384-d embedding |
+| `graph_nodes`, `graph_edges` | Typed entities, and relations tagged with the document they came from |
+| `document_previews` | Rendered previews of Office files |
+| `alerts`, `maintenance_orders`, `compliance_rules` | Dashboard records |
+| `compute_node`, `audit_logs` | Hosted-mode compute node registration; audit table (not yet used) |
+
+### Tenant isolation
+
+A tenant *is* its agent: retrieval covers everything that tenant uploaded and nothing else.
+
+- Every SQL query filters on the session's `tenant_id`.
+- The internal intelligence API requires an internal key and a UUID tenant id.
+- Cypher queries (full mode) are parameterised and tenant-keyed.
+- In-memory search indexes and graph caches are keyed per tenant.
+
+### Deployment modes
+
+| Concern | Local mode (default) | Full mode | Hosted mode ([DEPLOY.md](DEPLOY.md)) |
+|:--|:--|:--|:--|
+| Web app | `next dev` on your PC | Docker | Vercel |
+| Database | Local PostgreSQL | PostgreSQL in Docker | Supabase |
+| Queue | PostgreSQL row claiming | Apache Kafka | PostgreSQL row claiming |
+| File storage | `.data/uploads` | MinIO | `document_files` table |
+| Vectors | `REAL[]` + in-memory NumPy index | pgvector (HNSW) | `REAL[]` + in-memory index |
+| Graph | `graph_nodes` / `graph_edges` | Apache AGE | `graph_nodes` / `graph_edges` |
+| Keyword search | — | OpenSearch | — |
+| LLM and Python services | Your PC | Docker | Your PC, reached through a Cloudflare tunnel (`npm run node`) |
+
+The retrieval logic is the same in every mode.
+
+### Repository layout
+
 ```
 apps/web/                  Next.js 15 (App Router, TypeScript)
   src/app/                 pages: landing, login/register, dashboard, chat, upload
   src/app/api/             auth, chat, documents, graph, maintenance, alerts, compliance
   src/components/          KnowledgeGraph, DocumentFindings, DocumentViewer, ...
   src/lib/                 db (tenant-scoped SQL), llm, chatPrompt, intelligence client
-services/ingestion/        Python: file parsers, local worker, Kafka worker, previews
-services/intelligence/     Python FastAPI
-  src/entity_extraction/   graph_schema.json, schema.py, semantic.py, extractor.py
-  src/knowledge_graph/     relationships, local_graph, rebuild, AGE manager, Kafka worker
-  src/rag/                 pipeline (retrieval), local_store (in-memory vector index)
+nlp_sts/                   all NLP code, one file per step: step01_text_extraction … step10_context_building,
+                           graph_schema.json, run_pipeline.py (runs the steps one by one on a sample)
+services/ingestion/        Python: local worker, Kafka worker, previews (parsing = nlp_sts step 1)
+services/intelligence/     Python FastAPI (NLP = nlp_sts steps 2–10)
+  src/knowledge_graph/     local_graph, rebuild, AGE manager, Kafka worker
+  src/rag/                 pipeline (retrieval orchestration), local_store (in-memory vector index)
 infrastructure/docker/     PostgreSQL schema (full + local mode), Prometheus
 scripts/                   dev.js (starts everything), demo/ (dataset + checks)
 demo-data/                 fictional demo company "Nephrova" (72 documents, 8 formats)
+scripts/enron/             real-data tenant: SEC filings, policies, CMU email corpus
+scripts/eval/              retrieval evaluation (Hit@k, MRR, latency, graph ablation)
+Report/                    architecture diagrams and technical notes for the paper
 ```
-
-| Concern | Local mode (default for development) | Full mode |
-|:--|:--|:--|
-| Queue | PostgreSQL row claiming | Apache Kafka |
-| File storage | `.data/uploads` | MinIO |
-| Vectors | PostgreSQL `REAL[]` + in-memory numpy index | pgvector (HNSW) |
-| Graph | `graph_nodes` / `graph_edges` tables | Apache AGE |
-| Keyword search | — | OpenSearch |
-| LLM | Ollama | Ollama or any OpenAI-compatible API |
 
 ---
 
@@ -154,6 +244,10 @@ npm run dev
 ```
 
 `scripts/dev.js` installs the frontend dependencies, starts both Python services with local-mode settings, and preloads the Ollama model.
+
+### Free hosting
+
+To put it online for free, see [DEPLOY.md](DEPLOY.md): the web app goes on Vercel and the data on Supabase. Ollama and the Python services stay on your PC, which opens a Cloudflare tunnel only while someone is using the site (`npm run node`).
 
 ### Demo tenant
 

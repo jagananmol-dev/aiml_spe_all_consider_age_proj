@@ -1,0 +1,10 @@
+# The build context is the repository root: send only what this image needs
+*
+!services/intelligence/pyproject.toml
+!services/intelligence/src/
+!services/intelligence/notebooks/
+!services/intelligence/start.sh
+!nlp_sts/
+**/__pycache__/
+**/*.pyc
+**/*.pyo

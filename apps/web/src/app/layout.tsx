@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ComputeNodeStatus from "@/components/ComputeNodeStatus";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -31,7 +32,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ffffff" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ComputeNodeStatus />
+      </body>
     </html>
   );
 }

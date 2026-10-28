@@ -11,9 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from src.workers.ingestion_worker import (
+from nlp_sts.step01_text_extraction import (
     PARSER_MAP,
-    DocumentUploadedEvent,
     parse_csv,
     parse_docx,
     parse_json,
@@ -21,6 +20,7 @@ from src.workers.ingestion_worker import (
     parse_text,
     read_text_file,
 )
+from src.workers.ingestion_worker import DocumentUploadedEvent
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 WEB_FORMATS = REPO_ROOT / "apps" / "web" / "src" / "lib" / "formats.ts"

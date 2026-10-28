@@ -5,6 +5,9 @@ Replaces MinIO + Kafka for single-machine demos and development:
 
 1. The web app saves uploads under LOCAL_STORAGE_DIR and inserts a
    `documents` row with storage_bucket = 'local' and status = 'uploaded'.
+   In hosted mode (STORAGE_BACKEND=db) the bytes are in document_files
+   instead and storage_bucket = 'db'; this worker then runs on the owner's
+   PC and reads them from the database.
 2. This worker claims queued rows from PostgreSQL (FOR UPDATE SKIP LOCKED,
    so several workers never take the same file), parses the file with the
    same parsers as the Kafka worker, and
@@ -18,7 +21,10 @@ Run: python -m src.workers.local_worker
 
 import logging
 import os
+import tempfile
 import time
+from collections.abc import Iterator
+from contextlib import contextmanager
 from pathlib import Path
 
 import httpx
@@ -52,13 +58,15 @@ CLAIM_SQL = """
             || jsonb_build_object('attempts', COALESCE((metadata->>'attempts')::int, 0) + 1)
     WHERE id = (
         SELECT id FROM documents
-        WHERE status = 'uploaded' AND storage_bucket = 'local'
+        WHERE status = 'uploaded' AND storage_bucket IN ('local', 'db')
         ORDER BY created_at
         LIMIT 1
         FOR UPDATE SKIP LOCKED
     )
-    RETURNING id::text, tenant_id::text, title, file_name, storage_path
+    RETURNING id::text, tenant_id::text, title, file_name, storage_path, storage_bucket
 """
+
+FILE_SQL = "SELECT data FROM document_files WHERE document_id = %s AND tenant_id = %s"
 
 # Documents left in 'processing' by a crashed worker go back to the queue,
 # unless they have already had MAX_ATTEMPTS tries: then they are marked
@@ -74,7 +82,7 @@ REQUEUE_STALE_SQL = """
                             'error', 'Processing stopped this file several times; it was skipped.')
                         ELSE metadata END,
         updated_at = NOW()
-    WHERE status = 'processing' AND storage_bucket = 'local'
+    WHERE status = 'processing' AND storage_bucket IN ('local', 'db')
       AND updated_at < NOW() - make_interval(mins => %(mins)s)
 """
 
@@ -89,19 +97,44 @@ def resolve_storage_path(storage_path: str) -> Path:
     return path
 
 
+@contextmanager
+def stored_file(job: dict) -> Iterator[Path]:
+    """
+    The claimed upload as a file on disk. Files kept in the database are
+    written to a temporary file (the parsers read paths), removed afterwards.
+    """
+    if job.get("storage_bucket", "local") != "db":
+        yield resolve_storage_path(job["storage_path"])
+        return
+
+    with psycopg.connect(settings.database_url, connect_timeout=5) as conn:
+        row = conn.execute(FILE_SQL, (job["document_id"], job["tenant_id"])).fetchone()
+    if row is None:
+        raise FileNotFoundError("Uploaded file is missing from the database")
+    suffix = Path(job["file_name"]).suffix
+    handle, name = tempfile.mkstemp(prefix="veda-", suffix=suffix)
+    try:
+        with os.fdopen(handle, "wb") as f:
+            f.write(bytes(row[0]))
+        yield Path(name)
+    finally:
+        Path(name).unlink(missing_ok=True)
+
+
 def claim_next_document() -> dict | None:
     """Atomically take the oldest queued local upload, or return None."""
     with psycopg.connect(settings.database_url, connect_timeout=5) as conn:
         row = conn.execute(CLAIM_SQL).fetchone()
     if row is None:
         return None
-    document_id, tenant_id, title, file_name, storage_path = row
+    document_id, tenant_id, title, file_name, storage_path, storage_bucket = row
     return {
         "document_id": document_id,
         "tenant_id": tenant_id,
         "title": title or file_name,
         "file_name": file_name,
         "storage_path": storage_path,
+        "storage_bucket": storage_bucket,
     }
 
 
@@ -111,6 +144,23 @@ def requeue_stale_documents() -> int:
         return conn.execute(
             REQUEUE_STALE_SQL, {"max": MAX_ATTEMPTS, "mins": STALE_MINUTES}
         ).rowcount
+
+
+class IndexingUnavailableError(RuntimeError):
+    """The intelligence service could not be reached; the file itself is fine."""
+
+
+def wait_for_intelligence(max_wait_seconds: float = 300) -> bool:
+    """Wait until the intelligence service answers, so files are not failed during start-up."""
+    deadline = time.time() + max_wait_seconds
+    while time.time() < deadline:
+        try:
+            if httpx.get(f"{INTELLIGENCE_URL}/health", timeout=5).status_code == 200:
+                return True
+        except httpx.HTTPError:
+            pass
+        time.sleep(2)
+    return False
 
 
 def index_text(tenant_id: str, document_id: str, title: str, raw_text: str) -> int:
@@ -126,7 +176,9 @@ def index_text(tenant_id: str, document_id: str, title: str, raw_text: str) -> i
             timeout=INDEX_TIMEOUT_SECONDS,
         )
     except httpx.HTTPError as e:
-        raise RuntimeError(f"Indexing service unavailable ({e.__class__.__name__})") from e
+        raise IndexingUnavailableError(
+            f"Indexing service unavailable ({e.__class__.__name__})"
+        ) from e
 
     if response.status_code != 200:
         try:
@@ -142,14 +194,16 @@ def process_document(job: dict) -> None:
     tenant_id, document_id = job["tenant_id"], job["document_id"]
     started = time.time()
     try:
-        path = resolve_storage_path(job["storage_path"])
         extension = job["file_name"].rsplit(".", 1)[-1].lower() if "." in job["file_name"] else ""
-        result = get_parser(extension)(str(path))
+        with stored_file(job) as path:
+            result = get_parser(extension)(str(path))
 
-        if not result["raw_text"].strip():
-            raise ValueError("No readable text found in this file")
+            if not result["raw_text"].strip():
+                raise ValueError("No readable text found in this file")
 
-        store_preview_safely(settings.database_url, tenant_id, document_id, str(path), extension)
+            store_preview_safely(
+                settings.database_url, tenant_id, document_id, str(path), extension
+            )
 
         update_document_status(
             tenant_id,
@@ -165,6 +219,13 @@ def process_document(job: dict) -> None:
             f"✅ Indexed {job['file_name']} ({result['word_count']} words, {chunks} chunks) "
             f"in {time.time() - started:.1f}s"
         )
+    except IndexingUnavailableError:
+        # Not the file's fault: back to the queue, and wait for the service
+        logger.warning(f"Intelligence service unreachable; re-queued {job['file_name']}")
+        update_document_status(
+            tenant_id, document_id, status="uploaded", parsing_status="pending"
+        )
+        wait_for_intelligence()
     except Exception as e:
         logger.exception(f"❌ Failed to process {job['file_name']}")
         update_document_status(
@@ -190,6 +251,9 @@ def run_local_worker() -> None:
             logger.info(f"Re-queued {requeued} document(s) left processing by a previous run")
     except Exception as e:
         logger.warning(f"Could not re-queue stale documents: {e}")
+
+    if not wait_for_intelligence():
+        logger.warning(f"Intelligence service at {INTELLIGENCE_URL} is not answering yet")
 
     try:
         while True:

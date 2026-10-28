@@ -8,6 +8,7 @@ FastAPI application that exposes the intelligence engine:
 - /entities/extract — Entity extraction from text
 - /graph/search — Knowledge graph traversal
 - /graph/stats — Knowledge graph statistics
+- /llm/api/chat — Ollama proxy for hosted mode (internal key required)
 - /health — Service health check
 """
 
@@ -19,13 +20,15 @@ import time
 import uuid
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+import httpx
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import Counter, Histogram, generate_latest
 from pydantic import BaseModel, Field
-from starlette.responses import Response
+from starlette.responses import Response, StreamingResponse
 
-from .entity_extraction.extractor import extractor
+from nlp_sts.step06_entity_extraction import extractor
+
 from .knowledge_graph import local_graph
 from .knowledge_graph.graph_manager import MAX_HOPS_LIMIT, KnowledgeGraphManager
 from .rag.local_store import DocumentNotFoundError
@@ -69,6 +72,21 @@ def require_tenant(
         return str(uuid.UUID(x_tenant_id))
     except ValueError:
         raise HTTPException(status_code=400, detail="X-Tenant-ID must be a UUID") from None
+
+
+def require_internal_key(
+    x_internal_key: str | None = Header(default=None, alias="X-Internal-Key"),
+) -> None:
+    """
+    Authenticate a caller that is not tenant-scoped (the LLM proxy). Unlike
+    require_tenant this never accepts unauthenticated requests: the proxy is
+    reachable through the public tunnel in hosted mode.
+    """
+    expected_key = os.environ.get("INTERNAL_API_KEY")
+    if not expected_key:
+        raise HTTPException(status_code=503, detail="Set INTERNAL_API_KEY to use the LLM proxy")
+    if not x_internal_key or not hmac.compare_digest(x_internal_key, expected_key):
+        raise HTTPException(status_code=401, detail="Invalid internal API key")
 
 
 def _database_url() -> str:
@@ -496,6 +514,57 @@ async def get_graph_statistics(
         entity_types=stats["entity_types"],
         relationship_types=stats["relationship_types"],
         last_updated=stats["last_updated"],
+    )
+
+
+# ── LLM proxy (hosted mode) ──────────────────────────
+OLLAMA_URL = os.environ.get("VEDA_OLLAMA_URL", "http://127.0.0.1:11434").rstrip("/")
+# A prompt is a few passages plus history; anything far larger is not a chat
+MAX_LLM_REQUEST_BYTES = 2_000_000
+
+
+@app.post("/llm/api/chat", dependencies=[Depends(require_internal_key)])
+async def llm_chat_proxy(request: Request):
+    """
+    Relay a streaming Ollama /api/chat call to the Ollama on this machine.
+
+    In hosted mode the web app reaches this PC only through the tunnel to
+    this service, and Ollama has no authentication of its own, so chat goes
+    through here, behind the internal key, instead of exposing Ollama.
+    """
+    body = await request.body()
+    if len(body) > MAX_LLM_REQUEST_BYTES:
+        raise HTTPException(status_code=413, detail="Chat request is too large")
+
+    client = httpx.AsyncClient(timeout=httpx.Timeout(10.0, read=None))
+    try:
+        upstream = await client.send(
+            client.build_request(
+                "POST",
+                f"{OLLAMA_URL}/api/chat",
+                content=body,
+                headers={"Content-Type": "application/json"},
+            ),
+            stream=True,
+        )
+    except httpx.HTTPError:
+        await client.aclose()
+        raise HTTPException(
+            status_code=502, detail="Ollama is not running on the host computer"
+        ) from None
+
+    async def relay():
+        try:
+            async for chunk in upstream.aiter_raw():
+                yield chunk
+        finally:
+            await upstream.aclose()
+            await client.aclose()
+
+    return StreamingResponse(
+        relay(),
+        status_code=upstream.status_code,
+        media_type=upstream.headers.get("content-type", "application/x-ndjson"),
     )
 
 

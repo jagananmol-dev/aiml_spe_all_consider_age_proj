@@ -229,3 +229,29 @@ describe("POST /api/documents/upload — local storage mode", () => {
     expect(fs.readFileSync(path.join(dir, storagePath), "utf8")).toBe("name,amount\nRent,100\n");
   });
 });
+
+describe("POST /api/documents/upload — database storage mode (hosted)", () => {
+  beforeEach(() => {
+    process.env.STORAGE_BACKEND = "db";
+  });
+
+  afterEach(() => {
+    delete process.env.STORAGE_BACKEND;
+  });
+
+  it("stores the bytes with the row in one tenant transaction and skips MinIO and Kafka", async () => {
+    const file = new File(["name,amount\nRent,100\n"], "ledger.csv", { type: "text/csv" });
+    const res = await POST(uploadRequest(file, "csv"));
+    expect(res.status).toBe(201);
+    expect(mockMinio.putObject).not.toHaveBeenCalled();
+    expect(mockPublish).not.toHaveBeenCalled();
+
+    const insert = mockDbState.queries.find((q) => q.text.includes("INSERT INTO documents"))!;
+    expect(insert.values).toContain("db");
+    const stored = mockDbState.queries.find((q) => q.text.includes("INSERT INTO document_files"))!;
+    expect(stored.values[1]).toBe(TEST_SESSION.tenantId);
+    expect(Buffer.from(stored.values[2] as Buffer).toString("utf8")).toBe("name,amount\nRent,100\n");
+    // both inserts ran inside the same withTenant call
+    expect(mockDbState.tenantScopes).toEqual([TEST_SESSION.tenantId]);
+  });
+});

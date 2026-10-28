@@ -23,7 +23,8 @@ import logging
 import sys
 import time
 
-from ..entity_extraction.extractor import extractor, ner_mentions, resolve_name_types
+from nlp_sts.step06_entity_extraction import extractor, ner_mentions, resolve_name_types
+
 from ..rag.pipeline import rag_pipeline, settings
 from . import local_graph
 

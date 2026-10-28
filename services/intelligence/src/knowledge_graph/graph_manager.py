@@ -33,7 +33,7 @@ try:
 except ImportError:  # pragma: no cover - optional dependency
     psycopg = None  # type: ignore[assignment]
 
-from .relationships import infer_relationships
+from nlp_sts.step07_relation_extraction import infer_relationships
 
 logger = logging.getLogger("veda.intelligence.knowledge_graph")
 
@@ -729,7 +729,7 @@ class KnowledgeGraphManager:
         Build relationships between entities extracted from the same document.
 
         With `text`, only entities in the same sentence or record are linked
-        (see relationships.py); without it the whole document is one segment.
+        (see nlp_sts/step07_relation_extraction.py); without it the whole document is one segment.
         Relationship types come from relationships.INFERENCE_RULES.
 
         Returns the number of relationships created.

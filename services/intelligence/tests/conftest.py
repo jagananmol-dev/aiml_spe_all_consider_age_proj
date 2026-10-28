@@ -7,6 +7,8 @@ so unit tests run offline without any infrastructure.
 """
 
 import pytest
+
+import src  # noqa: F401  (puts nlp_sts/ on the import path)
 from unittest.mock import MagicMock, AsyncMock, patch
 
 

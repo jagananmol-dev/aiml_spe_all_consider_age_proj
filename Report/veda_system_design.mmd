@@ -1,0 +1,123 @@
+%%{init: {"theme": "base", "flowchart": {"curve": "basis", "nodeSpacing": 40, "rankSpacing": 55, "padding": 14}, "themeVariables": {"fontFamily": "Inter, Segoe UI, Arial, sans-serif", "fontSize": "15px", "primaryColor": "#ffffff", "primaryBorderColor": "#c9c6bd", "primaryTextColor": "#111111", "lineColor": "#b9b7af", "edgeLabelBackground": "#ffffff", "clusterBkg": "#ffffff", "clusterBorder": "#ffffff", "titleColor": "#555555"}}}%%
+flowchart TB
+    %% ── Clients ──────────────────────────────────────────────
+    subgraph CL["Clients, one tenant per company"]
+        direction LR
+        USR["<b>Browser</b><br/>landing · login/register<br/>dashboard · chat · upload"]
+        ADM["<b>Operator CLI</b><br/>graph rebuild<br/>demo seed + checks"]
+    end
+
+    %% ── Web app ──────────────────────────────────────────────
+    subgraph WEB["Next.js 15 web app (port 3000)"]
+        direction LR
+        AUTH["<b>Auth + session</b><br/>/api/auth: register, login,<br/>logout, session · signed cookie"]
+        UPL["<b>Documents API</b><br/>/api/documents/upload<br/>/api/documents/[id] · delete"]
+        CHAT["<b>Chat API</b><br/>/api/chat · /api/copilot<br/>streamed answer + sources"]
+        DASH["<b>Insight APIs</b><br/>/api/graph · /api/maintenance<br/>/api/alerts · /api/compliance"]
+    end
+
+    %% ── Python services ──────────────────────────────────────
+    subgraph ING["Ingestion worker (Python)"]
+        direction LR
+        CLAIM["<b>Claim job</b><br/>FOR UPDATE SKIP LOCKED<br/>or Kafka consumer"]
+        PARSE["<b>Parse + preview</b><br/>PDF · Office · CSV · JSON<br/>Markdown · text · OCR"]
+    end
+
+    subgraph INT["Intelligence service (FastAPI, port 8002)"]
+        direction LR
+        CHUNK["<b>Chunk + embed</b><br/>chunks up to 1,500 chars<br/>embedded with title"]
+        EXT["<b>Extract entities</b><br/>regex · terms · spaCy NER<br/>embedding typing"]
+        REL["<b>Relations + merge</b><br/>schema rules per sentence<br/>cosine dedupe · doc node"]
+        RAG["<b>Retrieve</b><br/>link question to graph<br/>dense search + boost"]
+        ENC["<b>MiniLM encoder</b><br/>shared by search,<br/>typing and linking"]
+    end
+
+    %% ── Data ─────────────────────────────────────────────────
+    subgraph DATA["Tenant-scoped store: PostgreSQL with row-level security"]
+        direction LR
+        TEN[("<b>tenants · users</b><br/>settings.graph_schema")]
+        DOCS[("<b>documents</b><br/>uploaded → processing<br/>→ indexed / failed")]
+        VEC[("<b>passages</b><br/>384-d vectors<br/>in-memory index per tenant")]
+        KG[("<b>graph_nodes / edges</b><br/>edges per source document")]
+        OPS[("<b>alerts · work orders</b><br/>findings")]
+        FILES[("<b>File store</b><br/>.data/uploads")]
+    end
+
+    SCH["<b>graph_schema.json</b><br/>types · patterns · terms<br/>roles · relationship rules"]
+    LLM["<b>LLM</b><br/>Ollama (local) or any<br/>OpenAI-compatible API"]
+
+    %% ── Full-mode swaps ──────────────────────────────────────
+    subgraph FULL["Full mode swaps (Docker)"]
+        direction LR
+        KAF["Kafka<br/>queue"]
+        MIN["MinIO<br/>files"]
+        PGV["pgvector HNSW<br/>vectors"]
+        AGE["Apache AGE<br/>graph"]
+        OS["OpenSearch<br/>keywords"]
+    end
+
+    %% ── Flows ────────────────────────────────────────────────
+    USR -->|HTTPS| AUTH
+    USR --> UPL
+    USR --> CHAT
+    USR --> DASH
+    AUTH -->|tenant id| TEN
+
+    UPL -->|store file| FILES
+    UPL -->|row 'uploaded'| DOCS
+    DOCS -->|job| CLAIM
+    CLAIM --> PARSE
+    FILES --> PARSE
+    PARSE -->|preview + status| DOCS
+    PARSE -->|"raw text<br/>X-Internal-Key"| CHUNK
+    PARSE -->|raw text| EXT
+
+    TEN -->|tenant extensions| EXT
+    SCH --> EXT
+    ENC -.-> CHUNK
+    ENC -.-> EXT
+    ENC -.-> RAG
+    CHUNK -->|vectors| VEC
+    EXT --> REL
+    REL -->|entities + edges| KG
+
+    CHAT -->|question + history| RAG
+    RAG -->|node index| KG
+    RAG -->|tenant matrix| VEC
+    DOCS -->|catalog| CHAT
+    RAG -->|top passages| CHAT
+    CHAT -->|"prompt, cite [1]..[n]"| LLM
+    LLM -->|token stream| CHAT
+
+    DASH --> KG
+    DASH --> OPS
+    ADM -->|rebuild --tenant| REL
+
+    DOCS -.-> KAF
+    FILES -.-> MIN
+    VEC -.-> PGV
+    KG -.-> AGE
+    VEC -.-> OS
+
+    %% ── Styling (matches veda_architecture.png) ──────────────
+    classDef box fill:#ffffff,stroke:#c9c6bd,stroke-width:1.5px,color:#111111,rx:10,ry:10
+    classDef store fill:#ecebe8,stroke:#c9c6bd,stroke-width:1.5px,color:#111111
+    classDef hot fill:#e6effa,stroke:#2f6fd6,stroke-width:2.5px,color:#111111
+    classDef ext fill:#f6f5f2,stroke:#c9c6bd,stroke-width:1.5px,color:#333333
+    classDef alt fill:#ffffff,stroke:#c9c6bd,stroke-width:1px,stroke-dasharray:4 3,color:#666666
+
+    class USR,ADM,AUTH,UPL,DASH,CLAIM,PARSE,CHUNK,REL box
+    class CHAT,EXT,RAG hot
+    class ENC,SCH store
+    class TEN,DOCS,VEC,KG,OPS,FILES store
+    class LLM ext
+    class KAF,MIN,PGV,AGE,OS alt
+
+    style CL fill:#ffffff,stroke:#ffffff,color:#555555
+    style WEB fill:#fbfaf8,stroke:#e3e1dc,color:#555555
+    style ING fill:#fbfaf8,stroke:#e3e1dc,color:#555555
+    style INT fill:#fbfaf8,stroke:#e3e1dc,color:#555555
+    style DATA fill:#fbfaf8,stroke:#e3e1dc,color:#555555
+    style FULL fill:#ffffff,stroke:#d8d6d0,stroke-dasharray:5 4,color:#777777
+
+    linkStyle default stroke:#b9b7af,stroke-width:1.5px

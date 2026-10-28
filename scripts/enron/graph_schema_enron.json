@@ -1,0 +1,257 @@
+{
+  "_comment": "Enron tenant's extension of the base graph schema (stored in tenants.settings.graph_schema by seed_tenant.py). Energy trading and corporate finance vocabulary; no code changes.",
+  "types": {
+    "SPECIAL_PURPOSE_ENTITY": {
+      "label": "Partnership / SPE",
+      "color": "#9333ea",
+      "role": "subject",
+      "description": "an off-balance-sheet partnership, special purpose entity or structured finance vehicle",
+      "terms": [
+        "LJM",
+        "LJM1",
+        "LJM2",
+        "LJM Cayman",
+        "LJM2 Co-Investment",
+        "Chewco",
+        "JEDI",
+        "Raptor",
+        "Raptor I",
+        "Raptor II",
+        "Raptor III",
+        "Raptor IV",
+        "Talon",
+        "Timberwolf",
+        "Bobcat",
+        "Porcupine",
+        "Whitewing",
+        "Osprey",
+        "Marlin",
+        "Braveheart",
+        "Southampton Place",
+        "Rhythms NetConnections"
+      ],
+      "examples": [
+        "special purpose entity",
+        "off-balance-sheet partnership",
+        "structured finance vehicle",
+        "related party partnership",
+        "hedging vehicle"
+      ]
+    },
+    "BUSINESS_UNIT": {
+      "label": "Business unit",
+      "color": "#1d4ed8",
+      "role": "subject",
+      "description": "an Enron business unit, subsidiary, pipeline or major asset",
+      "terms": [
+        "Enron North America",
+        "Enron Energy Services",
+        "Enron Broadband Services",
+        "Enron Wholesale Services",
+        "Enron Global Markets",
+        "Enron Industrial Markets",
+        "Enron Americas",
+        "Enron Europe",
+        "Enron Net Works",
+        "EnronOnline",
+        "Enron Transportation Services",
+        "Enron Global Assets",
+        "Azurix",
+        "Portland General Electric",
+        "Dabhol Power Company",
+        "Dabhol",
+        "Northern Natural Gas",
+        "Transwestern Pipeline",
+        "Florida Gas Transmission",
+        "Northern Border Pipeline",
+        "Wessex Water",
+        "New Power Company",
+        "Elektro"
+      ],
+      "examples": [
+        "business unit",
+        "subsidiary",
+        "trading desk",
+        "pipeline company",
+        "power plant",
+        "division"
+      ]
+    },
+    "FAILURE_MODE": {
+      "terms": [
+        "restatement",
+        "writedown",
+        "write-down",
+        "write-off",
+        "impairment",
+        "credit downgrade",
+        "downgrade",
+        "liquidity crisis",
+        "bankruptcy",
+        "chapter 11",
+        "margin call",
+        "rolling blackouts",
+        "price spike",
+        "California energy crisis",
+        "energy crisis",
+        "collateral call",
+        "credit rating downgrade",
+        "conflict of interest",
+        "accounting irregularities",
+        "shareholder lawsuit",
+        "class action",
+        "layoffs"
+      ],
+      "examples": [
+        "financial loss",
+        "accounting problem",
+        "credit problem",
+        "regulatory investigation",
+        "lawsuit",
+        "market disruption"
+      ]
+    },
+    "MAINTENANCE_ACTION": {
+      "terms": [
+        "hedge",
+        "hedging",
+        "merger",
+        "acquisition",
+        "divestiture",
+        "asset sale",
+        "equity issuance",
+        "debt refinancing",
+        "share repurchase",
+        "audit committee review",
+        "internal investigation",
+        "special investigation",
+        "mark-to-market accounting",
+        "price cap"
+      ],
+      "examples": [
+        "corrective action",
+        "financial transaction",
+        "restructuring",
+        "investigation",
+        "deal"
+      ]
+    },
+    "REGULATION": {
+      "terms": [
+        "FERC",
+        "Federal Energy Regulatory Commission",
+        "SEC",
+        "Securities and Exchange Commission",
+        "CFTC",
+        "Public Utility Holding Company Act",
+        "PUHCA",
+        "California Public Utilities Commission",
+        "CPUC",
+        "Commodity Futures Modernization Act",
+        "GAAP",
+        "FAS 140",
+        "FAS 125"
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "source": "SPECIAL_PURPOSE_ENTITY",
+      "target": "PERSON",
+      "type": "MANAGED_BY",
+      "inverse": "MANAGES"
+    },
+    {
+      "source": "SPECIAL_PURPOSE_ENTITY",
+      "target": "FAILURE_MODE",
+      "type": "HAS_ISSUE",
+      "inverse": "ISSUE_OF"
+    },
+    {
+      "source": "SPECIAL_PURPOSE_ENTITY",
+      "target": "BUSINESS_UNIT",
+      "type": "TRANSACTED_WITH",
+      "inverse": "TRANSACTED_WITH"
+    },
+    {
+      "source": "SPECIAL_PURPOSE_ENTITY",
+      "target": "MAINTENANCE_ACTION",
+      "type": "USED_FOR",
+      "inverse": "USED"
+    },
+    {
+      "source": "BUSINESS_UNIT",
+      "target": "FAILURE_MODE",
+      "type": "HAS_ISSUE",
+      "inverse": "ISSUE_OF"
+    },
+    {
+      "source": "BUSINESS_UNIT",
+      "target": "MAINTENANCE_ACTION",
+      "type": "UNDERWENT",
+      "inverse": "APPLIED_TO"
+    },
+    {
+      "source": "BUSINESS_UNIT",
+      "target": "PERSON",
+      "type": "LED_BY",
+      "inverse": "LEADS"
+    },
+    {
+      "source": "BUSINESS_UNIT",
+      "target": "REGULATION",
+      "type": "GOVERNED_BY",
+      "inverse": "GOVERNS"
+    },
+    {
+      "source": "BUSINESS_UNIT",
+      "target": "LOCATION",
+      "type": "LOCATED_IN",
+      "inverse": "LOCATION_OF"
+    },
+    {
+      "source": "BUSINESS_UNIT",
+      "target": "MEASUREMENT",
+      "type": "HAS_MEASUREMENT",
+      "inverse": "MEASURED_ON"
+    }
+  ],
+  "co_occurrence_types": [
+    "SPECIAL_PURPOSE_ENTITY",
+    "BUSINESS_UNIT"
+  ],
+  "nlp": {
+    "_comment": "The nlp block replaces the base block's keys, so the base cues are repeated here.",
+    "type_cues": {
+      "PERSON": [
+        "name",
+        "owner",
+        "reported by",
+        "by",
+        "from",
+        "to",
+        "present",
+        "attendees",
+        "contact",
+        "prepared by",
+        "approved by",
+        "signed",
+        "cc",
+        "regards",
+        "thanks",
+        "dear",
+        "sent by"
+      ],
+      "LOCATION": [
+        "centre",
+        "center",
+        "site",
+        "venue",
+        "location",
+        "city",
+        "branch",
+        "at"
+      ]
+    }
+  }
+}

@@ -19,9 +19,8 @@ import tempfile
 import pytest
 from unittest.mock import MagicMock, patch, mock_open, call
 
+from nlp_sts.step01_text_extraction import PARSER_MAP, get_parser
 from src.workers.ingestion_worker import (
-    get_parser,
-    PARSER_MAP,
     DocumentUploadedEvent,
     DocumentParsedEvent,
     DocumentParseFailedEvent,
@@ -83,18 +82,18 @@ class TestGetParser:
             get_parser(bad_type)
 
     def test_pdf_maps_to_parse_pdf(self):
-        from src.workers.ingestion_worker import parse_pdf
+        from nlp_sts.step01_text_extraction import parse_pdf
 
         assert get_parser("pdf") is parse_pdf
 
     def test_image_types_map_to_ocr(self):
-        from src.workers.ingestion_worker import parse_image_ocr
+        from nlp_sts.step01_text_extraction import parse_image_ocr
 
         for img_type in ["png", "jpg", "jpeg", "tiff", "tif", "bmp"]:
             assert get_parser(img_type) is parse_image_ocr
 
     def test_spreadsheet_types_map_to_parse_spreadsheet(self):
-        from src.workers.ingestion_worker import parse_spreadsheet
+        from nlp_sts.step01_text_extraction import parse_spreadsheet
 
         for xl_type in ["xlsx"]:
             assert get_parser(xl_type) is parse_spreadsheet
@@ -129,7 +128,7 @@ class TestParserMap:
 
 class TestParsePdf:
     def test_returns_dict_with_required_keys(self):
-        from src.workers.ingestion_worker import parse_pdf
+        from nlp_sts.step01_text_extraction import parse_pdf
 
         mock_page = MagicMock()
         mock_page.get_text = MagicMock(return_value="Sample pump report text. PUMP-101.")
@@ -158,7 +157,7 @@ class TestParsePdf:
             import src.workers.ingestion_worker as iw
 
             # Patch at runtime
-            with patch("src.workers.ingestion_worker.parse_pdf", wraps=None) as _:
+            with patch("nlp_sts.step01_text_extraction.parse_pdf", wraps=None) as _:
                 pass  # We test the function directly
 
         # Direct test with full mocks
@@ -183,7 +182,7 @@ class TestParsePdf:
         assert "pages" in result
 
     def test_page_count_matches_doc_length(self):
-        from src.workers.ingestion_worker import parse_pdf
+        from nlp_sts.step01_text_extraction import parse_pdf
 
         mock_page = MagicMock()
         mock_page.get_text = MagicMock(return_value="Page content here.")
@@ -211,7 +210,7 @@ class TestParsePdf:
         assert result["page_count"] == 3
 
     def test_word_count_positive_for_text(self):
-        from src.workers.ingestion_worker import parse_pdf
+        from nlp_sts.step01_text_extraction import parse_pdf
 
         mock_page = MagicMock()
         mock_page.get_text = MagicMock(return_value="Five words in total here")
@@ -260,7 +259,7 @@ class TestParseSpreadsheet:
         return mock_wb
 
     def test_returns_dict_with_required_keys(self):
-        from src.workers.ingestion_worker import parse_spreadsheet
+        from nlp_sts.step01_text_extraction import parse_spreadsheet
 
         sheet_data = {"Sheet1": [("ID", "Value"), ("1", "PUMP-101"), ("2", "350°C")]}
         mock_wb = self._make_mock_workbook(sheet_data)
@@ -277,7 +276,7 @@ class TestParseSpreadsheet:
         assert "tables" in result
 
     def test_page_count_equals_sheet_count(self):
-        from src.workers.ingestion_worker import parse_spreadsheet
+        from nlp_sts.step01_text_extraction import parse_spreadsheet
 
         sheet_data = {
             "Sheet1": [("A", "B")],
@@ -296,7 +295,7 @@ class TestParseSpreadsheet:
         assert result["page_count"] == 3
 
     def test_table_per_sheet_created(self):
-        from src.workers.ingestion_worker import parse_spreadsheet
+        from nlp_sts.step01_text_extraction import parse_spreadsheet
 
         sheet_data = {"WorkOrders": [("WO#", "Title", "Status"), ("WO-001", "Pump repair", "open")]}
         mock_wb = self._make_mock_workbook(sheet_data)
@@ -311,7 +310,7 @@ class TestParseSpreadsheet:
         assert result["tables"][0]["sheet_name"] == "WorkOrders"
 
     def test_empty_workbook(self):
-        from src.workers.ingestion_worker import parse_spreadsheet
+        from nlp_sts.step01_text_extraction import parse_spreadsheet
 
         mock_wb = MagicMock()
         mock_wb.sheetnames = []
@@ -396,9 +395,17 @@ class TestSettings:
         s = Settings()
         assert s.max_file_size_mb == 100
 
-    def test_default_ocr_languages_include_english(self):
-        s = Settings()
-        assert "en" in s.ocr_languages
+    def test_default_ocr_languages_include_english(self, monkeypatch):
+        from nlp_sts.step01_text_extraction import ocr_languages
+
+        monkeypatch.delenv("VEDA_OCR_LANGUAGES", raising=False)
+        assert ocr_languages() == ["en"]
+
+    def test_ocr_languages_read_from_env(self, monkeypatch):
+        from nlp_sts.step01_text_extraction import ocr_languages
+
+        monkeypatch.setenv("VEDA_OCR_LANGUAGES", '["en","hi"]')
+        assert ocr_languages() == ["en", "hi"]
 
     def test_env_prefix_is_veda(self):
         assert Settings.Config.env_prefix == "VEDA_"

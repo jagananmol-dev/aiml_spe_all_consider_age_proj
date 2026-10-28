@@ -49,8 +49,9 @@ try:
 except ImportError:  # pragma: no cover - optional dependency
     SentenceTransformer = None  # type: ignore[assignment,misc]
 
-from ..entity_extraction import semantic
-from ..entity_extraction.extractor import IndustrialEntityExtractor
+from nlp_sts import step05_semantic_typing as semantic
+from nlp_sts.step06_entity_extraction import IndustrialEntityExtractor
+
 from .graph_manager import KnowledgeGraphManager
 
 logger = logging.getLogger("veda.intelligence.graph_worker")
@@ -129,8 +130,12 @@ class KnowledgeGraphWorker:
             )
         if self._embedding_model is None:
             logger.info(f"Loading embedding model: {settings.embedding_model}")
-            model = SentenceTransformer(settings.embedding_model)
-            # Entity typing uses the same model (see entity_extraction/semantic.py)
+            # Local cache first, so an offline machine still starts (see rag/pipeline.py)
+            try:
+                model = SentenceTransformer(settings.embedding_model, local_files_only=True)
+            except Exception:
+                model = SentenceTransformer(settings.embedding_model)
+            # Entity typing uses the same model (see nlp_sts/step05_semantic_typing.py)
             semantic.set_encoder(
                 lambda texts: model.encode(
                     texts, normalize_embeddings=True, batch_size=64, show_progress_bar=False
@@ -385,7 +390,7 @@ class KnowledgeGraphWorker:
         """
         import psycopg
 
-        from .chunk_builder import ChunkBuilder
+        from nlp_sts.step10_context_building import ChunkBuilder
 
         builder = ChunkBuilder(
             max_chunk_size=settings.max_chunk_size,

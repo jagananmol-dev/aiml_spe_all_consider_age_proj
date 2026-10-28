@@ -6,9 +6,9 @@ VEDA AI — Relationship inference and local graph tests
 - local_graph.walk returns real edges only and never walks through measurements
 """
 
-from src.entity_extraction.extractor import IndustrialEntityExtractor
+from nlp_sts.step06_entity_extraction import IndustrialEntityExtractor
 from src.knowledge_graph.local_graph import walk
-from src.knowledge_graph.relationships import infer_relationships, text_segments
+from nlp_sts.step07_relation_extraction import infer_relationships, text_segments
 
 extractor = IndustrialEntityExtractor()
 extractor._spacy_unavailable = True
@@ -137,7 +137,7 @@ class TestOverview:
 
 class TestChunkMerging:
     def test_small_sections_merge_up_to_the_size_limit(self):
-        from src.knowledge_graph.chunk_builder import ChunkBuilder
+        from nlp_sts.step10_context_building import ChunkBuilder
 
         builder = ChunkBuilder(max_chunk_size=120)
         text = ("Patient: PMP-0412. Centre: Pimpri.\n\n# Diagnosis and treatment\n\n"

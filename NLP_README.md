@@ -12,18 +12,18 @@ All code paths below are relative to the repository root.
  Upload (PDF, DOCX, PPTX, CSV, JSON, XLSX, image, text)
    │
    ▼
- [A] Text extraction + OCR            services/ingestion/src/workers/ingestion_worker.py
+ [A] Text extraction + OCR            nlp_sts/step01_text_extraction.py
    │   raw text, records as "key: value" blocks
    ▼
- [B] Chunking (section → paragraph → sentence)   knowledge_graph/chunk_builder.py
+ [B] Chunking (section → paragraph → sentence)   nlp_sts/step02_chunking.py
    │
-   ├──► [C] Sentence embeddings (MiniLM) ──► vector store      rag/pipeline.py, rag/local_store.py
+   ├──► [C] Sentence embeddings (MiniLM) ──► vector store      nlp_sts/step03_text_embeddings.py, step08_vector_search.py
    │
-   └──► [D] Entity extraction (4 layers)                       entity_extraction/extractor.py
-           1. regex patterns   2. term lists   3. spaCy NER   4. embedding typing (semantic.py)
+   └──► [D] Entity extraction (4 layers)                       nlp_sts/step06_entity_extraction.py
+           1. regex patterns   2. term lists   3. spaCy NER   4. embedding typing (step05_semantic_typing.py)
            │
            ▼
-        [E] Relationship extraction (segment co-occurrence + typed rules)  knowledge_graph/relationships.py
+        [E] Relationship extraction (segment co-occurrence + typed rules)  nlp_sts/step07_relation_extraction.py
            │
            ▼
         [F] Knowledge graph (nodes, edges, entity resolution)              knowledge_graph/local_graph.py
@@ -34,23 +34,23 @@ All code paths below are relative to the repository root.
    │
  [H] Hybrid retrieval: dense vectors + graph-entity linking + BM25 text + RRF fusion   rag/pipeline.py
    │
- [I] Prompt construction with numbered citations, token budgeting          chatPrompt.ts, chunk_builder.py
+ [I] Prompt construction with numbered citations, token budgeting          chatPrompt.ts, nlp_sts/step10_context_building.py
    │
  [J] LLM generation, streamed (Ollama / OpenAI-compatible)                 apps/web/src/lib/llm.ts
 ```
 
-Python paths under `entity_extraction/`, `knowledge_graph/` and `rag/` are inside `services/intelligence/src/`.
+**All NLP code is in `nlp_sts/`**, one file per pipeline step (`step01_…` to `step10_…`); `python nlp_sts/run_pipeline.py` runs the steps one by one on a sample document. Python paths under `knowledge_graph/` and `rag/` (storage, caching and orchestration) are inside `services/intelligence/src/`.
 
 ### Libraries and models
 
 | Library / model | Used for | Where |
 |---|---|---|
-| **spaCy** (`en_core_web_sm`) | tokenisation, POS tagging, dependency parsing, NER, noun chunks, lemmatisation | `entity_extraction/extractor.py`, `semantic.py` |
-| **sentence-transformers** `all-MiniLM-L6-v2` (384-dim) | sentence/phrase embeddings for search, entity typing, entity merging and query linking | `rag/pipeline.py` (registered into `semantic.py`) |
-| **NumPy** | cosine similarity as matrix products, top-k selection | `semantic.py`, `rag/local_store.py`, `local_graph.py` |
+| **spaCy** (`en_core_web_sm`) | tokenisation, POS tagging, dependency parsing, NER, noun chunks, lemmatisation | `nlp_sts/step06_entity_extraction.py`, `step05_semantic_typing.py` |
+| **sentence-transformers** `all-MiniLM-L6-v2` (384-dim) | sentence/phrase embeddings for search, entity typing, entity merging and query linking | `rag/pipeline.py` (registered into `step05_semantic_typing.py`) |
+| **NumPy** | cosine similarity as matrix products, top-k selection | `step05_semantic_typing.py`, `rag/local_store.py`, `local_graph.py` |
 | **Python `re`** | rule-based extraction, segmentation, chunk splitting | everywhere |
-| **PyMuPDF + pdfplumber** | PDF text and table extraction | `ingestion_worker.py` |
-| **EasyOCR** | optical character recognition for images | `ingestion_worker.py` |
+| **PyMuPDF + pdfplumber** | PDF text and table extraction | `step01_text_extraction.py` |
+| **EasyOCR** | optical character recognition for images | `step01_text_extraction.py` |
 | **OpenSearch** (optional) | BM25 full-text search with fuzzy matching | `rag/pipeline.py` |
 | **Ollama / OpenAI-compatible LLM** | answer generation | `apps/web/src/lib/llm.ts` |
 
@@ -60,17 +60,20 @@ Python paths under `entity_extraction/`, `knowledge_graph/` and `rag/` are insid
 
 | File | NLP techniques inside |
 |---|---|
-| `services/ingestion/src/workers/ingestion_worker.py` | Text extraction, ligature normalisation, OCR, OCR line reconstruction, OCR error correction, structured-data linearisation (CSV/JSON → text) |
-| `services/intelligence/src/entity_extraction/graph_schema.json` | The knowledge base the NLP runs on: entity types, regex patterns, gazetteer terms, seed examples, NER label map, context cues, relationship rules, similarity thresholds |
-| `services/intelligence/src/entity_extraction/schema.py` | Compiling patterns and term lists, plural handling, canonical term mapping, per-tenant schema merging |
-| `services/intelligence/src/entity_extraction/extractor.py` | Regex NER, gazetteer matching, spaCy NER, name cleaning, context-cue voting, coordination voting, majority-vote type resolution, surname propagation, overlap deduplication |
-| `services/intelligence/src/entity_extraction/semantic.py` | Stop-word phrase mining, noun-chunk mining, lemmatisation of phrase heads, embedding cache, nearest-example (few-shot) classification, margin + background rejection, context-window typing of codes, greedy similarity clustering (entity resolution) |
-| `services/intelligence/src/knowledge_graph/relationships.py` | Sentence and record segmentation, co-occurrence relation extraction, typed relation rules, detection-vs-repair disambiguation, document→entity links |
-| `services/intelligence/src/knowledge_graph/chunk_builder.py` | Structure-aware chunking, overlap windows, sentence splitting, token estimation, entity/graph enrichment of chunks, prompt formatting, token-budget trimming |
+| `nlp_sts/step01_text_extraction.py` | Text extraction, ligature normalisation, OCR, OCR line reconstruction, OCR error correction, structured-data linearisation (CSV/JSON → text) |
+| `nlp_sts/graph_schema.json` | The knowledge base the NLP runs on: entity types, regex patterns, gazetteer terms, seed examples, NER label map, context cues, relationship rules, similarity thresholds |
+| `nlp_sts/step04_graph_schema.py` | Compiling patterns and term lists, plural handling, canonical term mapping, per-tenant schema merging |
+| `nlp_sts/step06_entity_extraction.py` | Regex NER, gazetteer matching, spaCy NER, name cleaning, context-cue voting, coordination voting, majority-vote type resolution, surname propagation, overlap deduplication |
+| `nlp_sts/step05_semantic_typing.py` | Stop-word phrase mining, noun-chunk mining, lemmatisation of phrase heads, embedding cache, nearest-example (few-shot) classification, margin + background rejection, context-window typing of codes, greedy similarity clustering (entity resolution) |
+| `nlp_sts/step07_relation_extraction.py` | Sentence and record segmentation, co-occurrence relation extraction, typed relation rules, detection-vs-repair disambiguation, document→entity links |
+| `nlp_sts/step02_chunking.py`, `nlp_sts/step10_context_building.py` | Structure-aware chunking, overlap windows, sentence splitting, token estimation, entity/graph enrichment of chunks, prompt formatting, token-budget trimming |
 | `services/intelligence/src/knowledge_graph/local_graph.py` | Entity linking (question phrase → graph node) by exact and embedding match, constrained breadth-first graph walk |
 | `services/intelligence/src/knowledge_graph/rebuild.py` | Batched spaCy parsing (`nlp.pipe`), collection-wide name-type voting, chunk overlap removal |
-| `services/intelligence/src/rag/pipeline.py` | Embedding model, document indexing, query embedding, hybrid retrieval, graph boosting, Reciprocal Rank Fusion |
-| `services/intelligence/src/rag/local_store.py` | Dense vector search (cosine via dot product), similarity cut-off, low-confidence fallback, graph-entity boost |
+| `nlp_sts/step03_text_embeddings.py` | Embedding model loading (offline cache first), title-conditioned passage embeddings, query embedding, encoder sharing with step 5 |
+| `nlp_sts/step08_vector_search.py` | Dense ranking (cosine via dot product), graph-entity boost, top-k, similarity cut-off, low-confidence fallback |
+| `nlp_sts/step09_rank_fusion.py` | Reciprocal Rank Fusion of the vector, graph and BM25 lists |
+| `services/intelligence/src/rag/pipeline.py` | Orchestration: document indexing, hybrid retrieval (pgvector / OpenSearch / graph), calls steps 2–10 |
+| `services/intelligence/src/rag/local_store.py` | Passage storage in PostgreSQL and the cached in-memory vector index searched by step 8 |
 | `apps/web/src/lib/chatPrompt.ts` | Intent detection (small talk, overview), follow-up query rewriting, query expansion, citation numbering, prompt-injection guard, history truncation |
 | `apps/web/src/lib/llm.ts` | Streaming generation from Ollama or any OpenAI-compatible server, temperature/context-window settings |
 
@@ -78,7 +81,7 @@ Python paths under `entity_extraction/`, `knowledge_graph/` and `rag/` are insid
 
 ## 3. Stage A — Text extraction and OCR
 
-**File:** `services/ingestion/src/workers/ingestion_worker.py`
+**File:** `nlp_sts/step01_text_extraction.py`
 
 NLP is only as good as the text it gets, so each format is turned into clean, linear text that keeps its structure.
 
@@ -96,7 +99,7 @@ NLP is only as good as the text it gets, so each format is turned into clean, li
 
 ## 4. Stage B — Chunking
 
-**File:** `services/intelligence/src/knowledge_graph/chunk_builder.py`, class `ChunkBuilder`
+**File:** `nlp_sts/step02_chunking.py`, class `TextChunker` (prompt building: `nlp_sts/step10_context_building.py`, class `ChunkBuilder`)
 
 Documents are split into passages of at most **1500 characters** with **200 characters of overlap** (`RAGSettings` in `rag/pipeline.py`).
 
@@ -125,7 +128,7 @@ Documents are split into passages of at most **1500 characters** with **200 char
 
 ## 6. Stage D — Entity extraction (Named Entity Recognition)
 
-**File:** `services/intelligence/src/entity_extraction/extractor.py`, `EntityExtractor.extract_entities()`
+**File:** `nlp_sts/step06_entity_extraction.py`, `EntityExtractor.extract_entities()`
 
 This is the core NLP stage. It is **domain-agnostic**: *what* to look for comes from `graph_schema.json`, not from code. It runs **four layers**, from the most precise to the most general. spaCy parses each document **only once**, and that one parse supplies named entities, noun chunks and lemmas.
 
@@ -145,14 +148,14 @@ This is the core NLP stage. It is **domain-agnostic**: *what* to look for comes 
 
 ### Layer 1 — Rule-based (regex) NER
 
-- Patterns are compiled once in `schema.py::_compile()` into `EntityPattern` objects (regex, normalisation, confidence, numeric flag).
+- Patterns are compiled once in `step04_graph_schema.py::_compile()` into `EntityPattern` objects (regex, normalisation, confidence, numeric flag).
 - `_normalize()` canonicalises matches: `upper` / `upper_dash` turns `p 101a` into `P-101A`.
 - **Numeric attribute extraction:** for `MEASUREMENT`, regex groups give `numeric_value` (float) and `unit`.
 - Confidence 0.90–0.95.
 
 ### Layer 2 — Gazetteer (dictionary) matching
 
-- `schema.py::term_pattern()` builds one whole-word, case-insensitive regex per type from its term list:
+- `step04_graph_schema.py::term_pattern()` builds one whole-word, case-insensitive regex per type from its term list:
   - **longest match first**, so "bearing failure" wins over "bearing";
   - `\b` word boundaries, so "alignment" isn't found inside "misalignment";
   - optional `(?:e?s)?` suffix, a light **plural normalisation**.
@@ -178,7 +181,7 @@ During a full rebuild (`knowledge_graph/rebuild.py`), the vote runs over **the w
 
 ### Layer 4 — Embedding-based typing (few-shot / zero-shot NER)
 
-**File:** `services/intelligence/src/entity_extraction/semantic.py`
+**File:** `nlp_sts/step05_semantic_typing.py`
 
 Patterns and term lists only find what someone listed in advance. This layer finds the rest in any domain.
 
@@ -231,7 +234,7 @@ Codes no pattern knows (`LN-2041`, `AHU3`) are found by `semantic.identifier_reg
 
 ## 7. Stage E — Relationship extraction
 
-**File:** `services/intelligence/src/knowledge_graph/relationships.py`
+**File:** `nlp_sts/step07_relation_extraction.py`
 
 Relations are extracted with **segment-level co-occurrence plus typed rules**.
 
@@ -296,7 +299,7 @@ On the Python side, `RAGPipeline.prepare()` also runs `extract_entities(query, u
 
 ## 11. Stage I — Prompt construction (context engineering)
 
-**Python:** `chunk_builder.py`
+**Python:** `nlp_sts/step10_context_building.py`
 
 | Function | Purpose |
 |---|---|
@@ -327,7 +330,7 @@ On the Python side, `RAGPipeline.prepare()` also runs `extract_entities(query, u
 
 ## 13. Tuning knobs (no code changes)
 
-Everything domain-specific lives in `services/intelligence/src/entity_extraction/graph_schema.json`. It can be replaced with `VEDA_GRAPH_SCHEMA_FILE` or extended per tenant via `tenants.settings.graph_schema`, which is merged by `schema.py::merge_schema()`.
+Everything domain-specific lives in `nlp_sts/graph_schema.json`. It can be replaced with `VEDA_GRAPH_SCHEMA_FILE` or extended per tenant via `tenants.settings.graph_schema`, which is merged by `step04_graph_schema.py::merge_schema()`.
 
 | Setting | Default | Effect |
 |---|---|---|

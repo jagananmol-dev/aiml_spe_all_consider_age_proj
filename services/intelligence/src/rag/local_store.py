@@ -27,6 +27,8 @@ try:
 except ImportError:  # pragma: no cover - optional dependency
     psycopg = None  # type: ignore[assignment]
 
+from nlp_sts.step08_vector_search import rank_passages
+
 logger = logging.getLogger("veda.intelligence.local_store")
 
 
@@ -252,34 +254,26 @@ def search_chunks_with_stats(
     if matrix is None or len(row_ids) == 0:
         return [], stats
 
-    scores = matrix @ query
-    if boost and boost_amount:
-        boosted = 0
-        for j, row_id in enumerate(row_ids):
-            document_id, text = index.rows[row_id][0], index.rows[row_id][1]
-            terms = boost.get(document_id)
-            if terms:
-                lowered = text.lower()
-                if any(term in lowered for term in terms):
-                    scores[j] += boost_amount
-                    boosted += 1
-        stats["graph_boosted_chunks"] = boosted
-    k = min(top_k, len(row_ids))
-    best = np.argpartition(-scores, k - 1)[:k]
-    best = best[np.argsort(-scores[best])]
-
-    # Nothing clears the cut-off: still return the closest few (when asked),
-    # flagged as a weak match, so the answer can use or rule them out
-    low_confidence = fallback_k > 0 and not (scores[best] >= min_score).any()
-    stats["low_confidence"] = bool(low_confidence)
-    if low_confidence:
-        best = best[:fallback_k]
+    # Ranking (cosine, graph boost, top-k, cut-off) is step 8 of the NLP pipeline
+    rows = [index.rows[row_id] for row_id in row_ids]
+    ranked = rank_passages(
+        matrix,
+        query_embedding,
+        top_k,
+        min_score,
+        fallback_k,
+        document_ids=[row[0] for row in rows],
+        texts=[row[1] for row in rows],
+        boost=boost,
+        boost_amount=boost_amount,
+    )
+    stats["low_confidence"] = ranked.low_confidence
+    if ranked.boosted is not None:
+        stats["graph_boosted_chunks"] = ranked.boosted
 
     results = []
-    for i in best:
-        if scores[i] < min_score and not low_confidence:
-            continue
-        document_id, text, metadata, title = index.rows[row_ids[i]]
+    for position, score in zip(ranked.positions, ranked.scores):
+        document_id, text, metadata, title = rows[position]
         metadata = dict(metadata or {})
         metadata.setdefault("title", title)
         results.append(
@@ -287,7 +281,7 @@ def search_chunks_with_stats(
                 "document_id": document_id,
                 "chunk_text": text,
                 "metadata": metadata,
-                "score": float(scores[i]),
+                "score": score,
             }
         )
     return results, stats

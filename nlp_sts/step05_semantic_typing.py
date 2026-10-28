@@ -1,5 +1,5 @@
 """
-VEDA AI — Embedding-based entity typing
+NLP pipeline — Step 5: Semantic typing (embedding-based entity typing)
 
 Patterns and term lists only find what someone wrote down in advance. This
 module finds the rest in any domain: key phrases mined from the text are
@@ -17,6 +17,9 @@ Efficiency:
 
 Without a registered encoder (tests, the Kafka worker before warm-up) the
 extractor simply skips this step.
+
+The encoder comes from step03_text_embeddings.py; the typed phrases are
+used by step06_entity_extraction.py.
 """
 
 import logging
@@ -28,7 +31,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .schema import GraphSchema
+from .step04_graph_schema import GraphSchema
 
 logger = logging.getLogger("veda.intelligence.semantic")
 
@@ -287,7 +290,7 @@ _PHRASE_BREAK = re.compile(r"[^\s]")  # anything but whitespace between tokens e
 class EmbeddingCache:
     """Normalised phrase vectors, computed once per phrase and batched."""
 
-    def __init__(self, encode: Callable[[list[str]], np.ndarray], max_items: int = 50_000):
+    def __init__(self, encode: Callable[[list[str]], np.ndarray], max_items: int = 200_000):
         self._encode = encode
         self._max = max_items
         self._vectors: OrderedDict[str, np.ndarray] = OrderedDict()
@@ -554,7 +557,9 @@ def noun_chunk_candidates(
         span = (tokens[0].idx, tokens[-1].idx + len(tokens[-1].text))
         cand = found.get(phrase)
         if cand is None:
-            found[phrase] = Candidate(phrase, doc.text[span[0] : span[1]], [span])
+            found[phrase] = Candidate(
+                phrase, "".join(t.text_with_ws for t in tokens).rstrip(), [span]
+            )
         else:
             cand.spans.append(span)
     ranked = sorted(
@@ -577,6 +582,53 @@ def identifier_context(text: str, start: int, end: int, words: int = 3, window: 
         if w.lower() not in STOPWORDS
     ]
     return " ".join(before[-words:])
+
+
+def merge_into_known(
+    known: list[str],
+    known_vectors: np.ndarray | None,
+    values: list[str],
+    vectors: np.ndarray,
+    threshold: float,
+    protected: set[str] | None = None,
+) -> dict[str, str]:
+    """
+    Map a document's values to canonical names: an existing node name
+    (`known`, every one a fixed centre) or an earlier value of the document.
+    Like merge_similar over known + values, but existing nodes are never
+    clustered among themselves, so the cost is one (values × known) product
+    plus the document's own values, not quadratic in the size of the graph.
+    """
+    protected = protected or set()
+    known_set = set(known)
+    to_known = (
+        vectors @ known_vectors.T
+        if known_vectors is not None and len(known) and len(values)
+        else np.zeros((len(values), 0), dtype=np.float32)
+    )
+    canonical: dict[str, str] = {}
+    centres: list[int] = []  # indices into values of the document's own centres
+    for i, value in enumerate(values):
+        if value in known_set or value in protected:
+            canonical[value] = value
+            if value not in known_set:
+                centres.append(i)
+            continue
+        best_name, best_sim = value, -1.0
+        if to_known.shape[1]:
+            j = int(to_known[i].argmax())
+            best_name, best_sim = known[j], float(to_known[i, j])
+        if centres:
+            sims = vectors[centres] @ vectors[i]
+            j = int(sims.argmax())
+            if sims[j] > best_sim:
+                best_name, best_sim = canonical[values[centres[j]]], float(sims[j])
+        if best_sim >= threshold:
+            canonical[value] = best_name
+        else:
+            centres.append(i)
+            canonical[value] = value
+    return canonical
 
 
 def merge_similar(

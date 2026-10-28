@@ -291,7 +291,7 @@ class TestPipelineLocalMode:
 
 class TestExtractorWithoutSpacy:
     def test_regex_entities_still_extracted_when_no_model(self):
-        from src.entity_extraction.extractor import IndustrialEntityExtractor
+        from nlp_sts.step06_entity_extraction import IndustrialEntityExtractor
 
         extractor = IndustrialEntityExtractor()
         fake_spacy = MagicMock()
@@ -303,7 +303,7 @@ class TestExtractorWithoutSpacy:
 
         assert any(e.entity_type == "EQUIPMENT_TAG" for e in entities)
         # Each model the schema lists (nlp.models) is tried once, never retried
-        from src.entity_extraction.schema import get_schema
+        from nlp_sts.step04_graph_schema import get_schema
 
         assert fake_spacy.load.call_count == len(get_schema().nlp["models"])
 

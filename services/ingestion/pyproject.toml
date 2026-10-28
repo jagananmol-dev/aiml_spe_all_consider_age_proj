@@ -60,6 +60,10 @@ line-length = 100
 # upload or a search, so broad `except Exception` with logging is deliberate.
 ignore = ["BLE001", "S110"]
 
+[tool.ruff.lint.isort]
+# nlp_sts/ (the shared NLP pipeline at the repository root) is our own code
+known-first-party = ["src", "nlp_sts"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]

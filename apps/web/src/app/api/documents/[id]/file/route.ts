@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getScopedDb, UnauthorizedError, withTenant } from "@/lib/db";
 import { contentTypeFor } from "@/lib/formats";
 import { getMinioClient } from "@/lib/minio";
-import { LOCAL_BUCKET, readLocalFile } from "@/lib/storage";
+import { DB_BUCKET, LOCAL_BUCKET, readLocalFile } from "@/lib/storage";
 
 /**
  * GET /api/documents/:id/file
@@ -42,10 +42,22 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
     let data: Buffer;
     try {
-      data =
-        doc.storage_bucket === LOCAL_BUCKET
-          ? await readLocalFile(doc.storage_path)
-          : await readStream(await getMinioClient().getObject(doc.storage_bucket, doc.storage_path));
+      if (doc.storage_bucket === DB_BUCKET) {
+        const [stored] = await withTenant(
+          tenantId,
+          (sql) => sql`
+            SELECT data FROM document_files
+            WHERE document_id = ${id} AND tenant_id = ${tenantId}
+            LIMIT 1
+          `
+        );
+        if (!stored) throw new Error("File row missing from document_files");
+        data = Buffer.from(stored.data as Uint8Array);
+      } else if (doc.storage_bucket === LOCAL_BUCKET) {
+        data = await readLocalFile(doc.storage_path);
+      } else {
+        data = await readStream(await getMinioClient().getObject(doc.storage_bucket, doc.storage_path));
+      }
     } catch (error) {
       console.error("Stored file unavailable:", error);
       return NextResponse.json({ error: "The stored file is not available" }, { status: 404 });

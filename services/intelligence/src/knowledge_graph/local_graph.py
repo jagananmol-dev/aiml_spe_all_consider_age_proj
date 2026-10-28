@@ -27,10 +27,11 @@ from typing import Any
 
 import numpy as np
 
-from ..entity_extraction import semantic
-from ..entity_extraction.schema import GraphSchema, get_schema
+from nlp_sts import step05_semantic_typing as semantic
+from nlp_sts.step04_graph_schema import GraphSchema, get_schema
+from nlp_sts.step07_relation_extraction import InferredEdge
+
 from ..rag.local_store import _reused_connection
-from .relationships import InferredEdge
 
 try:
     import psycopg

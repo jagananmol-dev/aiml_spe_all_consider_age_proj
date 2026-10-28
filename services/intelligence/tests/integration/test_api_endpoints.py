@@ -105,7 +105,7 @@ class TestMetricsEndpoint:
 
 class TestQueryPrepareEndpoint:
     def _mock_prepared_context(self):
-        from src.knowledge_graph.chunk_builder import PreparedContext, PreparedChunk
+        from nlp_sts.step10_context_building import PreparedChunk, PreparedContext
 
         chunk = PreparedChunk(
             text="PUMP-101 failed with bearing seizure.",
@@ -248,7 +248,7 @@ class TestCallerAuthentication:
 
 class TestQueryAliasEndpoint:
     def test_alias_returns_same_as_prepare(self, client):
-        from src.knowledge_graph.chunk_builder import PreparedContext, PreparedChunk
+        from nlp_sts.step10_context_building import PreparedChunk, PreparedContext
 
         chunk = PreparedChunk("Text.", "vector", 0.5, "doc-1", token_estimate=5)
         ctx = PreparedContext(
@@ -456,3 +456,82 @@ class TestIndexDocumentEndpoint:
         )
         assert bad_id.status_code == 422
         assert empty.status_code == 422
+
+
+# ── /llm/api/chat (hosted mode Ollama proxy) ─────────
+
+
+LLM_BODY = {"model": "llama3", "messages": [{"role": "user", "content": "hi"}], "stream": True}
+
+
+class TestLlmProxy:
+
+    def test_refused_without_configured_key(self, client):
+        import os
+
+        with patch.dict(os.environ, {"INTERNAL_API_KEY": ""}):
+            r = client.post("/llm/api/chat", json=LLM_BODY)
+        assert r.status_code == 503
+
+    def test_wrong_key_rejected(self, client):
+        import os
+
+        with patch.dict(os.environ, {"INTERNAL_API_KEY": "s3cret-key"}):
+            r = client.post("/llm/api/chat", json=LLM_BODY, headers={"X-Internal-Key": "nope"})
+        assert r.status_code == 401
+
+    def test_relays_ollama_stream(self, client):
+        import os
+
+        import httpx
+
+        lines = b'{"message":{"content":"Hel"}}\n{"message":{"content":"lo"},"done":true}\n'
+        seen = {}
+
+        class Chunks(httpx.AsyncByteStream):
+            """A streamed body, as Ollama sends it (bytes content would be pre-read)."""
+
+            async def __aiter__(self):
+                yield lines
+
+        def ollama(request: httpx.Request) -> httpx.Response:
+            seen["url"] = str(request.url)
+            return httpx.Response(
+                200, stream=Chunks(), headers={"content-type": "application/x-ndjson"}
+            )
+
+        real_client = httpx.AsyncClient
+        with (
+            patch.dict(os.environ, {"INTERNAL_API_KEY": "s3cret-key"}),
+            patch(
+                "src.api.httpx.AsyncClient",
+                lambda **kw: real_client(transport=httpx.MockTransport(ollama), **kw),
+            ),
+        ):
+            r = client.post(
+                "/llm/api/chat", json=LLM_BODY, headers={"X-Internal-Key": "s3cret-key"}
+            )
+        assert r.status_code == 200
+        assert r.content == lines
+        assert seen["url"].endswith("/api/chat")
+
+    def test_ollama_down_is_502(self, client):
+        import os
+
+        import httpx
+
+        def down(request: httpx.Request) -> httpx.Response:
+            raise httpx.ConnectError("refused")
+
+        real_client = httpx.AsyncClient
+        with (
+            patch.dict(os.environ, {"INTERNAL_API_KEY": "s3cret-key"}),
+            patch(
+                "src.api.httpx.AsyncClient",
+                lambda **kw: real_client(transport=httpx.MockTransport(down), **kw),
+            ),
+        ):
+            r = client.post(
+                "/llm/api/chat", json=LLM_BODY, headers={"X-Internal-Key": "s3cret-key"}
+            )
+        assert r.status_code == 502

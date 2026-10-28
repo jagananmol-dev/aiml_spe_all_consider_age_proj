@@ -107,10 +107,16 @@ CREATE INDEX IF NOT EXISTS idx_audit_tenant ON audit_logs(tenant_id);
 -- ============================================
 -- GRANT PRIVILEGES TO veda USER
 -- ============================================
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO veda;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO veda;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO veda;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO veda;
+-- Skipped where there is no "veda" role (hosted databases such as Supabase)
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'veda') THEN
+        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO veda;
+        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO veda;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO veda;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO veda;
+    END IF;
+END $$;
 
 -- ============================================
 -- SEED DATA (demo tenant for local dev)

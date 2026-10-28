@@ -1,5 +1,5 @@
 """
-VEDA AI — Relationship inference
+NLP pipeline — Step 7: Relation extraction (entities → graph edges)
 
 Turns the entities extracted from one document into graph edges.
 
@@ -13,12 +13,15 @@ Pairing every entity in a whole document (the previous behaviour) linked
 unrelated equipment to each other's failures — e.g. a report about P-101A's
 bearing failure that also mentions the standby P-101B made P-101B
 "FAILED_WITH bearing failure".
+
+Input: entities from step06_entity_extraction.py. The edges are stored in the
+knowledge graph and later steer search in step08_vector_search.py.
 """
 
 import re
 from dataclasses import dataclass
 
-from ..entity_extraction.schema import GraphSchema, get_schema
+from .step04_graph_schema import GraphSchema, get_schema
 
 # The relationship rules live in the graph schema (graph_schema.json); these
 # names are the default schema's, kept for callers that read them

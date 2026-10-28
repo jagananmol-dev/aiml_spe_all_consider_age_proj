@@ -1,5 +1,5 @@
 """
-VEDA AI — Knowledge-graph schema
+NLP pipeline — Step 4: Graph schema (what to extract)
 
 Entity types, the patterns and terms that find them, and the rules that
 relate them are data (graph_schema.json), not code, so a tenant in any
@@ -10,6 +10,7 @@ domain gets a graph without code changes:
   extra terms/examples, extra relationship rules), see merge_schema().
 
 GraphSchema compiles the patterns once and is cached per source.
+Next step: step05_semantic_typing.py and step06_entity_extraction.py use it.
 """
 
 import copy

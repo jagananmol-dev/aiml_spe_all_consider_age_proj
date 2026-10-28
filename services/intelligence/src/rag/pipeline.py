@@ -26,16 +26,17 @@ import psycopg
 from pydantic_settings import BaseSettings
 from sentence_transformers import SentenceTransformer
 
-from ..entity_extraction import semantic
-from ..entity_extraction.schema import get_schema
+# The NLP steps this pipeline runs, in order (see nlp_sts/)
+from nlp_sts import step03_text_embeddings as embeddings
+from nlp_sts import step05_semantic_typing as semantic
+from nlp_sts.step02_chunking import PreparedChunk, TextChunker
+from nlp_sts.step04_graph_schema import get_schema
+from nlp_sts.step07_relation_extraction import document_edges, infer_relationships
+from nlp_sts.step09_rank_fusion import reciprocal_rank_fusion
+from nlp_sts.step10_context_building import ChunkBuilder, PreparedContext
+
 from ..knowledge_graph import local_graph
-from ..knowledge_graph.chunk_builder import (
-    ChunkBuilder,
-    PreparedChunk,
-    PreparedContext,
-)
 from ..knowledge_graph.graph_manager import KnowledgeGraphManager
-from ..knowledge_graph.relationships import document_edges, infer_relationships
 from . import local_store
 
 logger = logging.getLogger("veda.intelligence.rag")
@@ -131,16 +132,8 @@ class RAGPipeline:
     def embedding_model(self) -> SentenceTransformer:
         """Lazy-load the embedding model."""
         if self._embedding_model is None:
-            logger.info(f"Loading embedding model: {settings.embedding_model}")
-            model = SentenceTransformer(settings.embedding_model)
-            # The knowledge graph types and links entities with this same
-            # model (no second model in memory), batched and cached per phrase
-            semantic.set_encoder(
-                lambda texts: model.encode(
-                    texts, normalize_embeddings=True, batch_size=64, show_progress_bar=False
-                )
-            )
-            self._embedding_model = model
+            # Step 3: also registers the model for entity typing (step 5)
+            self._embedding_model = embeddings.load_embedding_model(settings.embedding_model)
         return self._embedding_model
 
     @property
@@ -171,8 +164,7 @@ class RAGPipeline:
 
     def embed_query(self, query: str) -> list[float]:
         """Generate embedding for a query string."""
-        embedding = self.embedding_model.encode(query, normalize_embeddings=True)
-        return embedding.tolist()
+        return embeddings.embed_query(self.embedding_model, query)
 
     async def retrieve_vector(
         self,
@@ -273,28 +265,24 @@ class RAGPipeline:
         if settings.vector_backend != "local":
             raise RuntimeError("Direct indexing is only available with VEDA_VECTOR_BACKEND=local")
 
-        builder = ChunkBuilder(
+        # Step 2: chunking
+        chunker = TextChunker(
             max_chunk_size=settings.max_chunk_size, chunk_overlap=settings.chunk_overlap
         )
-        chunks = builder.merge_small_chunks(
-            builder.split_into_chunks(raw_text, document_id, metadata={"title": title})
+        chunks = chunker.merge_small_chunks(
+            chunker.split_into_chunks(raw_text, document_id, metadata={"title": title})
         )
         if not chunks:
             raise ValueError("No text to index")
 
-        # Embed each chunk with its document title so a passage keeps its context
-        texts = [f"{title}\n\n{chunk.text}" if title else chunk.text for chunk in chunks]
-        embeddings = await asyncio.to_thread(
-            self.embedding_model.encode,
-            texts,
-            normalize_embeddings=True,
-            show_progress_bar=False,
-        )
+        # Step 3: embed each chunk with its document title so a passage keeps its context
+        texts = embeddings.passage_texts(title, [chunk.text for chunk in chunks])
+        vectors = await asyncio.to_thread(embeddings.embed_passages, self.embedding_model, texts)
         stored = [
             local_store.StoredChunk(
                 text=chunk.text, embedding=list(vector), metadata=chunk.metadata
             )
-            for chunk, vector in zip(chunks, embeddings)
+            for chunk, vector in zip(chunks, vectors)
         ]
         count = await asyncio.to_thread(
             local_store.replace_document_chunks,
@@ -331,7 +319,7 @@ class RAGPipeline:
         (with a title) the document's own node linked to what it mentions.
         New names close to an existing node's name join that node.
         """
-        from ..entity_extraction.extractor import extractor
+        from nlp_sts.step06_entity_extraction import extractor
 
         _ = self.embedding_model  # registers the encoder used for entity typing
         schema = local_graph.tenant_schema(settings.database_url, tenant_id)
@@ -523,36 +511,10 @@ class RAGPipeline:
         This gives equal weight to all retrieval methods while preferring documents
         that appear in multiple result lists.
         """
-        k = k or settings.rrf_k
-
-        # Calculate RRF scores
-        doc_scores: dict[str, float] = {}
-        doc_chunks: dict[str, RetrievedChunk] = {}
-
-        for result_list in result_lists:
-            for rank, chunk in enumerate(result_list):
-                doc_key = f"{chunk.document_id}:{chunk.chunk_text[:100]}"
-                rrf_score = 1.0 / (k + rank + 1)
-
-                if doc_key in doc_scores:
-                    doc_scores[doc_key] += rrf_score
-                    # Keep the chunk with more context
-                    if len(chunk.chunk_text) > len(doc_chunks[doc_key].chunk_text):
-                        doc_chunks[doc_key] = chunk
-                else:
-                    doc_scores[doc_key] = rrf_score
-                    doc_chunks[doc_key] = chunk
-
-        # Sort by fused score
-        sorted_keys = sorted(doc_scores.keys(), key=lambda x: doc_scores[x], reverse=True)
-
-        fused_results = []
-        for key in sorted_keys[: settings.final_top_k]:
-            chunk = doc_chunks[key]
-            chunk.score = doc_scores[key]
-            fused_results.append(chunk)
-
-        return fused_results
+        # Step 9 of the NLP pipeline
+        return reciprocal_rank_fusion(
+            result_lists, k=k or settings.rrf_k, top_n=settings.final_top_k
+        )
 
     async def prepare(self, query: str, tenant_id: str) -> PreparedContext:
         """
@@ -578,7 +540,7 @@ class RAGPipeline:
         query_embedding = self.embed_query(query)
 
         # 2. Extract entities from query for graph traversal
-        from ..entity_extraction.extractor import extractor
+        from nlp_sts.step06_entity_extraction import extractor
 
         query_entities = extractor.extract_entities(query, use_nlp=False)
         subjects = get_schema().subject_types

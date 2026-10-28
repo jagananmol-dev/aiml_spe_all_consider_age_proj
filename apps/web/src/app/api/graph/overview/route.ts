@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/db";
+import { ComputeNodeOfflineError } from "@/lib/computeNode";
 import { intelligenceFetch } from "@/lib/intelligence";
 
 /**
@@ -23,6 +24,9 @@ export async function GET() {
 
     return NextResponse.json(await response.json());
   } catch (error) {
+    if (error instanceof ComputeNodeOfflineError) {
+      return NextResponse.json({ error: error.message, waking: true }, { status: 503 });
+    }
     console.error("Graph overview failed:", error);
     return NextResponse.json({ error: "The knowledge graph service is not running" }, { status: 503 });
   }

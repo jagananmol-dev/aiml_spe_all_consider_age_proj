@@ -15,7 +15,7 @@ Tests every extraction path in IndustrialEntityExtractor:
 import pytest
 from unittest.mock import MagicMock, patch
 
-from src.entity_extraction.extractor import (
+from nlp_sts.step06_entity_extraction import (
     IndustrialEntityExtractor,
     EQUIPMENT_TAG_PATTERN,
     MEASUREMENT_PATTERN,

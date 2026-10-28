@@ -3,7 +3,7 @@ import { publishEvent, KAFKA_TOPICS } from "@/lib/kafka";
 import type { DocumentUploadedEvent } from "@/lib/kafka";
 import { getScopedDb, UnauthorizedError, withTenant } from "@/lib/db";
 import { checkUploadFormat, MAX_UPLOAD_BYTES } from "@/lib/formats";
-import { isLocalStorage, LOCAL_BUCKET, saveLocalFile } from "@/lib/storage";
+import { DB_BUCKET, isDbStorage, isLocalStorage, LOCAL_BUCKET, saveLocalFile } from "@/lib/storage";
 import { getMinioClient } from "@/lib/minio";
 
 /**
@@ -11,9 +11,11 @@ import { getMinioClient } from "@/lib/minio";
  *
  * Handles document uploads:
  * 1. Validates file format (see lib/formats.ts) and size
- * 2. Uploads to MinIO (tenant-scoped bucket)
+ * 2. Stores the file: MinIO (tenant-scoped bucket), local disk, or the
+ *    database (STORAGE_BACKEND=db, hosted mode)
  * 3. Creates document record in PostgreSQL
  * 4. Publishes upload event to Kafka → triggers ingestion pipeline
+ *    (local and database storage: the local worker polls instead)
  */
 
 export async function POST(request: NextRequest) {
@@ -68,15 +70,19 @@ export async function POST(request: NextRequest) {
     const safeName = sanitizeFileName(file.name);
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const local = isLocalStorage();
-    const storageBucket = local ? LOCAL_BUCKET : `veda-tenant-${tenantSlug}`;
-    const storagePath = local
+    const inDb = isDbStorage();
+    const storageBucket = local ? LOCAL_BUCKET : inDb ? DB_BUCKET : `veda-tenant-${tenantSlug}`;
+    const storagePath = local || inDb
       ? `${tenantId}/${timestamp}_${documentId}_${safeName}`
       : `documents/${timestamp}_${documentId}_${safeName}`;
 
-    // Store the file: local disk (single-machine mode) or the tenant's MinIO bucket
+    // Store the file: local disk (single-machine mode) or the tenant's MinIO
+    // bucket. Database storage is written below, with the documents row.
+    const fileBuffer = Buffer.from(await file.arrayBuffer());
     try {
-      const fileBuffer = Buffer.from(await file.arrayBuffer());
-      if (local) {
+      if (inDb) {
+        // stored in the same transaction as the row
+      } else if (local) {
         await saveLocalFile(storagePath, fileBuffer);
       } else {
         const minio = getMinioClient();
@@ -114,11 +120,17 @@ export async function POST(request: NextRequest) {
           'uploaded', 'pending', 'pending', 'pending', ${documentType}
         )
       `;
+      if (inDb) {
+        await sql`
+          INSERT INTO document_files (document_id, tenant_id, data)
+          VALUES (${documentId}, ${tenantId}, ${fileBuffer})
+        `;
+      }
     });
 
     // Local mode: the local worker polls for status = 'uploaded'; no queue needed.
     // Otherwise publish to Kafka → triggers the ingestion pipeline.
-    if (!local) {
+    if (!local && !inDb) {
       // Publish upload event to Kafka → triggers ingestion pipeline
       const uploadEvent: DocumentUploadedEvent = {
         tenantId,

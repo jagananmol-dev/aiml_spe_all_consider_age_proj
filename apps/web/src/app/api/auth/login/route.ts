@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isTunnelMode, markActivity } from "@/lib/computeNode";
 import { resolveTenantId, withTenant } from "@/lib/db";
 import { hashPassword, needsRehash, verifyPassword } from "@/lib/password";
 import { clientIp, hit, reset } from "@/lib/rateLimit";
@@ -89,6 +90,14 @@ export async function POST(request: NextRequest) {
       tenantId,
       tenantSlug: cleanSlug,
     });
+
+    // Hosted mode: start waking the PC now, so the assistant is ready by
+    // the time the dashboard has loaded
+    if (isTunnelMode()) {
+      await markActivity().catch((error) =>
+        console.warn("[login] Could not record activity:", error)
+      );
+    }
 
     const response = NextResponse.json({
       success: true,
